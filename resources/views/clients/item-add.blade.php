@@ -307,73 +307,8 @@
                                 </label>
 
                                 <div class="row" style="margin-left:25px;">
-
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <!--checkboxes-->
-                                            <label class="control-label">
-                                                <input type="radio" name="fee_plan" value="1">
-                                                Flat Rate
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="row" style="margin-left:25px;">
                                     <div class="col-md-4"></div>
                                     <div class="col-md-4"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="2 box" style="display: none">
-
-
-                                            <div class="mydiv table-responsive">
-                                                <table class="table table-responsive table-bordered table-striped "
-                                                    id="dynamic_field">
-                                                    <tr>
-                                                        <th>Start</th>
-
-                                                        <th>End</th>
-
-                                                        <th>Fee</th>
-
-
-                                                        <th></th>
-                                                    </tr>
-
-
-
-
-
-
-                                                    <tr>
-                                                        <td><input class="form-control" name="start[]" id=""
-                                                                placeholder="Enter Value 1" value="0"></td>
-                                                        <td><input class="form-control" name="end[]" id="width"
-                                                                placeholder="Ente Value 2" value=""></td>
-                                                        <td><input class="form-control height" name="fee[]" id="height"
-                                                                placeholder="Enter Fee" value="" autocomplete="off"
-                                                                onkeypress="return isNumberKey(event,this)"> </td>
-
-                                                        <td></td>
-                                                    </tr>
-                                                </table>
-
-                                                <table class=" table table-responsive">
-                                                    <tr>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td style=" width: 9%"><button type="button" name="add" id="add"
-                                                                class="btn btn-success bi bi-plus btn-lg"
-                                                                style=" margin-top: 20px;font-size:20px"></button>
-                                                        </td>
-                                                    </tr>
-
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
 
                             </div>
