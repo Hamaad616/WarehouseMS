@@ -318,32 +318,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label class="control-label">
-                                                <input type="radio" name="fee_plan" value="2">
-                                                Incremental Rate
-                                            </label>
-                                        </div>
-                                    </div>
-
                                 </div>
                                 <div class="row" style="margin-left:25px;">
-
-                                    <div class="col-md-4">
-
-                                        <!--Divisions to be shown and hidden-->
-                                        <div class="1 box" style="display: none">
-
-
-                                            <div class="form-group">
-
-                                                <input class="form-control" name="fl_rate" placeholder=" Enter Flat Rate ">
-                                            </div>
-
-
-                                        </div>
-                                    </div>
                                     <div class="col-md-4"></div>
                                     <div class="col-md-4"></div>
                                 </div>

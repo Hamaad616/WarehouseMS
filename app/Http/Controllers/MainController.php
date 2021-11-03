@@ -760,25 +760,10 @@ class MainController extends Controller
         $depth = $request->p_depth;
         $weight = $request->p_weight;
 
-        $users = DB::select("INSERT INTO `product_item`(`client_id`,`category_id`,`pitem_title`,`pitem_code`,`length`,`width`,`height`,`weight`,`img`,`in_code`,`fee_plan`,`fl_rate`)
-        VALUES ('$client_id',$category_id,'$product_name','$barcode','$depth','$width','$height','$weight','$image_name','$internal_code','$request->fee_plan','$request->fl_rate')");
+        $users = DB::select("INSERT INTO `product_item`(`client_id`,`category_id`,`pitem_title`,`pitem_code`,`length`,`width`,`height`,`weight`,`img`,`in_code`)
+        VALUES ('$client_id',$category_id,'$product_name','$barcode','$depth','$width','$height','$weight','$image_name','$internal_code')");
 
-        if ($request->fl_rate == '') {
-            if (!$users) {
-                $arrayLength = count($request->start);
-                $users1 = DB::select("SELECT product_item.pitem_id from product_item order by product_item.pitem_id desc limit 1");
-                foreach ($users1 as $user1) {
 
-                    for ($col = 0; $col < $arrayLength; $col++) {
-                        $start = $request->start[$col];
-                        $end = $request->end[$col];
-                        $fee = $request->fee[$col];
-                        $users = DB::select("INSERT INTO `product_items_details`( `client_id`, `start`, `end`, `fee`, `item_id`, 
-                           `pitem_id`) VALUES ('$client_id','$start','$end','$fee','$request->item_id','$user1->pitem_id')");
-                    }
-                }
-            }
-        }
 
         return redirect()->back();
     }
