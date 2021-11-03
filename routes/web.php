@@ -82,6 +82,7 @@ Route::get('user-registration', function () {
 });
 
 Route::get('client/{client_id}/client-product-requests', [App\Http\Controllers\MainController::class, 'getClientProductRequests'])->name('client.product-requests');
+Route::any('client/update/stock-request/{product_id}', [App\Http\Controllers\MainController::class, 'updateClientRequestedProductStatus'])->name('client.udpate-stock-request');
 
 Route::get('index', function(){
     return view('index.index');

@@ -410,7 +410,7 @@ class MainController extends Controller
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
         // $query =  DB::insert('insert into clients (sch_name, client_email, password, ntn_number,sales_tax_number,legal_type,designated_add_1,designated_add_2,designated_city, product_in_charge, product_out_charge_flat,product_out_flat_rate,product_out_vol,product_out_vol_fl_rate ,storage_plan,per_item_charge, per_item_charge_flat,volume_based,volume_flat_rate,bulk_charge, bulk_space, fulfil_plan, fl_rate, payment_plan, sch_status, sch_flag) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [$client_name, $client_email, $client_password, $ntn_number, $sales_tax_number, $entity_type, $contact_designated_add_1, $contact_designated_add_2, $client_designated_city, $product_in_charge,$storage_plan, $per_item_charge, $bulk_charge, $bulk_space, $fulfillment_plan, $fl_rate, $payment_plan, 1, 1]);
-        $query = DB::table('clients')->insert(['sch_id' => $client_name, 'sch_name' => $client_name, 'ntn_number' => $ntn_number, 'sales_tax_number' => $sales_tax_number, 'legal_type' => $entity_type, 'designated_add_1' => $contact_designated_add_1, 'designated_add_2' => $contact_designated_add_2, 'designated_city' => $client_designated_city, 'client_email' => $client_email, 'password' => $client_password, 'product_in_charge' => $product_in_charge, 'product_out_charge_flat' => $out_return_plan_flat, 'product_out_flat_rate' => $out_return_plan_flat_input, 'storage_plan' => $storage_plan, 'minimum_per_month' => $minimum_charge, 'per_item_charge_day' => $per_item_charge_day, 'per_item_charge_month' =>$per_item_charge_month , 'per_item_charge_day_vol' => $per_item_charge_day_vol, 'per_item_charge_month_vol' =>$per_item_charge_month_vol ,'per_item_charge_flat' => $flat_per_item_charge, 'flat_per_day' =>$flat_per_day , 'flat_per_month' => $flat_per_month ,'volume_flat_rate' => $vol_flat_per_item, 'bulk_space' => $bulk_space, 'bulk_charge' => $bulk_charge, 'fulfil_plan' => $fulfillment_plan, 'fl_rate' => $fl_rate, 'payment_plan' => $payment_plan, 'sch_status' => 1, 'sch_flag' => 1]);
+        $query = DB::table('clients')->insert(['sch_id' => $client_name, 'sch_name' => $client_name, 'ntn_number' => $ntn_number, 'sales_tax_number' => $sales_tax_number, 'legal_type' => $entity_type, 'designated_add_1' => $contact_designated_add_1, 'designated_add_2' => $contact_designated_add_2, 'designated_city' => $client_designated_city, 'client_email' => $client_email, 'password' => $client_password, 'product_in_charge' => $product_in_charge, 'product_out_charge_flat' => $out_return_plan_flat, 'product_out_flat_rate' => $out_return_plan_flat_input, 'storage_plan' => $storage_plan, 'minimum_per_month' => $minimum_charge, 'per_item_charge_day' => $per_item_charge_day, 'per_item_charge_month' => $per_item_charge_month, 'per_item_charge_day_vol' => $per_item_charge_day_vol, 'per_item_charge_month_vol' => $per_item_charge_month_vol, 'per_item_charge_flat' => $flat_per_item_charge, 'flat_per_day' => $flat_per_day, 'flat_per_month' => $flat_per_month, 'volume_flat_rate' => $vol_flat_per_item, 'bulk_space' => $bulk_space, 'bulk_charge' => $bulk_charge, 'fulfil_plan' => $fulfillment_plan, 'fl_rate' => $fl_rate, 'payment_plan' => $payment_plan, 'sch_status' => 1, 'sch_flag' => 1]);
         Mail::to($to)->send(new SendMail($client_email, $client_password_c));
         $last_client_id = DB::getPDO()->lastInsertId();
 
@@ -526,7 +526,8 @@ class MainController extends Controller
         }
     }
 
-Static function checkUserStockOutRates($client_id){
+    static function checkUserStockOutRates($client_id)
+    {
         $stock_out_rates = DB::select('select * from client_stock_out_rates where client_id = ?', [$client_id]);
         if (empty($stock_out_rates)) {
             $val = new stdClass();
@@ -565,7 +566,7 @@ Static function checkUserStockOutRates($client_id){
     }
 
     public function updateClient(Request $request)
-    {        
+    {
         $client_name = $request->client_name;
         $client_email = $request->client_email;
         $client_password_c = $request->client_password;
@@ -668,7 +669,7 @@ Static function checkUserStockOutRates($client_id){
             $dynamic_add_2 = $request->contact_corresponding_add_2[$row];
             $dynamic_city = $request->contact_corresponding_city[$row];
             $other_info_about_client = $request->other_info_about_client[$row];
-    
+
             $dynamic_insert = DB::select("UPDATE client_other_contact_details SET client_full_name = '$dynamic_name' , client_contact_email = '$dynamic_email' ,client_designation = '$dynamic_designation', client_dep = '$dynamic_dep', client_cell = '$dynamic_cell', client_other_contact = '$dynamic_other', client_add_1 = '$dynamic_add_1', client_add_2 = '$dynamic_add_2', client_city = '$dynamic_city', other_info_about_client = '$other_info_about_client' where client_id = '$request->client_id'");
         }
 
@@ -683,8 +684,7 @@ Static function checkUserStockOutRates($client_id){
             }
         }
 
-            return redirect()->back()->with('success', 'Successfully updated Client record');
-    
+        return redirect()->back()->with('success', 'Successfully updated Client record');
     }
 
     public function deleteClientById($sch_id)
@@ -1109,8 +1109,7 @@ FROM `item_stock`,grn_details,grn WHERE item_stock.flag='in' and item_stock.its_
                         } else if ($sub_total > 50000) {
                             $s_b = DB::select("INSERT INTO `client_stock_in_billing` (`product_code`, `product_name`,`client_id`, `product_barcode`, `rack_code`, `space_occupied`, `quantity`, `product_in_charge`, `storage_charge`, `total_bill`, `status`, `created_at`, `updated_at`) VALUES ('$valuebarcode', '$request->product_name', '$lgn_sch', '$valuebarcode', '$bincodearry', '$space_occupied', '$p_qty', '$product_in_charge', '$storage_charge', '$sub_total', 'Placed in holding area', current_timestamp, current_timestamp)");
                         }
-                    }
-                    else if($plan->per_item_charge_flat == 222){
+                    } else if ($plan->per_item_charge_flat == 222) {
                         $vol_fl_rate = $plan->volume_flat_rate;
                         $product_in_charge = $plan->product_in_charge;
                         $minimum_charge = $plan->minimum_per_month;
@@ -1158,8 +1157,18 @@ FROM `item_stock`,grn_details,grn WHERE item_stock.flag='in' and item_stock.its_
     public function getClientProductRequests($client_id)
     {
         $p_requests = DB::select('select * from client_stock_requests where client_id = ?', [$client_id]);
-        $product = DB::table('product_item')->select('*')->where('client_id', '=', $client_id)->first();
+        $product = DB::table('client_stock_requests')->select('*')->where('client_id', '=', $client_id)->first();
         $category = DB::table('categories')->select('*')->where('id', '=', $product->category_id)->get();
         return view('clients.client-product-requests', ['p_requests' => $p_requests, 'category' => $category, 'client_id' => $client_id]);
+    }
+
+    public function updateClientRequestedProductStatus($product_id)
+    {
+        $p_requested = DB::table('client_stock_requests')->select('*')->where('id', '=', $product_id)->first();
+        if ($p_requested->status == 0) {
+            $p_requested->status = 1;
+            $new_status = $p_requested->status;
+            $query = DB::select("UPDATE client_stock_requests SET status = '$p_requested->status' where id = '$product_id'");
+        }
     }
 }

@@ -1,12 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
+    {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"> --}}
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    
 
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
@@ -207,6 +209,19 @@
             border-radius: .25rem;
         }
 
+
+        .toggle.ios,
+        .toggle-on.ios,
+        .toggle-off.ios {
+            border-radius: 20px;
+        }
+
+        .toggle.ios .toggle-handle {
+            border-radius: 20px;
+        }
+
+        .slow .toggle-group {transition: left 0.7s; -webkit-transition: left 0.7s}
+
     </style>
 
 
@@ -224,11 +239,11 @@
                             <i class='bx bx-grid-alt nav_icon'></i>
                             <span class="nav_name">Dashboard</span> </a>
 
-                            <a style="text-decoration: none" href="{{ route('home') }}" class="nav_link">
-                                <i class="bi bi-house nav_icon"></i>
-                                <span class="nav_name">Warehouses</span>
-                            </a>
-                            
+                        <a style="text-decoration: none" href="{{ route('home') }}" class="nav_link">
+                            <i class="bi bi-house nav_icon"></i>
+                            <span class="nav_name">Warehouses</span>
+                        </a>
+
                         <a class="nav_link dropdown-toggle" style="text-decoration: none" href="#ClientDropdown"
                             aria-expanded="false" data-toggle="collapse">
                             <i class="bx bx-user nav_icon"></i>
@@ -237,12 +252,12 @@
 
                         <li id="ClientDropdown" class="collapse">
                             <a title="Clients" style="text-decoration: none" href="{{ url('clients-home') }}"
-                            class="nav_link">
-                            <i class='bx bx-user nav_icon'></i>
-                            <span class="nav_name">Clients</span> </a>
-
-                            <a title="Clients Product Requests" style="text-decoration: none" href="{{ route('client.product-requests', $client_id) }}"
                                 class="nav_link">
+                                <i class='bx bx-user nav_icon'></i>
+                                <span class="nav_name">Clients</span> </a>
+
+                            <a title="Clients Product Requests" style="text-decoration: none"
+                                href="{{ route('client.product-requests', $client_id) }}" class="nav_link">
                                 <i class='bx bx-user nav_icon'></i>
                                 <span class="nav_name text-nowrap">Client Requests</span> </a>
                         </li>
@@ -294,7 +309,7 @@
                 @else
                     <a style="text-decoration: none" class="nav_link" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
-                                                                                                                                                                                     document.getElementById('logout-form').submit();">
+                                                                                                                                                                                             document.getElementById('logout-form').submit();">
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
@@ -338,9 +353,11 @@
                                     <td><?php echo $count; ?></td>
                                     <td>{{ $p_request->product_name }}</td>
                                     <td>{{ $p_request->product_description }}</td>
-                                    <td>@foreach ($category as $cat)
-                                        {{ $cat->category_name }}
-                                    @endforeach</td>
+                                    <td>
+                                        @foreach ($category as $cat)
+                                            {{ $cat->category_name }}
+                                        @endforeach
+                                    </td>
                                     <td>{{ $p_request->SKU_ID }}</td>
                                     <td>{{ $p_request->SKU_BARCODE }}</td>
                                     <td>{{ $p_request->product_reorder_level }}</td>
@@ -352,18 +369,22 @@
                                     <td>
                                         @if ($p_request->status == 0)
                                             <span class="badge badge-info">Not Approved</span>
-                                            @elseif ($p_request->status == 1)
+                                        @elseif ($p_request->status == 1)
                                             <span class="badge badge-success">Approved</span>
-                                            @else
+                                        @else
                                             <span class="badge badge-danger">Disapproved</span>
                                         @endif
                                     </td>
                                     <td>
-                                        <div class="btn-group">
-                                            <a href="" class="btn btn-success btn"><i class="bi bi-check-square"></i></a>
-                                            <a href="" class="btn btn-primary btn"><i class="bi bi-plus-square"></i></a>
-                                            <a href="" class="btn btn-danger btn"><i class="bi bi-x-square"></i> </a>
-                                        </div>
+                                        {{-- <input type="checkbox" class="toggle-class" data-id="{{ $p_request->id }}"
+                                            data-toggle="toggle" data-style="ios slow" data-on="Processing"
+                                            data-off="Not Processed" {{ $p_request->status == 1 ? 'checked' : '' }}><br> --}}
+                                            <input type="checkbox" data-style="slow" data-toggle="toggle" data-id="{{ $p_request->id }}" {{ $p_request->status == 1 ? 'checked' : '' }}>
+                                        {{-- <div class="btn-group">
+                                            <a href="{{ route('client.udpate-stock-request', $p_request->id) }}" class="btn btn-success btn"><i class="bi bi-check-square"></i></a>
+                                            <a href="{{ url('client.add-client-stock-request', $p_request->id) }}" class="btn btn-primary btn"><i class="bi bi-plus-square"></i></a>
+                                            <a href="{{ url('client.delete-stock-request', $p_request->id) }}" class="btn btn-danger btn"><i class="bi bi-x-square"></i> </a>
+                                        </div> --}}
                                     </td>
                                 </tr>
                             </tbody>
@@ -373,6 +394,7 @@
                 </div>
             </div>
     </div>
+
 
 
     <script>
@@ -414,6 +436,15 @@
 
             // Your code to run since DOM is loaded and ready
         });
+    </script>
+
+    <script>
+        $(function() {
+            $('#toggle-two').bootstrapToggle({
+                on: 'Approved',
+                off: 'Not Approved'
+            });
+        })
     </script>
 
 
