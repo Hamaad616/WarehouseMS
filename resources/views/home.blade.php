@@ -197,7 +197,7 @@
 
     <body id="body-pd">
         <header class="header" id="header">
-            
+
             <div class="header_toggle"> <i class='bx bx-menu' id="header-toggle"></i></div>
             <div class="header_img"> <img src="https://i.imgur.com/hczKIze.jpg" alt=""> </div>
         </header>
@@ -208,13 +208,24 @@
                         <a style="text-decoration: none" href="#" class="nav_link active">
                             <i class='bx bx-grid-alt nav_icon'></i>
                             <span class="nav_name">Dashboard</span> </a>
-                        <a style="text-decoration: none" href="{{ url('clients-home') }}" class="nav_link">
-                            <i class='bx bx-user nav_icon'></i>
-                            <span class="nav_name">Clients</span> </a>
-                        <a style="text-decoration: none" href="#" class="nav_link">
+                        <a style="text-decoration: none" href="{{ route('home') }}" class="nav_link">
                             <i class="bi bi-house nav_icon"></i>
                             <span class="nav_name">Warehouses</span>
                         </a>
+                        <a style="text-decoration: none" href="{{ url('clients-home') }}" class="nav_link">
+                            <i class='bx bx-user nav_icon'></i>
+                            <span class="nav_name">Clients</span> </a>
+
+                        <a style="text-decoration: none" href="{{ route('vendors') }}" class="nav_link">
+                            <i class="bi bi-people nav_icon"></i>
+                            <span class="nav_name">Vendors</span>
+                        </a>
+
+                        <a style="text-decoration: none" href="{{ route('categories') }}" class="nav_link">
+                            <i class="bi bi-card-list nav_icon"></i>
+                            <span class="nav_name">Categories</span>
+                        </a>
+
                     </div>
                 </div>
                 @guest
@@ -231,12 +242,12 @@
                         </div>
                     @endif
 
-                    
+
 
                 @else
                     <a style="text-decoration: none" class="nav_link" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
-                                                                                                     document.getElementById('logout-form').submit();">
+                                                                                                                     document.getElementById('logout-form').submit();">
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
@@ -244,7 +255,7 @@
                     </a>
 
                 @endguest
-            
+
             </nav>
         </div>
 
@@ -272,7 +283,7 @@
 
 
     <div class="container">
-        
+
         <div class="card">
             <h3 class="card-header">
                 Warehouses <small>by location</small>
@@ -318,7 +329,7 @@
 
                                     <td>
                                         <a style="text-decoration: none"
-                                            href="{{ route('warehouse.details', ['wh_id' => $warehouse->wh_id,'wh_name'=>$warehouse->wh_name, 'wh_code' => $warehouse->wh_code]) }}">
+                                            href="{{ route('warehouse.details', ['wh_id' => $warehouse->wh_id, 'wh_name' => $warehouse->wh_name, 'wh_code' => $warehouse->wh_code]) }}">
                                             <span class="badge badge-primary">{{ $warehouse->wh_name }}</span></a>
                                     </td>
 
@@ -339,9 +350,11 @@
 
                                     <td>
                                         <div class="btn-group">
-                                            <a title="Edit Warehouse details" href="{{ route('warehouse.edit', $warehouse->wh_id) }}"
+                                            <a title="Edit Warehouse details"
+                                                href="{{ route('warehouse.edit', $warehouse->wh_id) }}"
                                                 class="btn btn-primary"><i class="bi bi-pen"></i></a>
-                                            <a title="Delete warehouse details" href="{{ route('warehouse.delete', $warehouse->wh_id) }}"
+                                            <a title="Delete warehouse details"
+                                                href="{{ route('warehouse.delete', $warehouse->wh_id) }}"
                                                 class="btn btn-danger"><i class="bi bi-trash"></i></a>
                                         </div>
                                     </td>

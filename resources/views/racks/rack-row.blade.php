@@ -331,10 +331,10 @@
                                     <?php
                                                         }
                                                         ?>
-                                    <a href="{{ route('bin.edit', ['wh_id' => $user->wh_id, 'rk_id' => $user->rk_id,'rk_name' => $user->row_name, 'row_code' => $user->row_code, 'width' => $user->Width, 'height' => $user->Height, 'depth' => $user->Depth]) }}"
+                                    <a href="{{ route('bin.edit', ['wh_id' => $user->wh_id, 'rk_id' => $user->rk_id,'rk_name' => $user->row_name, 'row_code' => $user->row_code, 'row_id' =>$user->id, 'width' => $user->Width, 'height' => $user->Height, 'depth' => $user->Depth]) }}"
                                         class="btn btn-success"><span class="bi bi-pencil" data-toggle="tooltip"
                                             title="Edit"></span></a>
-                                    <a href="{{ route('bin.delete', ['wh_id' => $user->wh_id, 'rk_id' => $user->rk_id,'rk_name' => $user->row_name, 'row_code' => $user->row_code, 'width' => $user->Width, 'height' => $user->Height, 'depth' => $user->Depth]) }}"
+                                    <a href="{{ route('bin.view', ['wh_id' => $user->wh_id, 'rk_id' => $user->rk_id,'rk_name' => $user->row_name, 'row_code' => $user->row_code, 'row_id' =>$user->id ,'width' => $user->Width, 'height' => $user->Height, 'depth' => $user->Depth]) }}"
                                         class=" btn btn-primary"><span class="bi bi-eye" data-toggle="tooltip"
                                             title="View bin Info"></span></a>
 

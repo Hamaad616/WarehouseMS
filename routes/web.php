@@ -31,7 +31,18 @@ Route::get('add-row-view/{wh_id}/{rk_id}', [App\Http\Controllers\MainController:
 Route::post('insert-row', [App\Http\Controllers\MainController::class, 'add_new_rows'])->name('insert-row');
 Route::get('view-rows/{wh_id}/{rk_id}', [App\Http\Controllers\MainController::class, 'warehouse_row_table'])->name('rows.index');
 Route::get('add-bin/{wh_id}/{rk_id}/{rk_name}/{row_id}/{row_code}/{width}/{height}/{depth}', [App\Http\Controllers\MainController::class, 'add_bin'])->name('bin.add');
-Route::get('edit-bin/{wh_id}/{rk_id}/{rk_name}/{row_code}/{width}/{height}/{depth}', [App\Http\Controllers\MainController::class, 'edit_bin'])->name('bin.edit');
+Route::get('edit-bin/{wh_id}/{rk_id}/{rk_name}/{row_code}/{row_id}/{width}/{height}/{depth}', [App\Http\Controllers\MainController::class, 'edit_bin'])->name('bin.edit');
+Route::get('view-bins/{wh_id}/{rk_id}/{rk_name}/{row_code}/{row_id}/{width}/{height}/{depth}', [App\Http\Controllers\MainController::class, 'view_bins'])->name('bin.view');
+Route::get('vendors', [App\Http\Controllers\MainController::class, 'getVendors'])->name('vendors');
+Route::get('vendors-list', [App\Http\Controllers\MainController::class, 'getVendorsList'])->name('vendors.list');
+Route::post('edit-vendors', [App\Http\Controllers\MainController::class, 'editVendors'])->name('vendors.edit');
+Route::post('update-vendors', [App\Http\Controllers\MainController::class, 'updateVendors'])->name('vendors.update');
+Route::post('delete-vendor', [App\Http\Controllers\MainController::class, 'deleteVendor'])->name('vendors.delete');
+Route::post('delete-vendors-selected', [App\Http\Controllers\MainController::class, 'deleteVendorSelected'])->name('vendors.selected.delete');
+
+Route::get('create-vendor', [App\Http\Controllers\MainController::class, 'createVendor'])->name('vendor.create');
+Route::post('/upt_bin', [App\Http\Controllers\MainController::class,'update_bin']);
+Route::any('/del_bin',[App\Http\Controllers\MainController::class, 'del_bin'])->name('del_bin');
 Route::any('delete-bin/{wh_id}/{rk_id}/{rk_name}/{row_code}/{width}/{height}/{depth}', [App\Http\Controllers\MainController::class, 'delete_bin'])->name('bin.delete');
 Route::post('store-bin', [App\Http\Controllers\MainController::class, 'storeBin'])->name('bin.store');
 Route::get('warehouse-edit/{wh_id}', [App\Http\Controllers\MainController::class, 'editWareHouseById'])->name('warehouse.edit');

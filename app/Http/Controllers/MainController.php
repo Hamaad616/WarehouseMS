@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use stdClass;
+use App\Mail\SendMail;
+use App\Models\Vendor;
 use Illuminate\Http\Request;
+use DataTables;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
-use \Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Facades\Auth;
-use App\Mail\SendMail;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class MainController extends Controller
 {
@@ -197,6 +199,164 @@ class MainController extends Controller
         $sum = DB::select('select SUM(Width) as total_row_width from bin_info where row_id = ?', [$row_id]);
         return view('bin.add-bin', ['users' => $users, 'width' => $width, 'height' => $height, 'depth' => $depth, 'wh_id' => $wh_id, 'rk_id' => $rk_id, 'rk_name' => $rk_name, 'row_code' => $row_code, 'row_id' => $row_id, 'sum' => $sum]);
     }
+
+    public function edit_bin($wh_id, $rk_id, $rk_name, $row_code, $row_id, $width, $height, $depth)
+    {
+
+        $row_bins =   DB::select('select * from bin_info where row_id = ? and wh_id = ?', [$row_id, $wh_id]);
+        return view('bin.edit-bin', ['wh_id' => $wh_id, 'rk_id' => $rk_id, 'rk_name' => $rk_name, 'row_code' => $row_code, 'row_id' => $row_id, 'width' => $width, 'height' => $height, 'depth' => $depth, 'row_bins' => $row_bins]);
+    }
+
+    public function del_bin(Request $request)
+    {
+        $users = DB::select("DELETE FROM `bin_info` WHERE wh_id='$request->wh_id' and rk_id='$request->rk_id' and row_id='$request->row_id' and id='$request->bin_id' and flag='0me'");
+
+        if (empty($users)) {
+            echo "1";
+        } else {
+            echo " Something Wrong";
+        }
+    }
+
+    public function update_bin(Request $request)
+    {
+
+
+        $usersdel = DB::select("delete from bin_info  where wh_id='$request->wh_id' and rk_id='$request->rk_id' and  row_id='$request->row_id'");
+
+        $arrayLength = count($request->bin_name);
+        for ($col = 0; $col < $arrayLength; $col++) {
+
+            $row_name =  $request->bin_name[$col];
+            $width   =  $request->width[$col];
+            $depth   =  $request->depth[$col];
+            $height   =  $request->height[$col];
+            $rk_code   =  $request->row_code;
+            $row_code = $rk_code . '-' . $row_name;
+
+            $users = DB::select("INSERT INTO `bin_info`( `wh_id`,`rk_id`,`row_id`, `bin_name`,`bin_code`, `Width`, `Height`,
+`Depth`) VALUES ('$request->wh_id','$request->rk_id','$request->row_id','$row_name','$row_code','$width','$height','$depth')");
+        }
+        // return redirect()->route('warehouse_bin_table', ['wh_id' => $request->wh_id, 'rk_id' => $request->rk_id, 'row_id' => $request->row_id, 'bin_name' => $request->bin_name, 'row_code' => $rk_code]);
+        return back();
+    }
+
+    public function view_bins($wh_id, $rk_id, $rk_name, $row_code, $row_id, $width, $height, $depth)
+    {
+        $row_bins =   DB::select('select * from bin_info where row_id = ? and wh_id = ?', [$row_id, $wh_id]);
+        return view('bin.view-bins', ['row_bins' => $row_bins, 'wh_id' =>$wh_id, 'rk_id' => $rk_id, 'rk_name' => $rk_name, 'row_code' =>$row_code, 'row_id' => $row_id, 'width' => $width, 'height' => $height, 'depth' => $depth]);
+    }
+
+    
+    /**
+     * Get a validator for an incoming registration request.
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+
+    public function createVendor(Request $request){
+        $validator = Validator::make($request->all(), [
+            'vendor_name' => 'required',
+            'vendor_email' => 'required',
+            'vendor_contact_person' => 'required',
+            'vendor_number' => 'required',
+            'vendor_address' => 'required',
+        ]);
+
+        if(!$validator->passes()){
+            return response()->json(['code'=>0, 'error'=>$validator->errors()->toArray()]);
+        }
+        else{
+
+          $query =  DB::insert('insert into vendor (vend_name, vend_contact_prsn, vend_email, vend_address, vend_number) values (?, ?, ?, ?, ?)', [$request->vendor_name, $request->vendor_contact_person,$request->vendor_email, $request->vendor_address, $request->vendor_number]);
+
+          if(!$query){
+              return response()->json(['code' => 0, 'msg' => 'Something went wrong']);
+          }
+          else{
+              return response()->json(['code'=>1, 'msg' => 'Successfully created new vendor']);
+          }
+        }
+    }
+
+    public function getVendors(){
+        return view('vendor.vendor-index');
+    }
+
+    public function getVendorsList(){
+        $vendors = Vendor::all();
+        return DataTables::of($vendors)
+        ->addIndexColumn()
+        ->addColumn('actions', function($row){
+            return '<div class="btn-group">
+                    <button class ="btn btn-sm btn-primary" data-id="'.$row['id'].'" id="editVendor">Update</button>
+                    <button class = "btn btn-sm btn-danger" data-id="'.$row['id'].'" id="deleteVendor">Delete</button>
+            </div>';
+        })
+
+        ->addColumn('checkbox', function($row){
+            return '<input type="checkbox" name="vendor_checkbox" data-id = "'.$row['id'].'"><label></label>';
+        })
+        ->rawColumns(['actions', 'checkbox'])
+        ->make(true);
+    }
+
+    public function editVendors(Request $request){
+        $vendor_id = $request->edit_id;
+        $vendors  = Vendor::find($vendor_id);
+        return response()->json(['details' => $vendors]);
+
+    }
+
+    public function updateVendors(Request $request){
+        $vendor_id = $request->vendor_id;
+        $validator = Validator::make($request->all(), [
+            'vendor_name' => 'required',
+            'vendor_email' => 'required',
+            'vendor_contact_person' => 'required',
+            'vendor_number' => 'required',
+            'vendor_address' => 'required',
+        ]);
+
+        if(!$validator->passes()){
+            return response()->json(['code'=>0, 'error'=>$validator->errors()->toArray()]);
+        }
+        else{
+            $vendor = Vendor::find($vendor_id);
+            $vendor->vend_name = $request->vendor_name;
+            $vendor->vend_contact_prsn = $request->vendor_contact_person;
+            $vendor->vend_email = $request->vendor_email;
+            $vendor->vend_address = $request->vendor_address;
+            $vendor->vend_number = $request->vendor_number;
+            $query = $vendor->update();
+
+            if($query){
+                return response()->json(['code' => 1, 'msg' => 'Successfully updated vendor details']);
+            }
+            else{
+                return response()->json(['code' => 0, 'msg' => 'Something went wrong try again']);
+            }
+
+        }
+        
+    }
+
+    public function deleteVendor(Request $request){
+        $vendor_id = $request->delete_id;
+        $query = Vendor::find($vendor_id)->delete();
+        if($query){
+            return response()->json(['code' =>1, 'msg' => 'Successfully deleted vendor record']);
+        }
+        else{
+            return response()->json(['code' => 0, 'msg' => 'Something went wrong try again after some time']);
+        }
+    }
+
+    public function deleteVendorSelected(Request $request){
+        $vendor_id = $request->vendor_ids;
+        Vendor::whereIn('id', $vendor_id)->delete();
+            return response()->json(['code' =>1, 'msg' => 'Successfully deleted vendor records']);
+    }
+
 
     public function storeBin(Request $request)
     {

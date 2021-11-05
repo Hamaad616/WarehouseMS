@@ -196,74 +196,66 @@
 
 
     <body id="body-pd">
-    <header class="header" id="header">
-        <div class="header_toggle"> <i class='bx bx-menu' id="header-toggle"></i> </div>
-        <div class="header_img"> <img src="https://i.imgur.com/hczKIze.jpg" alt=""> </div>
-    </header>
-    <div class="l-navbar" id="nav-bar">
-        <nav class="nav">
-            <div>
-                <div class="nav_list">
-                    <a style="text-decoration: none" href="home" class="nav_link active">
-                        <i class='bx bx-grid-alt nav_icon'></i>
-                        <span class="nav_name">Dashboard</span> </a>
-                    <a style="text-decoration: none" href="clients-home" class="nav_link">
-                        <i class='bx bx-user nav_icon'></i>
-                        <span class="nav_name">Clients</span> </a>
-                    <a style="text-decoration: none" href="home" class="nav_link">
-                        <i class="bi bi-house nav_icon"></i>
-                        <span class="nav_name">Warehouses</span>
+        <header class="header" id="header">
+            <div class="header_toggle"> <i class='bx bx-menu' id="header-toggle"></i> </div>
+            <div class="header_img"> <img src="https://i.imgur.com/hczKIze.jpg" alt=""> </div>
+        </header>
+        <div class="l-navbar" id="nav-bar">
+            <nav class="nav">
+                <div>
+                    <div class="nav_list">
+                        <a style="text-decoration: none" href="{{ route('home') }}" class="nav_link active">
+                            <i class='bx bx-grid-alt nav_icon'></i>
+                            <span class="nav_name">Dashboard</span> </a>
+
+                        <a style="text-decoration: none" href="route('home')" class="nav_link">
+                            <i class="bi bi-house nav_icon"></i>
+                            <span class="nav_name">Warehouses</span>
+                        </a>
+
+                        <a style="text-decoration: none" href="{{ url('clients-home') }}" class="nav_link">
+                            <i class='bx bx-user nav_icon'></i>
+                            <span class="nav_name">Clients</span> </a>
+
+                        <a style="text-decoration: none" href="{{ route('categories') }}" class="nav_link">
+                            <i class="bi bi-card-list nav_icon"></i>
+                            <span class="nav_name">Categories</span>
+                        </a>
+
+                        <a style="text-decoration: none" href="{{ route('vendors') }}" class="nav_link">
+                            <i class="bi bi-people nav_icon"></i>
+                            <span class="nav_name">Vendors</span>
+                        </a>
+
+                    </div>
+                </div>
+                @guest
+
+                    @if (Route::has('login'))
+                        <div class="nav_item">
+                            <a class="nav_link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                        </div>
+                    @endif
+
+                    @if (Route::has('register'))
+                        <div class="nav_item">
+                            <a class="nav_link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                        </div>
+                    @endif
+                @else
+                    <a style="text-decoration: none" class="nav_link" href="{{ route('logout') }}"
+                        onclick="event.preventDefault();
+                                                                                                             document.getElementById('logout-form').submit();">
+
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form><i class='bx bx-log-out nav_icon'></i> <span class="nav_name"> {{ __('Logout') }}</span>
                     </a>
 
-                    <div class="nav_list" >
+                @endguest
 
-{{--                        <a href="#CategoryDropdown" style="text-decoration: none" id="navbarDropdown" class="nav_link dropdown-toggle" role="button" href="#" data-toggle="collapse" aria-expanded="false">--}}
-{{--                            <i class="bi bi-diagram-3 nav-icon"></i>--}}
-{{--                            <span class="nav_name"><strong>Items</strong></span>--}}
-{{--                        </a>--}}
-
-{{--                        <div class="nav_list dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">--}}
-
-{{--                            @foreach($client_items as $client_item)--}}
-{{--                            <a class="dropdown-item nav-link" href="">--}}
-{{--                                {{$client_item->item_name}}--}}
-{{--                            </a>--}}
-{{--                            @endforeach--}}
-{{--                        </div>--}}
-
-
-
-                    </div>
-
-                </div>
-            </div>
-            @guest
-
-                @if (Route::has('login'))
-                    <div class="nav_item">
-                        <a class="nav_link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                    </div>
-                @endif
-
-                @if (Route::has('register'))
-                    <div class="nav_item">
-                        <a class="nav_link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                    </div>
-                @endif
-            @else
-                <a style="text-decoration: none" class="nav_link" href="{{ route('logout') }}"
-                   onclick="event.preventDefault();
-                                                                                                     document.getElementById('logout-form').submit();">
-
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                        @csrf
-                    </form><i class='bx bx-log-out nav_icon'></i> <span class="nav_name"> {{ __('Logout') }}</span>
-                </a>
-
-        @endguest
-
-        </nav>
-    </div>
+            </nav>
+        </div>
 
     </body>
 
@@ -273,72 +265,75 @@
 
         <div class="card-body">
 
-   
-        <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10" style="margin-top:20px;">
-                <div class="well">
-                <form action="{{ route('category.create') }}" class="form-horizontal" method="post" enctype="multipart/form-data">
-                        @csrf
-                    
-                        <div class="row" style="margin-left:25px;">
-                             <div class="col-md-2"></div>
-                            <div class="col-md-8">
-                                <div class="form-group">
-                                    <label class="control-label " for="">Barcode</label>
-                                    <input class="form-control" name="code" required="" spellcheck="false" data-ms-editor="true">
-                                </div>
 
-                            </div>
-                               <div class="col-md-2"></div>
-                        </div>
-                        <div class="row" style="margin-left:25px;">
-                              <div class="col-md-2"></div>
-                            <div class="col-md-8">
-                                <div class="form-group">
-                                    <label class="control-label " for="">Category Name</label>
-                                    <input class="form-control" name="cname" required="" spellcheck="false" data-ms-editor="true">
-                                    <input class="form-control" name="type" type="hidden" value="G">
-                                </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10" style="margin-top:20px;">
+                    <div class="well">
+                        <form action="{{ route('category.create') }}" class="form-horizontal" method="post"
+                            enctype="multipart/form-data">
+                            @csrf
 
-                            </div>
-<div class="col-md-2"></div>
-
-<!--                                        <div class="col-md-8">
-                                    <div class="form-group">
-                                        <label>Select Type</label>
-                                        <select class="form-control select2"  data-placeholder=""  name="type">
-
-                                            <option value="G">General</option>
-                                            <option value="NG">Non-General</option>
-                                        </select>
-                                    </div>
-                                </div>-->
-                            </div>
-
-                        <div class="row">
-                              <div class="col-md-2"></div>
-                            <div class="col-md-8">
-                                <div align="end">
-                                    <button type="button" class="btn btn-danger" onclick="javascript:window.history.back()">Cancel</button>
-                                    <button type="submit" class="btn btn-primary" name="submit">Submit</button>
-                                </div>
-                            </div>
+                            <div class="row" style="margin-left:25px;">
                                 <div class="col-md-2"></div>
-                        </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label class="control-label " for="">Barcode</label>
+                                        <input class="form-control" name="code" required="" spellcheck="false"
+                                            data-ms-editor="true">
+                                    </div>
 
-                    </form>
+                                </div>
+                                <div class="col-md-2"></div>
+                            </div>
+                            <div class="row" style="margin-left:25px;">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label class="control-label " for="">Category Name</label>
+                                        <input class="form-control" name="cname" required="" spellcheck="false"
+                                            data-ms-editor="true">
+                                        <input class="form-control" name="type" type="hidden" value="G">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-2"></div>
+
+                                <!--                                        <div class="col-md-8">
+                                        <div class="form-group">
+                                            <label>Select Type</label>
+                                            <select class="form-control select2"  data-placeholder=""  name="type">
+
+                                                <option value="G">General</option>
+                                                <option value="NG">Non-General</option>
+                                            </select>
+                                        </div>
+                                    </div>-->
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-8">
+                                    <div align="end">
+                                        <button type="button" class="btn btn-danger"
+                                            onclick="javascript:window.history.back()">Cancel</button>
+                                        <button type="submit" class="btn btn-primary" name="submit">Submit</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-2"></div>
+                            </div>
+
+                        </form>
+                    </div>
+
+
                 </div>
-
-
             </div>
         </div>
+
     </div>
 
-</div>
-
     <script>
-
         document.addEventListener("DOMContentLoaded", function(event) {
 
             const showNavbar = (toggleId, navId, bodyId, headerId) => {
@@ -383,4 +378,4 @@
         });
     </script>
 
-    @endsection
+@endsection

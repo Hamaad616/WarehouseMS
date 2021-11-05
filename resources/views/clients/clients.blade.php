@@ -214,9 +214,15 @@
                             <span class="nav_name">Warehouses</span>
                         </a>
 
-                        <a style="text-decoration: none" href="{{url('client-details')}}" class="nav_link">
+                        <a style="text-decoration: none" href="{{ url('clients-home') }}" class="nav_link">
                             <i class='bx bx-user nav_icon'></i>
                             <span class="nav_name">Clients</span> </a>
+
+
+                        <a style="text-decoration: none" href="{{ route('vendors') }}" class="nav_link">
+                            <i class="bi bi-people nav_icon"></i>
+                            <span class="nav_name">Vendors</span>
+                        </a>
 
 
                         <a style="text-decoration: none" href="{{ route('categories') }}" class="nav_link">
@@ -244,7 +250,7 @@
                 @else
                     <a style="text-decoration: none" class="nav_link" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
-                                                                                                                     document.getElementById('logout-form').submit();">
+                                                                                                                             document.getElementById('logout-form').submit();">
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
@@ -254,35 +260,35 @@
                 @endguest
                 <!-- Authentication Links -->
                 <!-- @guest
-                                                                                            @if (Route::has('login'))
-                                                                                                <li class="nav-item">
-                                                                                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                                                                                </li>
-                                                                                            @endif
+                                                                                                    @if (Route::has('login'))
+                                                                                                        <li class="nav-item">
+                                                                                                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                                                                                        </li>
+                                                                                                    @endif
 
-                                                                                            @if (Route::has('register'))
-                                                                                                <li class="nav-item">
-                                                                                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                                                                                </li>
-                                                                                            @endif
-                                                        @else
-                                                                                            <div class="nav_list">
-                                                                                                <a id="navbarDropdown" class="nav_link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                                                                                <i class='bx bx-log-out nav_icon'></i><span class="nav_name">{{ Auth::user()->name }}</span>
-                                                                                                </a>
+                                                                                                    @if (Route::has('register'))
+                                                                                                        <li class="nav-item">
+                                                                                                            <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                                                                                        </li>
+                                                                                                    @endif
+                                                            @else
+                                                                                                    <div class="nav_list">
+                                                                                                        <a id="navbarDropdown" class="nav_link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                                                                                        <i class='bx bx-log-out nav_icon'></i><span class="nav_name">{{ Auth::user()->name }}</span>
+                                                                                                        </a>
 
-                                                                                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                                                                                       onclick="event.preventDefault();
-                                                                                                                     document.getElementById('logout-form').submit();">
-                                                                                                        {{ __('Logout') }}
-                                                                                                    </a>
+                                                                                                            <a class="dropdown-item" href="{{ route('logout') }}"
+                                                                                                               onclick="event.preventDefault();
+                                                                                                                             document.getElementById('logout-form').submit();">
+                                                                                                                {{ __('Logout') }}
+                                                                                                            </a>
 
-                                                                                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                                                                                        @csrf
-                                                                                                    </form>
+                                                                                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                                                                                                @csrf
+                                                                                                            </form>
 
-                                                                                            </div>
-                                                        @endguest -->
+                                                                                                    </div>
+                                                            @endguest -->
             </nav>
         </div>
 
@@ -298,8 +304,8 @@
                 {{-- <a style="float: right" href="{{ route('client.view') }}" title="Add new client"><i
                         class="bi bi-plus-square"></i></a> --}}
 
-                        <a style="float: right" href="{{ url('c-reg') }}" title="Add new client"><i
-                            class="bi bi-plus-square"></i></a>
+                <a style="float: right" href="{{ url('c-reg') }}" title="Add new client"><i
+                        class="bi bi-plus-square"></i></a>
             </h3>
 
 
@@ -324,14 +330,16 @@
                                         <td>
                                             <div class="btn-group">
 
-                                                 {{-- <a data-bs-toggle="tooltip" data-bs-placement="top" title="View Client Details" class="btn btn-info"
+                                                {{-- <a data-bs-toggle="tooltip" data-bs-placement="top" title="View Client Details" class="btn btn-info"
                                                     href="{{ route('client.view-more', ['sch_id' => $item->sch_id, 'sch_name'=>$item->sch_name]) }}"><i
                                                         class="bi bi-person-lines-fill"></i></a> --}}
 
-                                                <a class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit Client Details"
+                                                <a class="btn btn-primary" data-bs-toggle="tooltip"
+                                                    data-bs-placement="bottom" title="Edit Client Details"
                                                     href="{{ route('client.edit', ['sch_id' => $item->sch_id, 'sch_name' => $item->sch_name]) }}"><i
-                                                        class="bi bi-pen"></i></a> 
-                                                <a class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete Client"
+                                                        class="bi bi-pen"></i></a>
+                                                <a class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="right"
+                                                    title="Delete Client"
                                                     href="{{ route('client.delete', $item->sch_id) }}"><i
                                                         class="bi bi-trash"></i></a>
                                             </div>
