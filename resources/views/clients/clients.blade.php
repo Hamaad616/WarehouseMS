@@ -5,6 +5,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ asset('sweetalert/sweetalert2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('toastr/toastr.min.css') }}">
+
     <script src="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"></script>
 
     <style>
@@ -133,7 +136,7 @@
             font-size: 1.25rem
         }
 
-        .show {
+        .show1 {
             left: 0
         }
 
@@ -183,7 +186,7 @@
                 padding: 1rem 1rem 0 0
             }
 
-            .show {
+            .show1 {
                 width: calc(var(--nav-width) + 156px)
             }
 
@@ -225,9 +228,15 @@
                         </a>
 
 
-                        <a style="text-decoration: none" href="{{ route('categories') }}" class="nav_link">
+                      
+                        <a style="text-decoration: none" href="{{ url('add-categories') }}" class="nav_link">
                             <i class="bi bi-card-list nav_icon"></i>
                             <span class="nav_name">Categories</span>
+                        </a>
+
+                        <a style="text-decoration: none" href="{{ route('units') }}" class="nav_link">
+                            <i class="bi bi-card-list nav_icon"></i>
+                            <span class="nav_name">Units</span>
                         </a>
 
 
@@ -250,7 +259,7 @@
                 @else
                     <a style="text-decoration: none" class="nav_link" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
-                                                                                                                             document.getElementById('logout-form').submit();">
+                                                                                                                                             document.getElementById('logout-form').submit();">
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
@@ -260,35 +269,35 @@
                 @endguest
                 <!-- Authentication Links -->
                 <!-- @guest
-                                                                                                    @if (Route::has('login'))
-                                                                                                        <li class="nav-item">
-                                                                                                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                                                                                        </li>
-                                                                                                    @endif
+                                                                                                                    @if (Route::has('login'))
+                                                                                                                        <li class="nav-item">
+                                                                                                                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                                                                                                        </li>
+                                                                                                                    @endif
 
-                                                                                                    @if (Route::has('register'))
-                                                                                                        <li class="nav-item">
-                                                                                                            <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                                                                                        </li>
-                                                                                                    @endif
-                                                            @else
-                                                                                                    <div class="nav_list">
-                                                                                                        <a id="navbarDropdown" class="nav_link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                                                                                        <i class='bx bx-log-out nav_icon'></i><span class="nav_name">{{ Auth::user()->name }}</span>
-                                                                                                        </a>
+                                                                                                                    @if (Route::has('register'))
+                                                                                                                        <li class="nav-item">
+                                                                                                                            <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                                                                                                        </li>
+                                                                                                                    @endif
+                                                                    @else
+                                                                                                                    <div class="nav_list">
+                                                                                                                        <a id="navbarDropdown" class="nav_link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                                                                                                        <i class='bx bx-log-out nav_icon'></i><span class="nav_name">{{ Auth::user()->name }}</span>
+                                                                                                                        </a>
 
-                                                                                                            <a class="dropdown-item" href="{{ route('logout') }}"
-                                                                                                               onclick="event.preventDefault();
-                                                                                                                             document.getElementById('logout-form').submit();">
-                                                                                                                {{ __('Logout') }}
-                                                                                                            </a>
+                                                                                                                            <a class="dropdown-item" href="{{ route('logout') }}"
+                                                                                                                               onclick="event.preventDefault();
+                                                                                                                                             document.getElementById('logout-form').submit();">
+                                                                                                                                {{ __('Logout') }}
+                                                                                                                            </a>
 
-                                                                                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                                                                                                @csrf
-                                                                                                            </form>
+                                                                                                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                                                                                                                @csrf
+                                                                                                                            </form>
 
-                                                                                                    </div>
-                                                            @endguest -->
+                                                                                                                    </div>
+                                                                    @endguest -->
             </nav>
         </div>
 
@@ -311,7 +320,7 @@
 
 
             @if (count($clients) > 0)
-                <div class="card-body">
+                <div id="card-body" class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover">
 
@@ -324,8 +333,10 @@
                             @foreach ($clients as $item)
                                 <tbody>
                                     <tr>
-                                        <td><a
-                                                href="{{ route('client-details', $item->sch_id) }}">{{ $item->sch_name }}</a>
+                                        <td>
+                                            
+                                            <a
+                                                href="{{ route('client.profile', ['client_id' => $item->sch_id]) }}">{{ $item->sch_name }}</a>
                                         </td>
                                         <td>
                                             <div class="btn-group">
@@ -334,6 +345,11 @@
                                                     href="{{ route('client.view-more', ['sch_id' => $item->sch_id, 'sch_name'=>$item->sch_name]) }}"><i
                                                         class="bi bi-person-lines-fill"></i></a> --}}
 
+
+                                                <a class="btn btn-secondary" id="editUserCreds" data-bs-toggle="tooltip"
+                                                    data-bs-placement="top" title="Edit Client Credentials"
+                                                    data-id={{ $item->sch_id }}><i class="bi bi-people"></i></a>
+                                                    <a class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="top" title="View Client Products"href="{{ route('client-details', $item->sch_id) }}"> <i class="bi bi-diagram-3"></i> </a>
                                                 <a class="btn btn-primary" data-bs-toggle="tooltip"
                                                     data-bs-placement="bottom" title="Edit Client Details"
                                                     href="{{ route('client.edit', ['sch_id' => $item->sch_id, 'sch_name' => $item->sch_name]) }}"><i
@@ -362,7 +378,7 @@
         </div>
     </div>
 
-
+    @include('clients.editUserCredsModal')
     <script>
         document.addEventListener("DOMContentLoaded", function(event) {
 
@@ -376,7 +392,7 @@
                 if (toggle && nav && bodypd && headerpd) {
                     toggle.addEventListener('click', () => {
                         // show navbar
-                        nav.classList.toggle('show')
+                        nav.classList.toggle('show1')
                         // change icon
                         toggle.classList.toggle('bx-x')
                         // add padding to body
@@ -402,6 +418,72 @@
 
             // Your code to run since DOM is loaded and ready
         });
+    </script>
+    <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('sweetalert/sweetalert2.min.js') }}"></script>
+    <script src="{{ asset('toastr/toastr.min.js') }}"></script>
+
+    <script>
+        $(document).on('click', '#editUserCreds', function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var edit_id = $(this).data('id')
+            $('.editClient').find('form')[0].reset()
+            $('.editClient').find('span.error-text').text('')
+            $.post('<?= route('client.edit-creds') ?>', {
+                edit_id: edit_id
+            }, function(data) {
+                // alert(data.details.vend_name)
+                $('.editClient').find('input[name="client_id"]').val(data.details.sch_id)
+                $('.editClient').find('input[name="client_email"]').val(data.details
+                    .client_email)
+                    
+                $('.editClient').modal('show')
+            }, 'json')
+        })
+
+        $('#client-update-creds-form').on('submit', function (e){ 
+             
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            e.preventDefault() 
+
+            var form = this;
+            $.ajax({
+                url: $(form).attr('action'),
+                method: $(form).attr('method'),
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                beforeSend: function() {
+                    $(form).find('span.error-text').text('');
+                },
+
+                success: function(data) {
+                    console.log(data)
+                    if (data.code == 0) {
+                        $.each(data.error, function(prefix, val) {
+                            $(form).find('span.' + prefix + '_error').text(val[0])
+                        });
+                    } else {
+                        $('.editClient').modal('hide')
+                        $('.editClient').find('form')[0].reset()
+                        toastr.success(data.msg)
+                        $("#card-body").load(location.href + " #card-body");
+                    }
+                }
+            })
+
+         })
+
     </script>
 
 @endsection

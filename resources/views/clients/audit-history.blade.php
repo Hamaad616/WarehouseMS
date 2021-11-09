@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"></script>
+    <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
 
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
@@ -183,7 +184,7 @@
                 padding: 1rem 1rem 0 0
             }
 
-            .show {
+            .show1 {
                 width: calc(var(--nav-width) + 156px)
             }
 
@@ -197,8 +198,7 @@
 
     <body id="body-pd">
         <header class="header" id="header">
-
-            <div class="header_toggle"> <i class='bx bx-menu' id="header-toggle"></i></div>
+            <div class="header_toggle"> <i class='bx bx-menu' id="header-toggle"></i> </div>
             <div class="header_img"> <img src="https://i.imgur.com/hczKIze.jpg" alt=""> </div>
         </header>
         <div class="l-navbar" id="nav-bar">
@@ -208,29 +208,13 @@
                         <a style="text-decoration: none" href="#" class="nav_link active">
                             <i class='bx bx-grid-alt nav_icon'></i>
                             <span class="nav_name">Dashboard</span> </a>
-                        <a style="text-decoration: none" href="{{ route('home') }}" class="nav_link">
+                        <a style="text-decoration: none" href="#" class="nav_link">
+                            <i class='bx bx-user nav_icon'></i>
+                            <span class="nav_name">Clients</span> </a>
+                        <a style="text-decoration: none" href="#" class="nav_link">
                             <i class="bi bi-house nav_icon"></i>
                             <span class="nav_name">Warehouses</span>
                         </a>
-                        <a style="text-decoration: none" href="{{ url('clients-home') }}" class="nav_link">
-                            <i class='bx bx-user nav_icon'></i>
-                            <span class="nav_name">Clients</span> </a>
-
-                        <a style="text-decoration: none" href="{{ route('vendors') }}" class="nav_link">
-                            <i class="bi bi-people nav_icon"></i>
-                            <span class="nav_name">Vendors</span>
-                        </a>
-
-                        <a style="text-decoration: none" href="{{ url('add-categories') }}" class="nav_link">
-                            <i class="bi bi-card-list nav_icon"></i>
-                            <span class="nav_name">Categories</span>
-                        </a>
-
-                        <a style="text-decoration: none" href="{{ route('units') }}" class="nav_link">
-                            <i class="bi bi-card-list nav_icon"></i>
-                            <span class="nav_name">Units</span>
-                        </a>
-
                     </div>
                 </div>
                 @guest
@@ -246,13 +230,10 @@
                             <a class="nav_link" href="{{ route('register') }}">{{ __('Register') }}</a>
                         </div>
                     @endif
-
-
-
                 @else
                     <a style="text-decoration: none" class="nav_link" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
-                                                                                                                     document.getElementById('logout-form').submit();">
+                                                                                                                                                                             document.getElementById('logout-form').submit();">
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
@@ -260,126 +241,82 @@
                     </a>
 
                 @endguest
-
             </nav>
         </div>
 
     </body>
 
-    {{-- <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Dashboard') }}</div>
+    <div class="container p-3 my-3 bg-light text-dark" style="border-radius: 3px;">
+        @foreach ($client_audits as $client_audit)
+            <h3>Client Audit Logs</h1>
+                <p>Last Updated at: {{ $client_audit->updated_at }}</p>
+                <p>Last Minimum charge: {{ $client_audit->minimum_per_month }} </p>
+                <p>Last Product Inventory-in charge: {{ $client_audit->product_in_charge }}</p>
+                <p>Last Storage Plan: @if ($client_audit->storage_plan == 1) <span>Per Item Charge</span> @else <span>Bulk Space</span> @endif</p>
+                <p>Last Fulfillment Plan: @if ($client_audit->product_out_charge_flat == 55) <span class="badge badge-primary">Flat Charge: {{ $client_audit->product_out_flat_rate }} Rs.</span> @if($client_audit->product_out_charge_flat == 66) <span>Tiered</span> @endif @else <span>Not selected</span> @endif </p>
+        @endforeach
 
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
+    </div>
 
-                    {{ __('You are logged in!') }}
-                </div>
+
+
+
+    <div class="card mt-5">
+        <h5 class="card-header">Client Audit Log</h5>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-condensed table-hover">
+
+                    <thead>
+
+                        <th>#</th>
+                        <th>Minimum Charge</th>
+                        <th>Inventory-In charge</th>
+                        <th>Storage Plan</th>
+                        <th>Flat charge type</th>
+                        <th>Flat charge per item</th>
+                        <th>Flat Volume based type</th>
+                        <th>Flat Per Item Charge (Volume Based)</th>
+                        <th>Fulfillment Plan</th>
+                        <th>Fulfillment Rates</th>
+                        <th>Product Stockout Charge</th>
+                        <th>Product stock out rate</th>
+                        <th>Created At</th>
+                        <th>Update At</th>
+
+
+                    </thead>
+                    <?php $count = 1; ?>
+                    <tbody>
+                        @foreach ($client_audits as $client_audit)
+                            <tr>
+                                <td><?php echo $count; ?></td>
+                                <td>{{ $client_audit->minimum_per_month }} Rs</td>
+                                <td>{{ $client_audit->product_in_charge }} Rs</td>
+                                <td>@if ($client_audit->storage_plan == 1) <span>Per Item Charge</span> @else <span>Bulk Space</span> @endif</td>
+                                <td>@if ($client_audit->per_item_charge_flat == 111) @if ($client_audit->flat_per_day == 1111) <span>Flat Charge Per Day</span>@endif @endif @if ($client_audit->per_item_charge_flat == 111) @if ($client_audit->flat_per_day == 2222) <span>Flat Charge Per Month</span>@endif @endif </td>
+                                <td>@if ($client_audit->per_item_charge_flat == 111) @if ($client_audit->flat_per_day == 1111) <span>{{ $client_audit->per_item_charge_day }} Rs</span> @endif @endif  @if ($client_audit->per_item_charge_flat == 111) @if ($client_audit->flat_per_day == 2222) <span>{{ $client_audit->per_item_charge_month }} Rs</span> @endif @endif</span></td>
+                                <td>@if ($client_audit->per_item_charge_flat == 222) @if ($client_audit->per_item_charge_day_vol == 3333) <span>Flat Per Day</span>@endif @endif @if ($client_audit->per_item_charge_month_vol == 4444) <span>Flat Per Month</span>@endif @if ($client_audit->per_item_charge_flat != 222) <span>Not selected</span> @endif </td>
+                                <td>@if ($client_audit->per_item_charge_flat == 222) @if ($client_audit->flat_per_day == 3333) <span>{{ $client_audit->per_item_charge_day_vol }}</span> @endif @endif  @if ($client_audit->per_item_charge_flat == 222) @if ($client_audit->flat_per_day == 2222) <span>{{ $client_audit->per_item_charge_day_vol }} Rs.</span> @endif @endif @if ($client_audit->per_item_charge_flat != 222) <span>Not selected</span> @endif</td>
+                                <td>@if ($client_audit->fulfil_plan == 11) <span>Flat Per Order Charge</span> @if ($client_audit->fulfil_plan == 22) <span>Tiered Charge</span> @endif @if ($client_audit->fulfil_plan == 33) <span>Charge by no. of items</span> @endif @endif</td>
+                                <td>@if ($client_audit->fulfil_plan == 11) <span class="badge badge-primary">Flat Rate: {{ $client_audit->fl_rate }} Rs</span> @if ($client_audit->fulfil_plan == 22) <span>Tiered Charge <small><?php $fulfilment_rates = DB::select('select * from product_fulfillment_rate where client_id = ?', [$client_id]); ?></small>@foreach ($fulfilment_rates as $fulfilment_rate) <span>From: {{ $fulfilment_rate->start_order }} - To: {{ $fulfilment_rate->end_order }} - Fee: {{ $fulfilment_rate->fee_order }}</span> @endforeach</span> @endif @if ($client_audit->fulfil_plan == 33) <span>Charge by no. of items <small><?php $fulfilment_rates = DB::select('select * from product_fulfillment_rate_2 where client_id = ?', [$client_id]); ?></small>@foreach ($fulfilment_rates as $fulfilment_rate) <span>From: {{ $fulfilment_rate->start_item }} - To: {{ $fulfilment_rate->end_item }} - Fee: {{ $fulfilment_rate->fee_item }}</span> @endforeach</span></span> @endif @endif</td>
+                                <td>@if ($client_audit->product_out_charge_flat == 55) <span class="badge badge-primary">Flat Charge: {{ $client_audit->product_out_flat_rate }} Rs.</span> @else <span>Not selected</span> @endif</td>
+                                <td>@if ($client_audit->product_out_charge_flat == 66) <span>Tiered: <small><?php $fulfilment_rates = DB::select('select * from client_stock_out_rate where client_id = ?', [$client_id]); ?></small>@foreach ($fulfilment_rates as $fulfilment_rate) <span>From: {{ $fulfilment_rate->start_order }} - To: {{ $fulfilment_rate->end_order }} - Fee: {{ $fulfilment_rate->fee }}</span> @endforeach</small></span> @endif @if ($client_audit->product_out_charge_flat != 66) <span>Not selected</span> @endif</td>
+                                <td>{{ $client_audit->created_at }}</td>
+                                <td>{{ $client_audit->updated_at }}</td>
+                            </tr>
+                            <?php $count++; ?>
+                        @endforeach
+
+                    </tbody>
+
+                </table>
             </div>
         </div>
     </div>
-</div> --}}
 
 
-    <div class="container">
 
-        <div class="card">
-            <h3 class="card-header">
-                Warehouses <small>by location</small>
-            </h3>
-
-            <div class="card-body">
-
-                <div class="table-responsive">
-                    @if (count($warehouses) > 0)
-
-                        <table class="table table-bordered table-striped" id="warehouses_table">
-
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Warehouse Code
-                                    </th>
-                                    <th>
-                                        Warehouse Name
-                                    </th>
-                                    <th>
-                                        Person Contact
-                                    </th>
-                                    <th>
-                                        Email
-                                    </th>
-                                    <th>
-                                        Phone No.
-                                    </th>
-                                    <th>
-                                        Action
-                                    </th>
-
-                                </tr>
-                            </thead>
-                            @foreach ($warehouses as $warehouse)
-                                <tbody>
-
-                                    <td>
-
-                                        {{ $warehouse->wh_code }}
-                                    </td>
-
-                                    <td>
-                                        <a style="text-decoration: none"
-                                            href="{{ route('warehouse.details', ['wh_id' => $warehouse->wh_id, 'wh_name' => $warehouse->wh_name, 'wh_code' => $warehouse->wh_code]) }}">
-                                            <span class="badge badge-primary">{{ $warehouse->wh_name }}</span></a>
-                                    </td>
-
-                                    <td>
-
-                                        {{ $warehouse->wh_person }}
-                                    </td>
-
-                                    <td>
-
-                                        {{ $warehouse->wh_email }}
-                                    </td>
-
-                                    <td>
-
-                                        {{ $warehouse->wh_phone }}
-                                    </td>
-
-                                    <td>
-                                        <div class="btn-group">
-                                            <a title="Edit Warehouse details"
-                                                href="{{ route('warehouse.edit', $warehouse->wh_id) }}"
-                                                class="btn btn-primary"><i class="bi bi-pen"></i></a>
-                                            <a title="Delete warehouse details"
-                                                href="{{ route('warehouse.delete', $warehouse->wh_id) }}"
-                                                class="btn btn-danger"><i class="bi bi-trash"></i></a>
-                                        </div>
-                                    </td>
-
-                                </tbody>
-                            @endforeach
-                        </table>
-                </div>
-
-            @else
-                <div class="card-body">
-                    <i class="fa fa-warning" aria-hidden="true"></i> <span>Oops, There are no warehouses created
-                        yet!</span>
-                </div>
-                @endif
-
-            </div>
-
-        </div>
-    </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function(event) {
@@ -388,13 +325,17 @@
                 const toggle = document.getElementById(toggleId),
                     nav = document.getElementById(navId),
                     bodypd = document.getElementById(bodyId),
+
                     headerpd = document.getElementById(headerId)
 
                 // Validate that all variables exist
+
                 if (toggle && nav && bodypd && headerpd) {
                     toggle.addEventListener('click', () => {
+
+
                         // show navbar
-                        nav.classList.toggle('show')
+                        nav.classList.toggle('show1')
                         // change icon
                         toggle.classList.toggle('bx-x')
                         // add padding to body

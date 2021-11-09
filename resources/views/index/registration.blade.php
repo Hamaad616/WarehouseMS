@@ -394,7 +394,7 @@
                                                 <input value="222" type="radio" name="flat_per_item_charge"
                                                     id="volume_based_1" autocomplete="off"><i
                                                     class="bi bi-currency-dollar"></i>&nbsp;<i
-                                                    class="bi bi-view-list"></i>&nbsp;Product (on volume)
+                                                    class="bi bi-view-list"></i>&nbsp;Product (on volume in CUFT)
                                             </label>
                                         </div>
 
@@ -1098,7 +1098,9 @@
                 if (this.value === "") {
                     $('#step_2_validation').show()
                     $('#second').show(800)
-                } else if ($('#other_info_about_client').val() === "") {
+                    $('#third').hide()
+                }
+                 else if ($('#other_info_about_client').val() === "") {
                     $('#step_2_validation').hide()
                     $('#second').hide();
                     $('#third').show(800)
@@ -1107,6 +1109,7 @@
                 } else if ($('#contact_corresponding_add_1').val() === "") {
                     $('#step_2_validation').show()
                     $('#second').show(800)
+                    $('#third').hide()
                 } else if ($('#contact_corresponding_add_2').val() === "") {
                     $('#step_2_validation').hide()
                     $('#second').hide();
@@ -1159,7 +1162,7 @@
             var j = +totalRowCount + +1 - 1;
             console.log(j)
             $('#custom_field').show()
-            $('#dynamic_contact_div').append('<br><br><span id="custom_field' + i + '">Contact ' + i +
+            $('#dynamic_contact_div').append('<br><br><span id="custom_field' + i + '">Contact ' + (i+1) +
                 '</span> <div id="form' + i +
                 '"> <div class="md-form md-outline"><label for="client_contact_full_name">Full Contact Name</label><input id="client_contact_full_name" class="form-control" type="text" name="client_contact_full_name[]"></div> <div class="md-form md-outline"><label for="client_contact_email">Contact Email</label><input id="client_contact_email" class="form-control" type="email" name="client_contact_email[]"></div><div class="md-form md-outline"> <label for="client_designation">Designation</label><input id="client_designation" class="form-control" type="text" name="client_designation[]"></div><div class="md-form md-outline"><label for="contact_department">Department</label> <input id="contact_department" class="form-control" type="text" name="contact_department[]"></div><div class="md-form md-outline"><label class="label-control" for="contact_cell">Cell Number</label><input id="contact_cell" class="form-control" type="text" name="contact_cell[]"></div><div class="md-form md-outline"><label class="label-control" for="contact_cell">Other Contact</label><input id="other_contact" class="form-control" type="text" name="other_contact[]"></div><div class="md-form md-outline"> <label class="label-control" for="contact_corresponding_add_1">Registered Address Line 1</label> <input id="contact_corresponding_add_1" class="form-control" type="text" name="contact_corresponding_add_1[]"></div><div class="md-form md-outline"><label class="label-control" for="contact_corresponding_add_2">Registered Address Line 2</label><input id="contact_corresponding_add_2" class="form-control" type="text" name="contact_corresponding_add_2[]"></div><div class="md-form md-outline"><label class="label-control" for="contact_corresponding_city">City </label><input id="contact_corresponding_city" class="form-control" type="text" name="contact_corresponding_city[]"></div> <div class="md-form md-outline"><label class="label-control" for="other_info_about_client">Other Information about client </label><textarea id="other_info_about_client" class="form-control" type="text" name="other_info_about_client[]"></textarea> </div></div><button type="button" name="remove" id="' +
                 i + '" class="btn btn-danger contact_btn_remove" style=" margin-top: 20px;">X</button>'

@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use stdClass;
+use DataTables;
+use App\Models\units;
 use App\Mail\SendMail;
 use App\Models\Vendor;
+use App\Models\clients;
+use App\Models\categories;
 use Illuminate\Http\Request;
-use DataTables;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -244,16 +247,17 @@ class MainController extends Controller
     public function view_bins($wh_id, $rk_id, $rk_name, $row_code, $row_id, $width, $height, $depth)
     {
         $row_bins =   DB::select('select * from bin_info where row_id = ? and wh_id = ?', [$row_id, $wh_id]);
-        return view('bin.view-bins', ['row_bins' => $row_bins, 'wh_id' =>$wh_id, 'rk_id' => $rk_id, 'rk_name' => $rk_name, 'row_code' =>$row_code, 'row_id' => $row_id, 'width' => $width, 'height' => $height, 'depth' => $depth]);
+        return view('bin.view-bins', ['row_bins' => $row_bins, 'wh_id' => $wh_id, 'rk_id' => $rk_id, 'rk_name' => $rk_name, 'row_code' => $row_code, 'row_id' => $row_id, 'width' => $width, 'height' => $height, 'depth' => $depth]);
     }
 
-    
+
     /**
      * Get a validator for an incoming registration request.
      * @return \Illuminate\Contracts\Validation\Validator
      */
 
-    public function createVendor(Request $request){
+    public function createVendor(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'vendor_name' => 'required',
             'vendor_email' => 'required',
@@ -262,52 +266,53 @@ class MainController extends Controller
             'vendor_address' => 'required',
         ]);
 
-        if(!$validator->passes()){
-            return response()->json(['code'=>0, 'error'=>$validator->errors()->toArray()]);
-        }
-        else{
+        if (!$validator->passes()) {
+            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+        } else {
 
-          $query =  DB::insert('insert into vendor (vend_name, vend_contact_prsn, vend_email, vend_address, vend_number) values (?, ?, ?, ?, ?)', [$request->vendor_name, $request->vendor_contact_person,$request->vendor_email, $request->vendor_address, $request->vendor_number]);
+            $query =  DB::insert('insert into vendor (vend_name, vend_contact_prsn, vend_email, vend_address, vend_number) values (?, ?, ?, ?, ?)', [$request->vendor_name, $request->vendor_contact_person, $request->vendor_email, $request->vendor_address, $request->vendor_number]);
 
-          if(!$query){
-              return response()->json(['code' => 0, 'msg' => 'Something went wrong']);
-          }
-          else{
-              return response()->json(['code'=>1, 'msg' => 'Successfully created new vendor']);
-          }
+            if (!$query) {
+                return response()->json(['code' => 0, 'msg' => 'Something went wrong']);
+            } else {
+                return response()->json(['code' => 1, 'msg' => 'Successfully created new vendor']);
+            }
         }
     }
 
-    public function getVendors(){
+    public function getVendors()
+    {
         return view('vendor.vendor-index');
     }
 
-    public function getVendorsList(){
+    public function getVendorsList()
+    {
         $vendors = Vendor::all();
         return DataTables::of($vendors)
-        ->addIndexColumn()
-        ->addColumn('actions', function($row){
-            return '<div class="btn-group">
-                    <button class ="btn btn-sm btn-primary" data-id="'.$row['id'].'" id="editVendor">Update</button>
-                    <button class = "btn btn-sm btn-danger" data-id="'.$row['id'].'" id="deleteVendor">Delete</button>
+            ->addIndexColumn()
+            ->addColumn('actions', function ($row) {
+                return '<div class="btn-group">
+                    <button class ="btn btn-sm btn-primary" data-id="' . $row['id'] . '" id="editVendor">Update</button>
+                    <button class = "btn btn-sm btn-danger" data-id="' . $row['id'] . '" id="deleteVendor">Delete</button>
             </div>';
-        })
+            })
 
-        ->addColumn('checkbox', function($row){
-            return '<input type="checkbox" name="vendor_checkbox" data-id = "'.$row['id'].'"><label></label>';
-        })
-        ->rawColumns(['actions', 'checkbox'])
-        ->make(true);
+            ->addColumn('checkbox', function ($row) {
+                return '<input type="checkbox" name="vendor_checkbox" data-id = "' . $row['id'] . '"><label></label>';
+            })
+            ->rawColumns(['actions', 'checkbox'])
+            ->make(true);
     }
 
-    public function editVendors(Request $request){
+    public function editVendors(Request $request)
+    {
         $vendor_id = $request->edit_id;
         $vendors  = Vendor::find($vendor_id);
         return response()->json(['details' => $vendors]);
-
     }
 
-    public function updateVendors(Request $request){
+    public function updateVendors(Request $request)
+    {
         $vendor_id = $request->vendor_id;
         $validator = Validator::make($request->all(), [
             'vendor_name' => 'required',
@@ -317,10 +322,9 @@ class MainController extends Controller
             'vendor_address' => 'required',
         ]);
 
-        if(!$validator->passes()){
-            return response()->json(['code'=>0, 'error'=>$validator->errors()->toArray()]);
-        }
-        else{
+        if (!$validator->passes()) {
+            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+        } else {
             $vendor = Vendor::find($vendor_id);
             $vendor->vend_name = $request->vendor_name;
             $vendor->vend_contact_prsn = $request->vendor_contact_person;
@@ -329,32 +333,231 @@ class MainController extends Controller
             $vendor->vend_number = $request->vendor_number;
             $query = $vendor->update();
 
-            if($query){
+            if ($query) {
                 return response()->json(['code' => 1, 'msg' => 'Successfully updated vendor details']);
-            }
-            else{
+            } else {
                 return response()->json(['code' => 0, 'msg' => 'Something went wrong try again']);
             }
-
         }
-        
     }
 
-    public function deleteVendor(Request $request){
+    public function deleteVendor(Request $request)
+    {
         $vendor_id = $request->delete_id;
         $query = Vendor::find($vendor_id)->delete();
-        if($query){
-            return response()->json(['code' =>1, 'msg' => 'Successfully deleted vendor record']);
-        }
-        else{
+        if ($query) {
+            return response()->json(['code' => 1, 'msg' => 'Successfully deleted vendor record']);
+        } else {
             return response()->json(['code' => 0, 'msg' => 'Something went wrong try again after some time']);
         }
     }
 
-    public function deleteVendorSelected(Request $request){
+    public function deleteVendorSelected(Request $request)
+    {
         $vendor_id = $request->vendor_ids;
         Vendor::whereIn('id', $vendor_id)->delete();
-            return response()->json(['code' =>1, 'msg' => 'Successfully deleted vendor records']);
+        return response()->json(['code' => 1, 'msg' => 'Successfully deleted vendor records']);
+    }
+
+    public function getCategoriesList()
+    {
+        $vendors = categories::where('parent_id', '=', 0);
+        return DataTables::of($vendors)
+            ->addIndexColumn()
+            ->addColumn('actions', function ($row) {
+                return '<div class="btn-group">
+                    <button class ="btn btn-sm btn-success btn-sm" data-id="' . $row['id'] . '" id="addSubCategory">Add subcategory</button>
+                    <button class ="btn btn-sm btn-primary btn-sm" data-id="' . $row['id'] . '" id="editCategory">Update</button>
+                    <button class = "btn btn-sm btn-danger btn-sm" data-id="' . $row['id'] . '" id="deleteCategory">Delete</button>
+            </div>';
+            })
+
+            ->addColumn('checkbox', function ($row) {
+                return '<input type="checkbox" name="category_checkbox" data-id = "' . $row['id'] . '"><label></label>';
+            })
+            ->rawColumns(['actions', 'checkbox'])
+            ->make(true);
+    }
+
+    public function addCategoriesForm(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'category_name' => 'required'
+        ]);
+
+        if (!$validator->passes()) {
+            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+        } else {
+
+            $query = DB::insert('insert into categories (category_name) values (?)', [$request->category_name]);
+
+            if ($query) {
+                return response()->json(['code' => 1, 'msg' => 'Successfully update category']);
+            } else {
+                return response()->json(['code' => 0, 'msg' => 'Something went wrong try again']);
+            }
+        }
+    }
+
+    public function addSubCategoriesModal(Request $request)
+    {
+        $category_id = $request->category_id;
+        $category = categories::find($category_id);
+        return response()->json(['details' => $category]);
+    }
+
+    public function editCategories(Request $request)
+    {
+        $category_id = $request->edit_id;
+        $category  = categories::find($category_id);
+        return response()->json(['details' => $category]);
+    }
+
+    public function editCategoriesForm(Request $request)
+    {
+        $category_id = $request->category_id;
+        $validator = Validator::make($request->all(), [
+            'category_name' => 'required'
+        ]);
+
+        if (!$validator->passes()) {
+            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+        } else {
+            $category = categories::find($category_id);
+            $category->category_name = $request->category_name;
+            $category->update();
+            return response()->json(['code' => 1, 'msg' => 'Successfully updated category']);
+        }
+    }
+
+    public function addSubcategory(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'subcategory_name' => 'required'
+        ]);
+
+        if (!$validator->passes()) {
+            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+        } else {
+
+            $query = DB::insert('insert into categories (category_name, parent_id) values (?,?)', [$request->subcategory_name, $request->category_id]);
+
+            if (!$query) {
+                return response()->json(['code' => 0, 'msg' => 'Something went wrong']);
+            } else {
+                return response()->json(['code' => 1, 'msg' => 'Successfully created new subcategory']);
+            }
+        }
+    }
+
+    public function deleteCategories(Request $request)
+    {
+        $category_id = $request->delete_id;
+        $query = categories::find($category_id)->delete();
+        if ($query) {
+            return response()->json(['code' => 1, 'msg' => 'Successfully deleted vendor record']);
+        } else {
+            return response()->json(['code' => 0, 'msg' => 'Something went wrong try again after some time']);
+        }
+    }
+
+    public function deleteCategorySelected(Request $request)
+    {
+        $category_id = $request->category_ids;
+        categories::whereIn('id', $category_id)->delete();
+        return response()->json(['code' => 1, 'msg' => 'Successfully deleted vendor records']);
+    }
+
+
+    public function units()
+    {
+        $units = units::all();
+        return view('units.units', ['units' => $units]);
+    }
+
+
+    public function unitsList()
+    {
+        $units = units::all();
+        return DataTables::of($units)
+            ->addIndexColumn()
+            ->addColumn('actions', function ($row) {
+                return '<div class="btn-group">
+                    <button class ="btn btn-sm btn-primary" data-id="' . $row['id'] . '" id="editUnit">Update</button>
+                    <button class = "btn btn-sm btn-danger" data-id="' . $row['id'] . '" id="deleteUnit">Delete</button>
+            </div>';
+            })
+
+            ->addColumn('checkbox', function ($row) {
+                return '<input type="checkbox" name="unit_checkbox" data-id = "' . $row['id'] . '"><label></label>';
+            })
+            ->rawColumns(['actions', 'checkbox'])
+            ->make(true);
+    }
+
+    public function createUnits(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'unit_name' => 'required'
+        ]);
+
+        if (!$validator->passes()) {
+            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+        } else {
+
+            $query = DB::insert('insert into units (unit_name) values (?)', [$request->unit_name]);
+
+            if ($query) {
+                return response()->json(['code' => 1, 'msg' => 'Successfully created unit']);
+            } else {
+                return response()->json(['code' => 0, 'msg' => 'Something went wrong try again']);
+            }
+        }
+    }
+
+
+    public function editUnit(Request $request)
+    {
+        $unit_id = $request->edit_id;
+        $unit = units::find($unit_id);
+        return response()->json(['details' => $unit]);
+    }
+
+    public function updateUnit(Request $request){
+        $unit_id = $request->unit_id;
+        $validator = Validator::make($request->all(), [
+            'unit_name' => 'required'
+        ]);
+
+        if (!$validator->passes()) {
+            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+        } else {
+            $unit = units::find($unit_id);
+            $unit->unit_name = $request->unit_name;
+            $unit->update();
+            return response()->json(['code' => 1, 'msg' => 'Successfully updated category']);
+        }
+    }
+
+
+    public function deleteUnit(Request $request)
+    {
+        $unit_id = $request->delete_id;
+        $query = units::find($unit_id)->delete();
+        if ($query) {
+            return response()->json(['code' => 1, 'msg' => 'Successfully deleted unit']);
+        } else {
+            return response()->json(['code' => 0, 'msg' => 'Something went wrong try again after some time']);
+        }
+    }
+
+
+    public function deleteSelectedUnits(Request $request)
+    {
+        $selectedUnits = $request->unit_ids;
+        units::whereIn('id',$selectedUnits)->delete();
+        return response()->json(['code' => 1, 'msg' => "Successfully deleted selected units"]);
     }
 
 
@@ -570,9 +773,11 @@ class MainController extends Controller
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
         // $query =  DB::insert('insert into clients (sch_name, client_email, password, ntn_number,sales_tax_number,legal_type,designated_add_1,designated_add_2,designated_city, product_in_charge, product_out_charge_flat,product_out_flat_rate,product_out_vol,product_out_vol_fl_rate ,storage_plan,per_item_charge, per_item_charge_flat,volume_based,volume_flat_rate,bulk_charge, bulk_space, fulfil_plan, fl_rate, payment_plan, sch_status, sch_flag) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [$client_name, $client_email, $client_password, $ntn_number, $sales_tax_number, $entity_type, $contact_designated_add_1, $contact_designated_add_2, $client_designated_city, $product_in_charge,$storage_plan, $per_item_charge, $bulk_charge, $bulk_space, $fulfillment_plan, $fl_rate, $payment_plan, 1, 1]);
-        $query = DB::table('clients')->insert(['sch_id' => $client_name, 'sch_name' => $client_name, 'ntn_number' => $ntn_number, 'sales_tax_number' => $sales_tax_number, 'legal_type' => $entity_type, 'designated_add_1' => $contact_designated_add_1, 'designated_add_2' => $contact_designated_add_2, 'designated_city' => $client_designated_city, 'client_email' => $client_email, 'password' => $client_password, 'product_in_charge' => $product_in_charge, 'product_out_charge_flat' => $out_return_plan_flat, 'product_out_flat_rate' => $out_return_plan_flat_input, 'storage_plan' => $storage_plan, 'minimum_per_month' => $minimum_charge, 'per_item_charge_day' => $per_item_charge_day, 'per_item_charge_month' => $per_item_charge_month, 'per_item_charge_day_vol' => $per_item_charge_day_vol, 'per_item_charge_month_vol' => $per_item_charge_month_vol, 'per_item_charge_flat' => $flat_per_item_charge, 'flat_per_day' => $flat_per_day, 'flat_per_month' => $flat_per_month, 'volume_flat_rate' => $vol_flat_per_item, 'bulk_space' => $bulk_space, 'bulk_charge' => $bulk_charge, 'fulfil_plan' => $fulfillment_plan, 'fl_rate' => $fl_rate, 'payment_plan' => $payment_plan, 'sch_status' => 1, 'sch_flag' => 1]);
+        $query = DB::table('clients')->insert(['sch_name' => $client_name, 'ntn_number' => $ntn_number, 'sales_tax_number' => $sales_tax_number, 'legal_type' => $entity_type, 'designated_add_1' => $contact_designated_add_1, 'designated_add_2' => $contact_designated_add_2, 'designated_city' => $client_designated_city, 'client_email' => $client_email, 'password' => $client_password, 'product_in_charge' => $product_in_charge, 'product_out_charge_flat' => $out_return_plan_flat, 'product_out_flat_rate' => $out_return_plan_flat_input, 'storage_plan' => $storage_plan, 'minimum_per_month' => $minimum_charge, 'per_item_charge_day' => $per_item_charge_day, 'per_item_charge_month' => $per_item_charge_month, 'per_item_charge_day_vol' => $per_item_charge_day_vol, 'per_item_charge_month_vol' => $per_item_charge_month_vol, 'per_item_charge_flat' => $flat_per_item_charge, 'flat_per_day' => $flat_per_day, 'flat_per_month' => $flat_per_month, 'volume_flat_rate' => $vol_flat_per_item, 'bulk_space' => $bulk_space, 'bulk_charge' => $bulk_charge, 'fulfil_plan' => $fulfillment_plan, 'fl_rate' => $fl_rate, 'payment_plan' => $payment_plan, 'sch_status' => 1, 'sch_flag' => 1]);
+
         Mail::to($to)->send(new SendMail($client_email, $client_password_c));
         $last_client_id = DB::getPDO()->lastInsertId();
+        DB::table('client_billing_audit')->insert(['client_id' => $last_client_id, 'product_in_charge' => $product_in_charge, 'product_out_charge_flat' => $out_return_plan_flat, 'product_out_flat_rate' => $out_return_plan_flat_input, 'storage_plan' => $storage_plan, 'minimum_per_month' => $minimum_charge, 'per_item_charge_day' => $per_item_charge_day, 'per_item_charge_month' => $per_item_charge_month, 'per_item_charge_day_vol' => $per_item_charge_day_vol, 'per_item_charge_month_vol' => $per_item_charge_month_vol, 'per_item_charge_flat' => $flat_per_item_charge, 'flat_per_day' => $flat_per_day, 'flat_per_month' => $flat_per_month, 'volume_flat_rate' => $vol_flat_per_item, 'fulfil_plan' => $fulfillment_plan, 'fl_rate' => $fl_rate, 'created_at' => new \DateTime(), 'updated_at' => new \DateTime()]);
 
         if ($request->fulfillment_plan_flat == '22') {
 
@@ -709,6 +914,10 @@ class MainController extends Controller
     }
 
 
+    public function auditClient($client_id){
+        $client_audits = DB::table('client_billing_audit')->select('*')->where('client_id', '=', $client_id)->get();
+        return view('clients.audit-history', ['client_audits' => $client_audits, 'client_id' => $client_id]);
+    }
 
 
     public function editClientById($sch_id, $schname)
@@ -723,6 +932,29 @@ class MainController extends Controller
     {
         $users = DB::select("SELECT * from clients WHERE sch_id = $sch_id");
         return view('clients.client-details', ['id' => $sch_id, 'sch_name' => $schname, 'users' => $users]);
+    }
+
+    public function updateClientCreds(Request $request){
+        $client_id = $request->edit_id;
+        $client = clients::where('sch_id', $client_id)->first();
+        return response()->json(['details' => $client]);
+    }
+
+    public function updateClientsSubmit(Request $request){
+        $client_id = $request->client_id;
+        $validator = Validator::make($request->all(), [
+            'client_email' => 'required',
+            'client_password' => 'required'
+        ]);
+
+        if (!$validator->passes()) {
+            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+        } else {
+            DB::select("UPDATE clients SET client_email = '$request->client_email', `password` = '$request->client_password' where sch_id = '$client_id'");
+           
+                return response()->json(['code' => 1, 'msg' => 'Successfully updated client credentials']);
+          
+        }
     }
 
     public function updateClient(Request $request)
@@ -784,10 +1016,10 @@ class MainController extends Controller
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
         // $query =  DB::insert('insert into clients (sch_name, client_email, password, ntn_number,sales_tax_number,legal_type,designated_add_1,designated_add_2,designated_city, product_in_charge, product_out_charge_flat,product_out_flat_rate,product_out_vol,product_out_vol_fl_rate ,storage_plan,per_item_charge, per_item_charge_flat,volume_based,volume_flat_rate,bulk_charge, bulk_space, fulfil_plan, fl_rate, payment_plan, sch_status, sch_flag) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [$client_name, $client_email, $client_password, $ntn_number, $sales_tax_number, $entity_type, $contact_designated_add_1, $contact_designated_add_2, $client_designated_city, $product_in_charge,$storage_plan, $per_item_charge, $bulk_charge, $bulk_space, $fulfillment_plan, $fl_rate, $payment_plan, 1, 1]);
         // $query = DB::table('clients')->insert(['sch_id' => $client_name, 'sch_name' => $client_name, 'ntn_number' => $ntn_number, 'sales_tax_number' => $sales_tax_number, 'legal_type' => $entity_type, 'designated_add_1' => $contact_designated_add_1, 'designated_add_2' => $contact_designated_add_2, 'designated_city' => $client_designated_city, 'client_email' => $client_email, 'password' => $client_password, 'product_in_charge' => $product_in_charge, 'product_out_charge_flat' => $out_return_plan_flat, 'product_out_flat_rate' => $out_return_plan_flat_input, 'storage_plan' => $storage_plan, 'minimum_per_month' => $minimum_charge, 'per_item_charge_day' => $per_item_charge_day, 'per_item_charge_month' =>$per_item_charge_month , 'per_item_charge_day_vol' => $per_item_charge_day_vol, 'per_item_charge_month_vol' =>$per_item_charge_month_vol ,'per_item_charge_flat' => $flat_per_item_charge, 'flat_per_day' =>$flat_per_day , 'flat_per_month' => $flat_per_month ,'volume_flat_rate' => $vol_flat_per_item, 'bulk_space' => $bulk_space, 'bulk_charge' => $bulk_charge, 'fulfil_plan' => $fulfillment_plan, 'fl_rate' => $fl_rate, 'payment_plan' => $payment_plan, 'sch_status' => 1, 'sch_flag' => 1]);
-        $query = DB::select("UPDATE clients SET sch_name = '$client_name', client_email = '$client_email', ntn_number = '$ntn_number',  sales_tax_number = '$sales_tax_number', legal_type = '$entity_type', designated_add_1 = '$contact_designated_add_1', designated_add_2 = '$contact_designated_add_2', designated_city = '$client_designated_city', password = '$client_password',  product_in_charge = '$product_in_charge', product_out_charge_flat = '$out_return_plan_flat', product_out_flat_rate = '$out_return_plan_flat_input', storage_plan = '$storage_plan', minimum_per_month = '$minimum_charge', per_item_charge_day = '$per_item_charge_day', per_item_charge_month = '$per_item_charge_month', per_item_charge_day_vol = '$per_item_charge_day_vol', per_item_charge_flat = '$flat_per_item_charge', flat_per_day = '$flat_per_day', flat_per_month = '$flat_per_month', volume_flat_rate = '$vol_flat_per_item', bulk_space = '$bulk_space', bulk_charge = '$bulk_charge', fulfil_plan = '$fulfillment_plan', fl_rate = '$fl_rate', payment_plan = '$payment_plan', sch_status = '1', sch_flag = '1' where sch_id = '$request->client_id'");
-        Mail::to($to)->send(new SendMail($client_email, $client_password_c));
+        $query = DB::select("UPDATE clients SET sch_name = '$client_name', ntn_number = '$ntn_number',  sales_tax_number = '$sales_tax_number', legal_type = '$entity_type', designated_add_1 = '$contact_designated_add_1', designated_add_2 = '$contact_designated_add_2', designated_city = '$client_designated_city',  product_in_charge = '$product_in_charge', product_out_charge_flat = '$out_return_plan_flat', product_out_flat_rate = '$out_return_plan_flat_input', storage_plan = '$storage_plan', minimum_per_month = '$minimum_charge', per_item_charge_day = '$per_item_charge_day', per_item_charge_month = '$per_item_charge_month', per_item_charge_day_vol = '$per_item_charge_day_vol', per_item_charge_flat = '$flat_per_item_charge', flat_per_day = '$flat_per_day', flat_per_month = '$flat_per_month', volume_flat_rate = '$vol_flat_per_item', bulk_space = '$bulk_space', bulk_charge = '$bulk_charge', fulfil_plan = '$fulfillment_plan', fl_rate = '$fl_rate', payment_plan = '$payment_plan', sch_status = '1', sch_flag = '1' where sch_id = '$request->client_id'");
         $last_client_id = DB::getPDO()->lastInsertId();
-
+        // DB::table('client_billing_audit')->insert(['product_in_charge' => $product_in_charge, 'product_out_charge_flat' => $out_return_plan_flat, 'product_out_flat_rate' => $out_return_plan_flat_input, 'storage_plan' => $storage_plan, 'minimum_per_month' => $minimum_charge, 'per_item_charge_day' => $per_item_charge_day, 'per_item_charge_month' => $per_item_charge_month, 'per_item_charge_day_vol' => $per_item_charge_day_vol, 'per_item_charge_month_vol' => $per_item_charge_month_vol, 'per_item_charge_flat' => $flat_per_item_charge, 'flat_per_day' => $flat_per_day, 'flat_per_month' => $flat_per_month, 'volume_flat_rate' => $vol_flat_per_item, 'fulfil_plan' => $fulfillment_plan, 'fl_rate' => $fl_rate, 'updated_at' => new \DateTime()])->where(['']);
+        DB::select("INSERT INTO client_billing_audit SET product_in_charge = '$product_in_charge', product_out_charge_flat = '$out_return_plan_flat', product_out_flat_rate ='$out_return_plan_flat_input', storage_plan = '$storage_plan', minimum_per_month = '$minimum_charge', per_item_charge_day = '$per_item_charge_day', per_item_charge_month = '$per_item_charge_month', per_item_charge_day_vol = '$per_item_charge_day_vol', per_item_charge_month_vol = '$per_item_charge_month_vol', per_item_charge_flat = '$flat_per_item_charge', flat_per_day = '$flat_per_day', flat_per_month = '$flat_per_month', volume_flat_rate = '$vol_flat_per_item', fulfil_plan = '$fulfillment_plan', fl_rate = '$fl_rate', updated_at =CURRENT_TIMESTAMP, client_id = '$request->client_id'");
         if ($request->fulfillment_plan_flat == '22') {
 
             $arrayLength = count($request->start_order);
@@ -897,11 +1129,30 @@ class MainController extends Controller
         return redirect()->back();
     }
 
+    public function clientProfile($client_id){
+        $client = DB::table('clients')->select('*')->where('sch_id', '=', $client_id)->get();
+        return view('clients.profile', ['client_id' => $client_id, 'client' => $client]);
+    }
+
     public function clientItemAddView($client_id)
     {
 
         $categories = DB::select('select * from categories');
-        return view('clients.item-add', ['sch_id' => $client_id, 'categories' => $categories]);
+        $units = DB::select('select * from units');
+        return view('clients.item-add', ['sch_id' => $client_id, 'categories' => $categories, 'units' => $units]);
+    }
+
+    public function selectSubCat(Request $request){
+        $parent_id = $request->cat_id;
+
+        $subcategories = categories::where('parent_id',$parent_id)
+                              ->with('subcategories')
+                              ->get();
+
+        return response()->json([
+            'subcategories' => $subcategories,
+            'parent_id' => $parent_id,
+        ]);
     }
 
     public function addClientItem(Request $request)
@@ -910,6 +1161,8 @@ class MainController extends Controller
         $client_id = $request->client_id;
         $product_name = $request->product_name;
         $category_id = $request->category_id;
+        $subcategory_id = $request->subcategory;
+        $unit_id = $request->units;
         $internal_code = $request->internal_code;
         $barcode = $request->product_barcode;
         $picture = $request->file('product_file');
@@ -920,8 +1173,8 @@ class MainController extends Controller
         $depth = $request->p_depth;
         $weight = $request->p_weight;
 
-        $users = DB::select("INSERT INTO `product_item`(`client_id`,`category_id`,`pitem_title`,`pitem_code`,`length`,`width`,`height`,`weight`,`img`,`in_code`)
-        VALUES ('$client_id',$category_id,'$product_name','$barcode','$depth','$width','$height','$weight','$image_name','$internal_code')");
+        $users = DB::select("INSERT INTO `product_item`(`client_id`,`category_id`, `subcategory_id`, `unit_id` ,`pitem_title`,`pitem_code`,`length`,`width`,`height`,`weight`,`img`,`in_code`)
+        VALUES ('$client_id',$category_id, '$subcategory_id', '$unit_id' ,'$product_name','$barcode','$depth','$width','$height','$weight','$image_name','$internal_code')");
 
 
 

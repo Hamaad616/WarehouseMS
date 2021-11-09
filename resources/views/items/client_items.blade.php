@@ -238,9 +238,19 @@
                                 <span class="nav_name text-nowrap">Client Requests</span> </a>
                         </li>
 
-                
+                        <a style="text-decoration: none" href="{{ route('vendors') }}" class="nav_link">
+                            <i class="bi bi-people nav_icon"></i>
+                            <span class="nav_name">Vendors</span>
+                        </a>
 
-                        <a title="categories" style="text-decoration: none" href="{{ route('categories') }}"
+                        <a title="categories" style="text-decoration: none" href="{{ route('units') }}"
+                            class="nav_link">
+                            <i class="bi bi-card-list nav_icon"></i>
+                            <span class="nav_name">Units</span>
+                        </a>
+
+
+                        <a title="categories" style="text-decoration: none" href="{{ url('add-categories') }}"
                             class="nav_link">
                             <i class="bi bi-card-list nav_icon"></i>
                             <span class="nav_name">Categories</span>

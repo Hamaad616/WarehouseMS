@@ -1,6 +1,5 @@
-<!-- CSRF Token -->
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<title>Vendors</title>
+<title>Units</title>
 <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('datatables/css/dataTables.bootstrap.min.css') }}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
@@ -245,23 +244,24 @@
                     <a style="text-decoration: none" href="{{ url('clients-home') }}" class="nav_link">
                         <i class='bx bx-user nav_icon'></i>
                         <span class="nav_name">Clients</span> </a>
-                    <a style="text-decoration: none" href="{{ route('vendors') }}" class="nav_link">
-                        <i class="bi bi-people nav_icon"></i>
-                        <span class="nav_name">Vendors</span>
-                    </a>
+                        <a style="text-decoration: none" href="{{ route('vendors') }}" class="nav_link">
+                            <i class="bi bi-people nav_icon"></i>
+                            <span class="nav_name">Vendors</span>
+                        </a>
 
-                    <a title="categories" style="text-decoration: none" href="{{ route('units') }}"
-                        class="nav_link">
-                        <i class="bi bi-card-list nav_icon"></i>
-                        <span class="nav_name">Units</span>
-                    </a>
+                        <a title="categories" style="text-decoration: none" href="{{ route('units') }}"
+                            class="nav_link">
+                            <i class="bi bi-card-list nav_icon"></i>
+                            <span class="nav_name">Units</span>
+                        </a>
 
 
-                    <a title="categories" style="text-decoration: none" href="{{ url('add-categories') }}"
-                        class="nav_link">
-                        <i class="bi bi-card-list nav_icon"></i>
-                        <span class="nav_name">Categories</span>
-                    </a>
+                        <a title="categories" style="text-decoration: none" href="{{ url('add-categories') }}"
+                            class="nav_link">
+                            <i class="bi bi-card-list nav_icon"></i>
+                            <span class="nav_name">Categories</span>
+                        </a>
+                    
                 </div>
             </div>
             @guest
@@ -280,7 +280,7 @@
             @else
                 <a style="text-decoration: none" class="nav_link" href="{{ route('logout') }}"
                     onclick="event.preventDefault();
-                                                                                                                                                                                                                                     document.getElementById('logout-form').submit();">
+                                                                                                                                                                                                                                                                                             document.getElementById('logout-form').submit();">
 
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf
@@ -294,82 +294,52 @@
 
 </body>
 
+
 <div class="container">
     <div class="row">
-        <div class="col-md-9" style="margin-top: 45px;">
-            <div class="card">
-                <h4 class="card-header">Vendors</h4>
+        <div class="col-md-9">
+            <div class="card mt-4">
+                <h5 class="card-header">Units</h5>
                 <div class="card-body">
+
                     <div class="table-responsive">
-                        <table class="table-hover table-condensed table" id="vendors-table">
+                        <table class="table table-condensed table-hover" id="units-table">
+
                             <thead>
                                 <th><input type="checkbox" name="main_checkbox"><label></label></th>
                                 <th>#</th>
-                                <th>Vendor Name</th>
-                                <th>Vendor Email</th>
-                                <th>Vendor Contact Person</th>
-                                <th>Vendor Number</th>
-                                <th>Vendor Address</th>
+                                <th>Unit</th>
                                 <th>Actions <button id="deleteAllBtn" class="btn btn-sm btn-danger d-none">Delete
                                         All</button></th>
+
                             </thead>
 
                             <tbody>
 
                             </tbody>
+
                         </table>
                     </div>
+
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card mt-5">
-                <h4 class="card-header">Add new Vendors</h4>
+            <div class="card mt-4">
+                <h5 class="card-header">Add Units</h5>
                 <div class="card-body">
-                    <form action="{{ route('vendor.create') }}" method="get" id="add-vendor-form">
+                    <form action="{{ route('units.add') }}" method="POST" id="units-add-form">
                         @csrf
                         <div class="form-group">
-                            <label for="Vendor Name">Vendor Name</label>
-                            <input type="text" name="vendor_name" placeholder="Enter Vendor Name"
-                                class="form-control">
-                            <span class="text-danger error-text vendor_name_error"></span>
+                            <label>Unit</label>
+                            <input class="form-control" type="text" name="unit_name" placeholder="Enter unit">
+                            <span class="text-danger error-text unit_name_error"></span>
                         </div>
-
-                        <div class="form-group">
-                            <label for="Vendor Email">Vendor Email</label>
-                            <input type="text" name="vendor_email" class="form-control"
-                                placeholder="Enter vendor email">
-                            <span class="text-danger error-text vendor_email_error"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="Vendor Contact">Vendor Contact Person</label>
-                            <input type="text" name="vendor_contact_person" class="form-control"
-                                placeholder="Enter vendor contact person">
-                            <span class="text-danger error-text vendor_contact_person_error"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="Vendor Contact">Vendor Number</label>
-                            <input type="text" name="vendor_number" class="form-control"
-                                placeholder="Enter vendor number">
-                            <span class="text-danger error-text vendor_number_error"></span>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="Vendor Address">Vendor Address</label>
-                            <input type="text" name="vendor_address" class="form-control"
-                                placeholder="Enter vendor address">
-                            <span class="text-danger error-text vendor_address_error"></span>
-                        </div>
-
-
                         <div class="form-group">
                             <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-block btn-success">SAVE</button>
+                                <button type="submit" class="btn btn-success">Save</button>
                             </div>
                         </div>
-
                     </form>
                 </div>
             </div>
@@ -377,7 +347,11 @@
     </div>
 </div>
 
-@include('vendor.vendor-edit')
+
+
+
+
+@include('units.editUnitModal')
 <script>
     document.addEventListener("DOMContentLoaded", function(event) {
 
@@ -420,7 +394,6 @@
 </script>
 
 
-
 <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
 <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -431,14 +404,58 @@
 
 <script>
     toastr.options.preventDuplicates = true;
-    $.ajax({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    })
-
     $(function() {
-        $('#add-vendor-form').on('submit', function(e) {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $('#units-table').DataTable({
+            processing: true,
+            info: true,
+            ajax: "{{ route('units.list') }}",
+            "pageLength": 5,
+            "aLengthMenu": [
+                [5, 10, 25, 50, -1],
+                [5, 10, 25, 50, "All"]
+            ],
+            columns: [{
+                    data: 'checkbox',
+                    name: 'checkbox',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex'
+                },
+                {
+                    data: 'unit_name',
+                    name: 'unit_name'
+                },
+                {
+                    data: 'actions',
+                    name: 'actions',
+                    orderable: false,
+                    searchable: false
+                },
+            ]
+
+        }).on('draw', function() {
+            $('input[name="category_checkbox"]').each(function() {
+                this.checked = false
+            })
+            $('input[name="main_checkbox"]').prop('checked', false)
+            $('button#deleteAllBtn').addClass('d-none')
+        });
+
+        $('#units-add-form').on('submit', function(e) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
             e.preventDefault()
             var form = this;
             $.ajax({
@@ -458,97 +475,14 @@
                         });
                     } else {
                         $(form)[0].reset()
-                        $('#vendors-table').DataTable().ajax.reload(null, false)
+                        $('#units-table').DataTable().ajax.reload(null, false)
                         toastr.success(data.msg)
                     }
-
-                },
-            })
-        });
-
-        $('#vendors-table').DataTable({
-            processing: true,
-            info: true,
-            ajax: "{{ route('vendors.list') }}",
-            "pageLength": 5,
-            "aLengthMenu": [
-                [5, 10, 25, 50, -1],
-                [5, 10, 25, 50, "All"]
-            ],
-            columns: [{
-                    data: 'checkbox',
-                    name: 'checkbox',
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex'
-                },
-                {
-                    data: 'vend_name',
-                    name: 'vend_name'
-                },
-                {
-                    data: 'vend_contact_prsn',
-                    name: 'vend_contact_prsn'
-                },
-                {
-                    data: 'vend_email',
-                    name: 'vend_email'
-                },
-                {
-                    data: 'vend_address',
-                    name: 'vend_address'
-                },
-                {
-                    data: 'vend_number',
-                    name: 'vend_number'
-                },
-                {
-                    data: 'actions',
-                    name: 'actions',
-                    orderable: false,
-                    searchable: false
-                },
-            ]
-
-        }).on('draw', function() {
-            $('input[name="vendor_checkbox"]').each(function() {
-                this.checked = false
-            })
-            $('input[name="main_checkbox"]').prop('checked', false)
-            $('button#deleteAllBtn').addClass('d-none')
-        });
-
-        $(document).on('click', '#editVendor', function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
-            });
-            var edit_id = $(this).data('id')
-            $('.editVendors').find('form')[0].reset()
-            $('.editVendors').find('span.error-text').text('')
-            $.post('<?= route('vendors.edit') ?>', {
-                edit_id: edit_id
-            }, function(data) {
-                // alert(data.details.vend_name)
-                $('.editVendors').find('input[name="vendor_id"]').val(data.details.id)
-                $('.editVendors').find('input[name="vendor_name"]').val(data.details.vend_name)
-                $('.editVendors').find('input[name="vendor_contact_person"]').val(data.details
-                    .vend_contact_prsn)
-                $('.editVendors').find('input[name="vendor_email"]').val(data.details
-                    .vend_email)
-                $('.editVendors').find('input[name="vendor_number"]').val(data.details
-                    .vend_number)
-                $('.editVendors').find('input[name="vendor_address"]').val(data.details
-                    .vend_address)
-                $('.editVendors').modal('show')
-            }, 'json')
+            })
         })
 
-        $(document).on('click', '#deleteVendor', function() {
+        $(document).on('click', '#deleteUnit', function() {
 
             $.ajaxSetup({
                 headers: {
@@ -557,7 +491,7 @@
             });
 
             var delete_id = $(this).data('id')
-            var url = '<?= route('vendors.delete') ?>';
+            var url = '<?= route('units.delete') ?>';
 
             swal.fire({
                 title: 'Are you sure?',
@@ -576,7 +510,7 @@
                         delete_id: delete_id
                     }, function(data) {
                         if (data.code == 1) {
-                            $('#vendors-table').DataTable().ajax.reload(null, false)
+                            $('#units-table').DataTable().ajax.reload(null, false)
                             toastr.success(data.msg)
                         } else {
                             toastr.error(data.msg)
@@ -589,17 +523,116 @@
 
         })
 
-        $(document).on('click', '#modalClose', function() {
-            $('.editVendors').modal('hide')
-        });
 
-        $('#vendors-update-form').on('submit', function(e) {
+        $(document).on('click', '#editUnit', function() {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            e.preventDefault()
+            var edit_id = $(this).data('id')
+            $('.editUnit').find('form')[0].reset()
+            $('.editUnit').find('span.error-text').text('')
+            $.post('<?= route('unit.edit') ?>', {
+                edit_id: edit_id
+            }, function(data) {
+                // alert(data.details.vend_name)
+                $('.editUnit').find('input[name="unit_id"]').val(data.details.id)
+                $('.editUnit').find('input[name="unit_name"]').val(data.details
+                    .unit_name)
+                $('.editUnit').modal('show')
+            }, 'json')
+        })
+
+        $(document).on('click', 'input[name="main_checkbox"]', function() {
+            if (this.checked) {
+                $('input[name="unit_checkbox"]').each(function() {
+                    this.checked = true;
+                })
+            } else {
+                $('input[name="unit_checkbox"]').each(function() {
+                    this.checked = false;
+                })
+            }
+            toggledeleteAllBtn()
+        })
+
+        $(document).on('change', 'input[name="unit_checkbox"]', function() {
+            if ($('input[name="unit_checkbox"]').length == $(
+                    'input[name="unit_checkbox"]:checked')
+                .length) {
+                $('input[name="main_checkbox"]').prop('checked', true)
+            } else {
+                $('input[name="main_checkbox"]').prop('checked', false)
+            }
+            toggledeleteAllBtn()
+        })
+
+
+        function toggledeleteAllBtn() {
+            if ($('input[name="unit_checkbox"]:checked').length > 0) {
+                $('button#deleteAllBtn').text('Delete (' + $('input[name="unit_checkbox"]:checked').length +
+                    ')').removeClass('d-none')
+            } else {
+                $('button#deleteAllBtn').addClass('d-none')
+            }
+        }
+
+        $(document).on('click', 'button#deleteAllBtn', function() {
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var checkedUnits = [];
+            $('input[name="unit_checkbox"]:checked').each(function() {
+                checkedUnits.push($(this).data('id'))
+            })
+
+            var url = '{{ route('unit.selected.delete') }}';
+            if (checkedUnits.length > 0) {
+                swal.fire({
+                    title: 'Are you sure?',
+                    html: 'You want to delete <b>(' + checkedUnits.length +
+                        ')<b/> unit(s)',
+                    showCancelButton: true,
+                    showCloseButton: true,
+                    cancelButtonText: 'Cancel',
+                    confirmButtonText: 'Yes, Delete',
+                    cancelButtonColor: '#d33',
+                    confirmButtonColor: '#556ee6',
+                    width: 300,
+                    allowOutsideClick: false
+                }).then(function(result) {
+                    if (result.value) {
+                        $.post(url, {
+                            unit_ids: checkedUnits
+                        }, function(data) {
+                            if (data.code == 1) {
+                                $('#units-table').DataTable().ajax.reload(null,
+                                    false)
+                                toastr.success(data.msg)
+                            } else {
+                                toastr.error(data.msg)
+                            }
+                        }, 'json')
+                    }
+                })
+            }
+        })
+
+
+        $('#unit-update-form').on('submit', function (e) { 
+
+
+            e.preventDefault();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
             var form = this;
             $.ajax({
                 url: $(form).attr('action'),
@@ -613,99 +646,33 @@
                 },
 
                 success: function(data) {
+                    console.log(data)
                     if (data.code == 0) {
                         $.each(data.error, function(prefix, val) {
                             $(form).find('span.' + prefix + '_error').text(val[0])
                         });
                     } else {
-                        $('#vendors-table').DataTable().ajax.reload(null, false)
-                        $('.editVendors').modal('hide')
-                        $('.editVendors').find('form')[0].reset()
+                        $('#units-table').DataTable().ajax.reload(null, false)
+                        $('.editUnit').modal('hide')
+                        $('.editUnit').find('form')[0].reset()
                         toastr.success(data.msg)
                     }
                 }
             })
-        })
 
-        $(document).on('click', 'input[name="main_checkbox"]', function() {
-            if (this.checked) {
-                $('input[name="vendor_checkbox"]').each(function() {
-                    this.checked = true;
-                })
-            } else {
-                $('input[name="vendor_checkbox"]').each(function() {
-                    this.checked = false;
-                })
-            }
-            toggledeleteAllBtn()
-        })
 
-        $(document).on('change', 'input[name="vendor_checkbox"]', function() {
-            if ($('input[name="vendor_checkbox"]').length == $('input[name="vendor_checkbox"]:checked')
-                .length) {
-                $('input[name="main_checkbox"]').prop('checked', true)
-            } else {
-                $('input[name="main_checkbox"]').prop('checked', false)
-            }
-            toggledeleteAllBtn()
-        })
+         })
 
-        $(document).on('click', 'button#deleteAllBtn', function() {
 
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            var checkedVendors = [];
-            $('input[name="vendor_checkbox"]:checked').each(function() {
-                checkedVendors.push($(this).data('id'))
-            })
 
-            var url = '{{ route('vendors.selected.delete') }}';
-            if (checkedVendors.length > 0) {
-                swal.fire({
-                    title: 'Are you sure?',
-                    html: 'You want to delete <b>(' + checkedVendors.length + ')<b/> vendors',
-                    showCancelButton: true,
-                    showCloseButton: true,
-                    cancelButtonText: 'Cancel',
-                    confirmButtonText: 'Yes, Delete',
-                    cancelButtonColor: '#d33',
-                    confirmButtonColor: '#556ee6',
-                    width: 300,
-                    allowOutsideClick: false
-                }).then(function(result) {
-                    if (result.value) {
-                        $.post(url, {
-                            vendor_ids: checkedVendors
-                        }, function(data) {
-                            if (data.code == 1) {
-                                $('#vendors-table').DataTable().ajax.reload(null, false)
-                                toastr.success(data.msg)
-                            } else {
-                                toastr.error(data.msg)
-                            }
-                        }, 'json')
-                    }
-                })
-            }
-        })
 
-        function toggledeleteAllBtn() {
-            if ($('input[name="vendor_checkbox"]:checked').length > 0) {
-                $('button#deleteAllBtn').text('Delete (' + $('input[name="vendor_checkbox"]:checked').length +
-                    ')').removeClass('d-none')
-            } else {
-                $('button#deleteAllBtn').addClass('d-none')
-            }
-        }
 
-    })
+
+
+        $(document).on('click', '#modalClose', function() {
+            $('.editUnit').modal('hide')
+        });
+
+
+    });
 </script>
-
-
-
-
-
-{{-- @endsection --}}

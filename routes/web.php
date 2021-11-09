@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\MainController;
+use App\Models\categories;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\MainController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,27 @@ Route::post('update-vendors', [App\Http\Controllers\MainController::class, 'upda
 Route::post('delete-vendor', [App\Http\Controllers\MainController::class, 'deleteVendor'])->name('vendors.delete');
 Route::post('delete-vendors-selected', [App\Http\Controllers\MainController::class, 'deleteVendorSelected'])->name('vendors.selected.delete');
 
+Route::get('add-categories', function(){
+    $categories = categories::where('parent_id', '=', 0);
+    return view('category.add_category', ['categories' => $categories]);
+});
+
+Route::get('categories-list', [App\Http\Controllers\MainController::class, 'getCategoriesList'])->name('categories.list');
+Route::post('add-categories', [App\Http\Controllers\MainController::class, 'addCategoriesForm'])->name('categories.add');
+Route::post('edit-categories', [App\Http\Controllers\MainController::class, 'editCategories'])->name('categories.edit');
+Route::post('update-categories', [App\Http\Controllers\MainController::class, 'editCategoriesForm'])->name('categories.update');
+Route::post('delete-categories', [App\Http\Controllers\MainController::class, 'deleteCategories'])->name('categories.delete');
+Route::post('delete-categories-selected', [App\Http\Controllers\MainController::class, 'deleteCategorySelected'])->name('category.selected.delete');
+Route::post('add-subcategory-modal', [App\Http\Controllers\MainController::class, 'addSubCategoriesModal'])->name('categories.subcategory');
+Route::post('add-subcategory', [App\Http\Controllers\MainController::class, 'addSubCategory'])->name('categories.add-subcategory');
+
+Route::get('units', [App\Http\Controllers\MainController::class, 'units'])->name('units');
+Route::get('units-list', [App\Http\Controllers\MainController::class, 'unitsList'])->name('units.list');
+Route::post('units-create', [MainController::class, 'createUnits'])->name('units.add');
+Route::post('delete-unit', [MainController::class, 'deleteUnit'])->name('units.delete');
+Route::post('delete-selected-units', [MainController::class, 'deleteSelectedUnits'])->name('unit.selected.delete');
+Route::post('unit-edit', [MainController::class, 'editUnit'])->name('unit.edit');
+Route::post('unit-update', [MainController::class, 'updateUnit'])->name('unit.update');
 Route::get('create-vendor', [App\Http\Controllers\MainController::class, 'createVendor'])->name('vendor.create');
 Route::post('/upt_bin', [App\Http\Controllers\MainController::class,'update_bin']);
 Route::any('/del_bin',[App\Http\Controllers\MainController::class, 'del_bin'])->name('del_bin');
@@ -54,6 +76,10 @@ Route::any('warehouse-rack-delete/{rk_id}', [MainController::class, 'deleteWareh
 Route::get('check-rack-barcode/{wh_id}/{rk_id}', [MainController::class, 'getRackBarcodes']);
 
 Auth::routes();
+Route::get('client-profile/{client_id}', [MainController::class, 'clientProfile'])->name('client.profile');
+Route::get('client-audit-history/{client_id}', [MainController::class, 'auditClient'])->name('client.audit');
+Route::post('client-update-creds', [MainController::class, 'updateClientCreds'])->name('client.edit-creds');
+Route::post('client-creds-update', [MainController::class, 'updateClientsSubmit'])->name('client.update-creds');
 Route::get('clients-home', [MainController::class, 'getClientsHome']);
 Route::get('create-new-client', [MainController::class, 'viewClientCreate'])->name('client.view');
 Route::post('create-new-client', [MainController::class, 'createClient'])->name('client.create');
@@ -68,6 +94,7 @@ Route::get('category-create-view', [\App\Http\Controllers\MainController::class,
 Route::get('categories-index', [App\Http\Controllers\MainController::class, 'getCategoriesIndex'])->name('categories');
 Route::post('category-update', [App\Http\Controllers\MainController::class, 'updateCategory'])->name('category.update');
 Route::get('item-add-view/{client_id}', [\App\Http\Controllers\MainController::class, 'clientItemAddView'])->name('client.item-add');
+Route::get('subcat', [MainController::class, 'selectSubCat'])->name('subcat');
 Route::post('client-item-create', [App\Http\Controllers\MainController::class, 'addClientItem'])->name('item.create');
 Route::get('item-edit-view/{pitem_id}', [App\Http\Controllers\MainController::class, 'getItemEditView'])->name('item.edit-view');
 Route::post('upt_product_item_cnfrm', [\App\Http\Controllers\MainController::class, 'product_item_update_cnfrm']);

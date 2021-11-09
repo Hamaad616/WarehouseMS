@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"></script>
-    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
 
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
@@ -233,7 +233,7 @@
                 @else
                     <a style="text-decoration: none" class="nav_link" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
-                                                                                                                     document.getElementById('logout-form').submit();">
+                                                                                                                                     document.getElementById('logout-form').submit();">
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
@@ -270,10 +270,28 @@
                                 </label>
 
                                 <label for="" class="lable-control">Categories
-                                    <select class="form-control" name="category_id" id="">
+                                    <select class="form-control" name="category_id" id="category">
                                         <option selected="" disabled>Select Category</option>
                                         @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+                                            <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </label>
+
+                                <label class="label-control">Subcategories</label>
+                                <div id="sub_cats" class="form-group">
+
+                                    <select class="form-control" name="subcategory" id="subcategory">
+                                        <option selected="" value="" disabled="">No Subcategory</option>
+                                    </select>
+                                </div>
+
+
+                                <label class="label-control"> Units
+                                    <select class="form-control" name="units" id="units">
+                                        <option selected="" disabled>Select Unit</option>
+                                        @foreach ($units as $unit)
+                                            <option value="{{ $unit->id }}">{{ $unit->unit_name }}</option>
                                         @endforeach
                                     </select>
                                 </label>
@@ -302,7 +320,7 @@
                                     <input class="form-control" type="number" name="p_depth">
                                 </label>
 
-                                <label for="" class="lable-control">Weight
+                                <label for="" class="lable-control">Weight (Grams)
                                     <input class="form-control" type="number" name="p_weight">
                                 </label>
 
@@ -373,99 +391,134 @@
         });
     </script>
 
-<script>
-    // jQuery functions to show and hide divisions 
-    $(document).ready(function() {
-        $('input[type="radio"]').click(function() {
-            var inputValue = $(this).attr("value");
-            //  alert(inputValue);
-            if (inputValue == '1') {
-                $("." + inputValue).show();
-                $("." + 2).hide();
-                $("." + 22).hide();
-                $("." + 11).hide();
-                $("." + 33).hide();
-            }
-            if (inputValue == '2') {
-                $("." + inputValue).show();
-                $("." + 1).hide();
-                $("." + 11).hide();
-                $("." + 22).hide();
-                $("." + 33).hide();
-            }
-            if (inputValue == '11') {
-                $("." + inputValue).show();
-                $("." + 1).hide();
-                $("." + 2).hide();
-                $("." + 22).hide();
-                $("." + 33).hide();
-            }
-            if (inputValue == '22') {
-                $("." + inputValue).show();
-                $("." + 1).hide();
-                $("." + 11).hide();
-                $("." + 2).hide();
-                $("." + 33).hide();
+    <script>
+        // jQuery functions to show and hide divisions 
+        $(document).ready(function() {
+            $('input[type="radio"]').click(function() {
+                var inputValue = $(this).attr("value");
+                //  alert(inputValue);
+                if (inputValue == '1') {
+                    $("." + inputValue).show();
+                    $("." + 2).hide();
+                    $("." + 22).hide();
+                    $("." + 11).hide();
+                    $("." + 33).hide();
+                }
+                if (inputValue == '2') {
+                    $("." + inputValue).show();
+                    $("." + 1).hide();
+                    $("." + 11).hide();
+                    $("." + 22).hide();
+                    $("." + 33).hide();
+                }
+                if (inputValue == '11') {
+                    $("." + inputValue).show();
+                    $("." + 1).hide();
+                    $("." + 2).hide();
+                    $("." + 22).hide();
+                    $("." + 33).hide();
+                }
+                if (inputValue == '22') {
+                    $("." + inputValue).show();
+                    $("." + 1).hide();
+                    $("." + 11).hide();
+                    $("." + 2).hide();
+                    $("." + 33).hide();
 
-            }
-            if (inputValue == '33') {
-                $("." + inputValue).show();
-                $("." + 1).hide();
-                $("." + 11).hide();
-                $("." + 2).hide();
-                $("." + 22).hide();
-            }
-            if (inputValue == '44') {
-                $("." + inputValue).show();
-                $("." + 1).hide();
-                $("." + 11).hide();
-                $("." + 2).hide();
-                $("." + 22).hide();
-                $("." + 33).hide();
-            }
+                }
+                if (inputValue == '33') {
+                    $("." + inputValue).show();
+                    $("." + 1).hide();
+                    $("." + 11).hide();
+                    $("." + 2).hide();
+                    $("." + 22).hide();
+                }
+                if (inputValue == '44') {
+                    $("." + inputValue).show();
+                    $("." + 1).hide();
+                    $("." + 11).hide();
+                    $("." + 2).hide();
+                    $("." + 22).hide();
+                    $("." + 33).hide();
+                }
 
-        });
-    });
-
-
-    $(document).ready(function() {
-
-
-        var i = 1;
-
-
-
-        $('#add').click(function() {
-            var totalRowCount = dynamic_field.rows.length;
-            //alert(totalRowCount);
-            var j = +totalRowCount + +1 - 1;
-            $('#dynamic_field').append('<tr  id="row' + i +
-                '"><td><input class="form-control"  name="start_item[]" placeholder="Enter Value 1" value="" ></td><td> <input class="form-control"  name="end_item[]" placeholder="Enter Value 2"  value="" ></td> <td>  <input class="form-control"  name="fee_item[]" placeholder="Enter Fee" value="" ></td><td><button type="button" name="remove" id="' +
-                i +
-                '" class="btn btn-danger btn_remove" style=" margin-top: 20px">X</button></td></tr>'
-            );
-            i++;
-
+            });
         });
 
-        $('#add2').click(function() {
-            var totalRowCount = dynamic_field2.rows.length;
 
-            var j = +totalRowCount + +1 - 1;
-            $('#dynamic_field2').append('<tr  id="row' + i +
-                '"><td><input class="form-control"  name="start_order[]" placeholder="Enter Value 1" value="" ></td><td> <input class="form-control"  name="end_order[]" placeholder="Enter Value 2"  value="" ></td> <td>  <input class="form-control"  name="fee_order[]" placeholder="Enter Fee" value="" ></td><td><button type="button" name="remove" id="' +
-                i +
-                '" class="btn btn-danger btn_remove" style=" margin-top: 20px">X</button></td></tr>'
-            );
-            i++;
+        $(document).ready(function() {
+
+
+            var i = 1;
+
+
+
+            $('#add').click(function() {
+                var totalRowCount = dynamic_field.rows.length;
+                //alert(totalRowCount);
+                var j = +totalRowCount + +1 - 1;
+                $('#dynamic_field').append('<tr  id="row' + i +
+                    '"><td><input class="form-control"  name="start_item[]" placeholder="Enter Value 1" value="" ></td><td> <input class="form-control"  name="end_item[]" placeholder="Enter Value 2"  value="" ></td> <td>  <input class="form-control"  name="fee_item[]" placeholder="Enter Fee" value="" ></td><td><button type="button" name="remove" id="' +
+                    i +
+                    '" class="btn btn-danger btn_remove" style=" margin-top: 20px">X</button></td></tr>'
+                );
+                i++;
+
+            });
+
+            $('#add2').click(function() {
+                var totalRowCount = dynamic_field2.rows.length;
+
+                var j = +totalRowCount + +1 - 1;
+                $('#dynamic_field2').append('<tr  id="row' + i +
+                    '"><td><input class="form-control"  name="start_order[]" placeholder="Enter Value 1" value="" ></td><td> <input class="form-control"  name="end_order[]" placeholder="Enter Value 2"  value="" ></td> <td>  <input class="form-control"  name="fee_order[]" placeholder="Enter Fee" value="" ></td><td><button type="button" name="remove" id="' +
+                    i +
+                    '" class="btn btn-danger btn_remove" style=" margin-top: 20px">X</button></td></tr>'
+                );
+                i++;
+
+            });
+            $(document).on('click', '.btn_remove', function() {
+                var button_id = $(this).attr("id");
+                $('#row' + button_id + '').remove();
+            });
 
         });
-        $(document).on('click', '.btn_remove', function() {
-            var button_id = $(this).attr("id");
-            $('#row' + button_id + '').remove();
-        });
+    </script>
 
-    });
-</script>
+    <script>
+        $('#category').on('change', function(e) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var cat_id = e.target.value;
+            $.ajax({
+                url: "{{ route('subcat') }}",
+                type: "get",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "cat_id": cat_id
+                },
+                success: function(data) {
+                    $('#subcategory').empty();
+                    $('#subcategory').append('<option value="">choose Sub Category</option>');
+                    if ((data.subcategories).length === 0) {
+                        $('#subcategory').append(
+                            '<option id="edit-sub-cat" selected ="selected" disabled>No subcategory</option>'
+                            );
+                    }
+                    $.each(data.subcategories, function(index, subcategory) {
+                        $('#subcategory').append(
+                            '<option id="edit-sub" value="' + subcategory
+                            .id +
+                            '">' + subcategory.category_name + '</option>');
+                    })
+                }
+            })
+        });
+    </script>
+
 
 @endsection
