@@ -361,8 +361,8 @@ class MainController extends Controller
 
     public function getCategoriesList()
     {
-        $vendors = categories::where('parent_id', '=', 0);
-        return DataTables::of($vendors)
+        $categories = categories::where('parent_id', '=', 0)->with('subcategories')->get();
+        return DataTables::of($categories)
             ->addIndexColumn()
             ->addColumn('actions', function ($row) {
                 return '<div class="btn-group">
@@ -375,8 +375,17 @@ class MainController extends Controller
             ->addColumn('checkbox', function ($row) {
                 return '<input type="checkbox" name="category_checkbox" data-id = "' . $row['id'] . '"><label></label>';
             })
-            ->rawColumns(['actions', 'checkbox'])
+            ->addColumn('subcategories', function($row){
+                return '<a id="subcategories" href="#" data-id="'.$row['id'].'"> Show subcategories ['.count($row['subcategories']).'] </a>';
+            })
+            ->rawColumns(['actions', 'checkbox', 'subcategories'])
             ->make(true);
+    }
+
+    public function getSubCats(Request $request){
+            $category_id = $request->category_id;
+            $categories = categories::where('parent_id', '=', $category_id)->with('subcategories')->get();
+            return response()->json(['details' => $categories]);
     }
 
     public function addCategoriesForm(Request $request)
@@ -916,7 +925,8 @@ class MainController extends Controller
 
     public function auditClient($client_id){
         $client_audits = DB::table('client_billing_audit')->select('*')->where('client_id', '=', $client_id)->get();
-        return view('clients.audit-history', ['client_audits' => $client_audits, 'client_id' => $client_id]);
+        $client = clients::where('sch_id', $client_id)->get();
+        return view('clients.audit-history', ['client_audits' => $client_audits, 'client_id' => $client_id, 'client' => $client]);
     }
 
 
@@ -926,6 +936,49 @@ class MainController extends Controller
         $legal_types = DB::select('select * from legal_types');
         $user_other_details = DB::select('select * from client_other_contact_details where client_id = ?', [$sch_id]);
         return view('clients.edit-client', ['id' => $sch_id, 'shname' => $schname, 'users' => $users, 'user_other_details' => $user_other_details, 'legal_types' => $legal_types, 'sch_id' => $sch_id]);
+    }
+
+    public function clr($sch_id, $schname){
+        $users = DB::select("SELECT * from clients WHERE sch_id = $sch_id");
+        $legal_types = DB::select('select * from legal_types');
+        $user_other_details = DB::select('select * from client_other_contact_details where client_id = ?', [$sch_id]);
+        return view('mdb.index', ['id' => $sch_id, 'shname' => $schname, 'users' => $users, 'user_other_details' => $user_other_details, 'legal_types' => $legal_types, 'sch_id' => $sch_id]);
+    }
+
+    public function addExistingContact(Request $request){
+            $client_id = $request->add_id;
+            return response()->json(['client_id' => $client_id]);
+    }
+
+    public function addExistingContactSubmit(Request $request){
+        $client_id = $request->client_id;
+        $validator = Validator::make($request->all(), [
+            'full_contact_name' => 'required',
+            'contact_email' => 'required|unique:client_other_contact_details,client_contact_email',
+            'contact_designation' => 'required', 
+            'contact_department' => 'required',
+            'contact_cell_number' => 'required',
+            'other_contact' => 'required',
+            'contact_add_1' => 'required',
+            'contact_add_2' => 'required',
+            'contact_city' => 'required',
+            'contact_other_info' => 'required'
+        ]);
+
+        if (!$validator->passes()) {
+            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+        }else{
+            // $query = DB::select('insert into client_other_contact_details (client_id, client_full_name, client_designation, client_dep, client_cell, client_other_contact, client_add_1, client_add_2, client_city, other_info_about_client) values (?,?,?,?,?,?,?,?,?,?,?)', [$client_id, $request->full_contact_name, $request->contact_email, $request->contact_designation, $request->contact_department, $request->contact_cell_number, $request->other_contact, $request->contact_add_1, $request->contact_add_2, $request->contact_city, $request->contact_other_info]);
+            $query = DB::table('client_other_contact_details')->insert(['client_id' =>$client_id, 'client_full_name' => $request->full_contact_name, 'client_contact_email' => $request->contact_email, 'client_designation' => $request->contact_designation, 'client_dep' => $request->contact_department, 'client_cell' => $request->contact_cell_number, 'client_other_contact' => $request->other_contact, 'client_add_1' => $request->contact_add_1, 'client_add_2' => $request->contact_add_2, 'client_city' => $request->contact_city, 'other_info_about_client' => $request->contact_other_info]);
+               if($query){
+                return response()->json(['code' => 1, 'msg' => 'Successfully updated client contact info']);
+               }else{
+                return response()->json(['code' => 0, 'msg' => 'Something went wrong']);
+               }
+            
+        }
+
+
     }
 
     public function clientDetails($sch_id, $schname)
@@ -1076,7 +1129,7 @@ class MainController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Successfully updated Client record');
+        return redirect()->to(url('clients-home'));
     }
 
     public function deleteClientById($sch_id)

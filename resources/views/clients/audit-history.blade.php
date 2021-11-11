@@ -233,7 +233,7 @@
                 @else
                     <a style="text-decoration: none" class="nav_link" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
-                                                                                                                                                                             document.getElementById('logout-form').submit();">
+                                                                                                                                                                                                     document.getElementById('logout-form').submit();">
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
@@ -246,14 +246,85 @@
 
     </body>
 
-    <div class="container p-3 my-3 bg-light text-dark" style="border-radius: 3px;">
-        @foreach ($client_audits as $client_audit)
+    <div class="container p-3 my-3 text-dark" style="border-radius: 3px; background-color: whitesmoke">
+        @foreach ($client as $cl)
             <h3>Client Audit Logs</h1>
-                <p>Last Updated at: {{ $client_audit->updated_at }}</p>
-                <p>Last Minimum charge: {{ $client_audit->minimum_per_month }} </p>
-                <p>Last Product Inventory-in charge: {{ $client_audit->product_in_charge }}</p>
-                <p>Last Storage Plan: @if ($client_audit->storage_plan == 1) <span>Per Item Charge</span> @else <span>Bulk Space</span> @endif</p>
-                <p>Last Fulfillment Plan: @if ($client_audit->product_out_charge_flat == 55) <span class="badge badge-primary">Flat Charge: {{ $client_audit->product_out_flat_rate }} Rs.</span> @if($client_audit->product_out_charge_flat == 66) <span>Tiered</span> @endif @else <span>Not selected</span> @endif </p>
+                <div class="row">
+                    <div class="col-md-3">
+                        <center><i class="rounded bi bi-person" style="font-size: 8rem"></i></center>
+                    </div>
+                    <?php $clients = App\Models\clients::where('sch_id', $client_id)->get(); ?>
+                    <div class="col-md-4 mt-5">
+                        @foreach ($clients as $item)
+                            <h5>Client Name: <b> {{ $item->sch_name }} </b></h5>
+                            <h5>Client Email: <b> {{ $item->client_email }}</b></h5>
+                        @endforeach
+                    </div>
+
+                    <div class="col-md-5">
+                        <div class="card card-success">
+                            <h5 class="card-header">Storage Plan</h5>
+                            <div class="card-body">
+                                @if ($cl->storage_plan == 1)
+                                    @if ($cl->per_item_charge_flat == 111)
+                                        <span>Flat Per Item Charge</span>
+                                        @if($cl->flat_per_day == 1111)
+                                            <span>Per day</span> <span style="float: right; font-weight:bold">{{ $cl->per_item_charge_day }} Rs <small style="font-weight:bold">daily</small></span>
+                                            @elseif ($cl->flat_per_day == 2222)
+                                            <span>Per Month</span> <span style="float: right; font-weight:bold">{{ $cl->per_item_charge_month }} Rs <small style="font-weight:bold">monthly</small></span>
+                                        @endif
+                                    @elseif($cl->per_item_charge_flat == 222)
+                                        <span>Flat Volume Based Charge</span>
+                                        @if($cl->flat_per_day == 3333)
+                                            <span>Per day</span> <span style="float: right; font-weight:bold">{{ $cl->per_item_charge_day_vol }} Rs <small style="font-weight:bold">daily</small></span>
+                                            @elseif ($cl->flat_per_day == 4444)
+                                            <span>Per Month</span> <span style="float: right; font-weight:bold">{{ $cl->per_item_charge_month_vol }} Rs <small style="font-weight:bold">monthly</small></span>
+                                        @endif
+                                    @endif
+                                @endif
+                            </div>
+                        </div>
+
+
+                        <div class="card card-success mt-2">
+                            <h5 class="card-header">Fulfillment Plan</h5>
+                            <div class="card-body">
+                                    @if ($cl->fulfil_plan == 11)
+                                        <span>Flat Per Order</span> <span style="float:right; font-weight:bold">{{ $cl->fl_rate }} Rs</span><br>
+                                    @endif
+
+                                    @if($cl->fulfil_plan == 22)
+                                        <span>Tiered Charge</span> <span style="float: right"> <?php $fulfil1 = DB::table('product_fulfillment_rate')->select('*')->where('client_id', '=' ,$client_id)->get(); ?> @foreach ($fulfil1 as $fulfil) <b>{{ $fulfil->start_order }} to {{ $fulfil->end_order }} items for {{ $fulfil->fee_order }} Rs</b>  @endforeach</span>
+                                    @endif
+
+                                    @if($cl->fulfil_plan == 33)
+                                        <span>By no. of items</span> <span style="float: right"> <?php $fulfil2 = DB::table('product_fulfillment_rate_2')->select('*')->where('client_id', '=', $client_id)->get() ?> @foreach ($fulfil2 as $fulfil) <b>{{ $fulfil->start_item }} to {{ $fulfil->end_item }} items for {{ $fulfil->fee_item }} Rs</b> @endforeach</span>
+                                    @endif
+                            </div>
+                        </div>
+
+                        <div class="card card-success mt-2">
+                            <h5 class="card-header">Stock Out plan</h5>
+                            <div class="card-body">
+                                    @if ($cl->product_out_charge_flat == 55)
+                                        <span>Flat Per Order</span> <span style="float:right; font-weight:bold">{{ $cl->product_out_flat_rate }} Rs</span><br>
+                                    @endif
+
+                                    @if($cl->product_out_charge_flat == 66)
+                                        <span>Tiered Charge</span> <span style="float: right"> <?php $stock_out1 = DB::table('client_stock_out_rates')->select('*')->where('client_id', '=' ,$client_id)->get(); ?> @foreach ($stock_out1 as $stock_out) <b>{{ $stock_out->start_order }} to {{ $stock_out->end_order }} items for {{ $stock_out->fee }} Rs</b>  @endforeach</span>
+                                    @endif
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {{-- <p>Recently Updated at: {{ $client_audit->updated_at }}</p>
+                <p>Recent Minimum charge: {{ $client_audit->minimum_per_month }} </p>
+                <p>Recent Product Inventory-in charge: {{ $client_audit->product_in_charge }}</p>
+                <p>Recent Storage Plan: @if ($client_audit->storage_plan == 1) <span>Per Item Charge</span> @else <span>Bulk Space</span> @endif</p>
+                <p>Recent Fulfillment Plan: @if ($client_audit->product_out_charge_flat == 55) <span class="badge badge-primary">Flat Charge: {{ $client_audit->product_out_flat_rate }} Rs.</span> @if ($client_audit->product_out_charge_flat == 66) <span>Tiered</span> @endif @else <span>Not selected</span> @endif </p> --}}
         @endforeach
 
     </div>
@@ -279,10 +350,9 @@
                         <th>Flat Per Item Charge (Volume Based)</th>
                         <th>Fulfillment Plan</th>
                         <th>Fulfillment Rates</th>
-                        <th>Product Stockout Charge</th>
-                        <th>Product stock out rate</th>
-                        <th>Created At</th>
-                        <th>Update At</th>
+                        <th>Product Stock out Charge</th>
+                        <th>Product stock out tiered charge</th>
+                        <th>Updated At</th>
 
 
                     </thead>
@@ -296,13 +366,12 @@
                                 <td>@if ($client_audit->storage_plan == 1) <span>Per Item Charge</span> @else <span>Bulk Space</span> @endif</td>
                                 <td>@if ($client_audit->per_item_charge_flat == 111) @if ($client_audit->flat_per_day == 1111) <span>Flat Charge Per Day</span>@endif @endif @if ($client_audit->per_item_charge_flat == 111) @if ($client_audit->flat_per_day == 2222) <span>Flat Charge Per Month</span>@endif @endif </td>
                                 <td>@if ($client_audit->per_item_charge_flat == 111) @if ($client_audit->flat_per_day == 1111) <span>{{ $client_audit->per_item_charge_day }} Rs</span> @endif @endif  @if ($client_audit->per_item_charge_flat == 111) @if ($client_audit->flat_per_day == 2222) <span>{{ $client_audit->per_item_charge_month }} Rs</span> @endif @endif</span></td>
-                                <td>@if ($client_audit->per_item_charge_flat == 222) @if ($client_audit->per_item_charge_day_vol == 3333) <span>Flat Per Day</span>@endif @endif @if ($client_audit->per_item_charge_month_vol == 4444) <span>Flat Per Month</span>@endif @if ($client_audit->per_item_charge_flat != 222) <span>Not selected</span> @endif </td>
-                                <td>@if ($client_audit->per_item_charge_flat == 222) @if ($client_audit->flat_per_day == 3333) <span>{{ $client_audit->per_item_charge_day_vol }}</span> @endif @endif  @if ($client_audit->per_item_charge_flat == 222) @if ($client_audit->flat_per_day == 2222) <span>{{ $client_audit->per_item_charge_day_vol }} Rs.</span> @endif @endif @if ($client_audit->per_item_charge_flat != 222) <span>Not selected</span> @endif</td>
+                                <td>@if ($client_audit->per_item_charge_flat == 222) @if ($client_audit->per_item_charge_day_vol == 3333) <span>Flat Per Day</span>@endif @endif @if ($client_audit->per_item_charge_month_vol == 4444) <span>Flat Per Month</span>@endif @if ($client_audit->per_item_charge_flat != 222) <span>Not applicable</span> @endif </td>
+                                <td>@if ($client_audit->per_item_charge_flat == 222) @if ($client_audit->flat_per_day == 3333) <span>{{ $client_audit->per_item_charge_day_vol }}</span> @endif @endif  @if ($client_audit->per_item_charge_flat == 222) @if ($client_audit->flat_per_day == 2222) <span>{{ $client_audit->per_item_charge_day_vol }} Rs.</span> @endif @endif @if ($client_audit->per_item_charge_flat != 222) <span>Not applicable</span> @endif</td>
                                 <td>@if ($client_audit->fulfil_plan == 11) <span>Flat Per Order Charge</span> @if ($client_audit->fulfil_plan == 22) <span>Tiered Charge</span> @endif @if ($client_audit->fulfil_plan == 33) <span>Charge by no. of items</span> @endif @endif</td>
                                 <td>@if ($client_audit->fulfil_plan == 11) <span class="badge badge-primary">Flat Rate: {{ $client_audit->fl_rate }} Rs</span> @if ($client_audit->fulfil_plan == 22) <span>Tiered Charge <small><?php $fulfilment_rates = DB::select('select * from product_fulfillment_rate where client_id = ?', [$client_id]); ?></small>@foreach ($fulfilment_rates as $fulfilment_rate) <span>From: {{ $fulfilment_rate->start_order }} - To: {{ $fulfilment_rate->end_order }} - Fee: {{ $fulfilment_rate->fee_order }}</span> @endforeach</span> @endif @if ($client_audit->fulfil_plan == 33) <span>Charge by no. of items <small><?php $fulfilment_rates = DB::select('select * from product_fulfillment_rate_2 where client_id = ?', [$client_id]); ?></small>@foreach ($fulfilment_rates as $fulfilment_rate) <span>From: {{ $fulfilment_rate->start_item }} - To: {{ $fulfilment_rate->end_item }} - Fee: {{ $fulfilment_rate->fee_item }}</span> @endforeach</span></span> @endif @endif</td>
-                                <td>@if ($client_audit->product_out_charge_flat == 55) <span class="badge badge-primary">Flat Charge: {{ $client_audit->product_out_flat_rate }} Rs.</span> @else <span>Not selected</span> @endif</td>
-                                <td>@if ($client_audit->product_out_charge_flat == 66) <span>Tiered: <small><?php $fulfilment_rates = DB::select('select * from client_stock_out_rate where client_id = ?', [$client_id]); ?></small>@foreach ($fulfilment_rates as $fulfilment_rate) <span>From: {{ $fulfilment_rate->start_order }} - To: {{ $fulfilment_rate->end_order }} - Fee: {{ $fulfilment_rate->fee }}</span> @endforeach</small></span> @endif @if ($client_audit->product_out_charge_flat != 66) <span>Not selected</span> @endif</td>
-                                <td>{{ $client_audit->created_at }}</td>
+                                <td>@if ($client_audit->product_out_charge_flat == 55) <span class="badge badge-primary">Flat Charge: {{ $client_audit->product_out_flat_rate }} Rs.</span> @else <span>Not applicable</span> @endif</td>
+                                <td>@if ($client_audit->product_out_charge_flat == 66) <span>Tiered: <small><?php $fulfilment_rates = DB::select('select * from client_stock_out_rate where client_id = ?', [$client_id]); ?></small>@foreach ($fulfilment_rates as $fulfilment_rate) <span>From: {{ $fulfilment_rate->start_order }} - To: {{ $fulfilment_rate->end_order }} - Fee: {{ $fulfilment_rate->fee }}</span> @endforeach</small></span> @endif @if ($client_audit->product_out_charge_flat != 66) <span>Not applicable</span> @endif</td>
                                 <td>{{ $client_audit->updated_at }}</td>
                             </tr>
                             <?php $count++; ?>

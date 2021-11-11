@@ -180,6 +180,7 @@
                         </div>
 
                         <div class="md-form ">
+                            
                             <select class="form-control md-select" name="entity_type" id="select_legal_type">
                                 <option value="0" selected="">Select</option>
                                 @foreach ($legal_types as $legal_type)
@@ -1181,6 +1182,8 @@
             $('#custom_field' + button_id).css('display', 'none')
         });
     </script>
+
+
 
 
     <!-- JQuery -->

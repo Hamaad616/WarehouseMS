@@ -84,6 +84,8 @@ Route::get('clients-home', [MainController::class, 'getClientsHome']);
 Route::get('create-new-client', [MainController::class, 'viewClientCreate'])->name('client.view');
 Route::post('create-new-client', [MainController::class, 'createClient'])->name('client.create');
 Route::get('clients-edit/{sch_id}/{sch_name}', [MainController::class, 'editClientById'])->name('client.edit');
+Route::post('add-existing-contact', [MainController::class, 'addExistingContact'])->name('add.contact_new');
+Route::get('add-new-contact-submit', [MainController::class, 'addExistingContactSubmit'])->name('contact.add-new-submit');
 Route::get('client-view-details/{sch_id}/{sch_name}', [\App\Http\Controllers\MainController::class, 'clientDetails'])->name('client.view-more');
 Route::post('client-update', [\App\Http\Controllers\MainController::class, 'updateClient'])->name('client.update');
 Route::any('delete-client/{sch_id}', [MainController::class, 'deleteClientById'])->name('client.delete');
@@ -129,5 +131,13 @@ Route::get('c-reg', function(){
     $legal_types = DB::select('select * from legal_types');
     return view('index.registration', ['legal_types' => $legal_types]);
 });
+
+Route::get('clr/{sch_id}/{sch_name}', [MainController::class, 'clr']);
+Route::get('subcategories/{category_id}', function($category_id){
+    $subcategories = categories::where('parent_id', 0)->with('subcategories')->get();
+    dd ($subcategories);
+});
+
+Route::post('get-subcategories', [MainController::class, 'getSubCats'])->name('subcategories.get');
 
 

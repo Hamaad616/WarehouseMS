@@ -245,23 +245,23 @@
                     <a style="text-decoration: none" href="{{ url('clients-home') }}" class="nav_link">
                         <i class='bx bx-user nav_icon'></i>
                         <span class="nav_name">Clients</span> </a>
-                        <a style="text-decoration: none" href="{{ route('vendors') }}" class="nav_link">
-                            <i class="bi bi-people nav_icon"></i>
-                            <span class="nav_name">Vendors</span>
-                        </a>
+                    <a style="text-decoration: none" href="{{ route('vendors') }}" class="nav_link">
+                        <i class="bi bi-people nav_icon"></i>
+                        <span class="nav_name">Vendors</span>
+                    </a>
 
-                        <a title="categories" style="text-decoration: none" href="{{ route('units') }}"
-                            class="nav_link">
-                            <i class="bi bi-card-list nav_icon"></i>
-                            <span class="nav_name">Units</span>
-                        </a>
+                    <a title="categories" style="text-decoration: none" href="{{ route('units') }}"
+                        class="nav_link">
+                        <i class="bi bi-card-list nav_icon"></i>
+                        <span class="nav_name">Units</span>
+                    </a>
 
 
-                        <a title="categories" style="text-decoration: none" href="{{ url('add-categories') }}"
-                            class="nav_link">
-                            <i class="bi bi-card-list nav_icon"></i>
-                            <span class="nav_name">Categories</span>
-                        </a>
+                    <a title="categories" style="text-decoration: none" href="{{ url('add-categories') }}"
+                        class="nav_link">
+                        <i class="bi bi-card-list nav_icon"></i>
+                        <span class="nav_name">Categories</span>
+                    </a>
                 </div>
             </div>
             @guest
@@ -280,7 +280,7 @@
             @else
                 <a style="text-decoration: none" class="nav_link" href="{{ route('logout') }}"
                     onclick="event.preventDefault();
-                                                                                                                                                                                                                                                                 document.getElementById('logout-form').submit();">
+                                                                                                                                                                                                                                                                                             document.getElementById('logout-form').submit();">
 
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf
@@ -309,6 +309,7 @@
                                 <th><input type="checkbox" name="main_checkbox"><label></label></th>
                                 <th>#</th>
                                 <th>Category Name</th>
+                                <th>Subcategories</th>
                                 <th>Actions <button id="deleteAllBtn" class="btn btn-sm btn-danger d-none">Delete
                                         All</button></th>
 
@@ -450,6 +451,7 @@
                 [5, 10, 25, 50, -1],
                 [5, 10, 25, 50, "All"]
             ],
+
             columns: [{
                     data: 'checkbox',
                     name: 'checkbox',
@@ -465,11 +467,19 @@
                     name: 'category_name'
                 },
                 {
+                    data: 'subcategories',
+                    name: 'subcategories',
+                    orderable: false,
+                    searchable: false,
+                },
+
+                {
                     data: 'actions',
                     name: 'actions',
                     orderable: false,
                     searchable: false
                 },
+
             ]
 
         }).on('draw', function() {
@@ -654,7 +664,7 @@
             }
         })
 
-        $(document).on('click', '#addSubCategory', function(e){
+        $(document).on('click', '#addSubCategory', function(e) {
             e.preventDefault()
             $.ajaxSetup({
                 headers: {
@@ -669,12 +679,13 @@
             }, function(data) {
                 // alert(data.details.vend_name)
                 $('.subcategoryModal').find('input[name="category_id"]').val(data.details.id)
-                $('.subcategoryModal').find('input[name="category_name"]').val(data.details.category_name)
+                $('.subcategoryModal').find('input[name="category_name"]').val(data.details
+                    .category_name)
                 $('.subcategoryModal').modal('show')
             }, 'json')
         })
 
-        $('#subcategories-update-form').on('submit',function (e) { 
+        $('#subcategories-update-form').on('submit', function(e) {
             e.preventDefault()
             $.ajaxSetup({
                 headers: {
@@ -708,11 +719,75 @@
                 }
             })
 
-         })
+        })
 
         $(document).on('click', '#modalClose', function() {
             $('.editCategory').modal('hide')
         });
+
+        var table = $('#categories-table').DataTable();
+        console.log(table.rows().data())
+        $(document).on('click', '#subcategories', function(e) {
+            e.preventDefault()
+            var tr = $(this).closest("tr");
+            var row = table.row(tr)
+
+            if (row.child.isShown()) {
+                row.child.hide()
+                tr.removeClass('shown')
+
+            } else {
+                row.child(format(row.data(), tr)).show()
+                tr.addClass('shown')
+            }
+
+        })
+        var det;
+        function format(d, tr) {
+
+            // console.log(d)
+            // var inps = $('#subcats').attr('value');
+            // for (var i = 0; i < inps.length; i++) {
+            //     var inp = inps[i];
+            //     alert("subcategories[" + i + "].value=" + inp.value);
+            // }
+            // console.log()
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            var category_id = d.id
+
+            $.ajax({
+                method: 'POST',
+                url: '{{ route('subcategories.get') }}',
+                data: {
+                    category_id: category_id
+                },
+                success: function(data){
+                    for (let i = 0; i < data.details.length; i++) {
+                    det += 
+                            '<tr>' +
+                            '<td>Subcategory Name:'+data.details[i]['category_name'] +'</td>' +
+                            '</tr>';
+                    }
+
+                    $(tr).toggle( function(){
+
+                        $("tr:last").after(" <tr class=tr-"+d.id+"><td>Subcategory Name:"+data.details[i]['category_name']+"</td></tr>")
+                    }, function () { 
+                        $("tr"+d.id).remove()
+                     })
+
+                }
+
+            })
+
+
+        }
 
 
 

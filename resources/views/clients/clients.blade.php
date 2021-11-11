@@ -267,37 +267,6 @@
                     </a>
 
                 @endguest
-                <!-- Authentication Links -->
-                <!-- @guest
-                                                                                                                    @if (Route::has('login'))
-                                                                                                                        <li class="nav-item">
-                                                                                                                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                                                                                                        </li>
-                                                                                                                    @endif
-
-                                                                                                                    @if (Route::has('register'))
-                                                                                                                        <li class="nav-item">
-                                                                                                                            <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                                                                                                        </li>
-                                                                                                                    @endif
-                                                                    @else
-                                                                                                                    <div class="nav_list">
-                                                                                                                        <a id="navbarDropdown" class="nav_link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                                                                                                        <i class='bx bx-log-out nav_icon'></i><span class="nav_name">{{ Auth::user()->name }}</span>
-                                                                                                                        </a>
-
-                                                                                                                            <a class="dropdown-item" href="{{ route('logout') }}"
-                                                                                                                               onclick="event.preventDefault();
-                                                                                                                                             document.getElementById('logout-form').submit();">
-                                                                                                                                {{ __('Logout') }}
-                                                                                                                            </a>
-
-                                                                                                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                                                                                                                @csrf
-                                                                                                                            </form>
-
-                                                                                                                    </div>
-                                                                    @endguest -->
             </nav>
         </div>
 
@@ -424,6 +393,7 @@
     <script src="{{ asset('toastr/toastr.min.js') }}"></script>
 
     <script>
+        toastr.options.preventDuplicates = true;
         $(document).on('click', '#editUserCreds', function() {
             $.ajaxSetup({
                 headers: {
