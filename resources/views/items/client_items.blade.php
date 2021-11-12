@@ -421,7 +421,7 @@
 
 
                                                                                                 <td colspan="2"
-                                                                                                    style=" color:blue">
+                                                                                                                >
                                                                                                     <strong>Item
                                                                                                         Info</strong>
                                                                                                 </td>
@@ -490,7 +490,7 @@
                                                                                         <tbody>
                                                                                             <tr>
                                                                                                 <td colspan="2"
-                                                                                                    style=" color:blue">
+                                                                                                    >
                                                                                                     <strong>Fee handling
                                                                                                         Plan</strong>
 

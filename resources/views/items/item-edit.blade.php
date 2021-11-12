@@ -385,7 +385,7 @@
 
                                     <div class="col-md-4"></div>
                                 </div>
-                                <div class="row" style="margin-left:25px;">
+                                {{-- <div class="row" style="margin-left:25px;">
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <!--checkboxes-->
@@ -393,9 +393,9 @@
                                                         Handling Fee Plan</u></strong></label>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
 
-                                <div class="row" style="margin-left:25px;">
+                                {{-- <div class="row" style="margin-left:25px;">
 
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -416,8 +416,8 @@
                                         </div>
                                     </div>
 
-                                </div>
-                                <div class="row" style="margin-left:25px;">
+                                </div> --}}
+                                {{-- <div class="row" style="margin-left:25px;">
 
                                     <div class="col-md-4">
 
@@ -488,7 +488,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
 
 
 

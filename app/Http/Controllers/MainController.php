@@ -375,17 +375,18 @@ class MainController extends Controller
             ->addColumn('checkbox', function ($row) {
                 return '<input type="checkbox" name="category_checkbox" data-id = "' . $row['id'] . '"><label></label>';
             })
-            ->addColumn('subcategories', function($row){
-                return '<a id="subcategories" href="#" data-id="'.$row['id'].'"> Show subcategories ['.count($row['subcategories']).'] </a>';
+            ->addColumn('subcategories', function ($row) {
+                return '<a id="subcategories" href="#" data-id="' . $row['id'] . '"> Show subcategories [' . count($row['subcategories']) . '] </a>';
             })
             ->rawColumns(['actions', 'checkbox', 'subcategories'])
             ->make(true);
     }
 
-    public function getSubCats(Request $request){
-            $category_id = $request->category_id;
-            $categories = categories::where('parent_id', '=', $category_id)->with('subcategories')->get();
-            return response()->json(['details' => $categories]);
+    public function getSubCats(Request $request)
+    {
+        $category_id = $request->category_id;
+        $categories = categories::where('parent_id', '=', $category_id)->with('subcategories')->get();
+        return response()->json(['details' => $categories]);
     }
 
     public function addCategoriesForm(Request $request)
@@ -533,7 +534,8 @@ class MainController extends Controller
         return response()->json(['details' => $unit]);
     }
 
-    public function updateUnit(Request $request){
+    public function updateUnit(Request $request)
+    {
         $unit_id = $request->unit_id;
         $validator = Validator::make($request->all(), [
             'unit_name' => 'required'
@@ -565,7 +567,7 @@ class MainController extends Controller
     public function deleteSelectedUnits(Request $request)
     {
         $selectedUnits = $request->unit_ids;
-        units::whereIn('id',$selectedUnits)->delete();
+        units::whereIn('id', $selectedUnits)->delete();
         return response()->json(['code' => 1, 'msg' => "Successfully deleted selected units"]);
     }
 
@@ -923,7 +925,8 @@ class MainController extends Controller
     }
 
 
-    public function auditClient($client_id){
+    public function auditClient($client_id)
+    {
         $client_audits = DB::table('client_billing_audit')->select('*')->where('client_id', '=', $client_id)->get();
         $client = clients::where('sch_id', $client_id)->get();
         return view('clients.audit-history', ['client_audits' => $client_audits, 'client_id' => $client_id, 'client' => $client]);
@@ -938,24 +941,27 @@ class MainController extends Controller
         return view('clients.edit-client', ['id' => $sch_id, 'shname' => $schname, 'users' => $users, 'user_other_details' => $user_other_details, 'legal_types' => $legal_types, 'sch_id' => $sch_id]);
     }
 
-    public function clr($sch_id, $schname){
+    public function clr($sch_id, $schname)
+    {
         $users = DB::select("SELECT * from clients WHERE sch_id = $sch_id");
         $legal_types = DB::select('select * from legal_types');
         $user_other_details = DB::select('select * from client_other_contact_details where client_id = ?', [$sch_id]);
         return view('mdb.index', ['id' => $sch_id, 'shname' => $schname, 'users' => $users, 'user_other_details' => $user_other_details, 'legal_types' => $legal_types, 'sch_id' => $sch_id]);
     }
 
-    public function addExistingContact(Request $request){
-            $client_id = $request->add_id;
-            return response()->json(['client_id' => $client_id]);
+    public function addExistingContact(Request $request)
+    {
+        $client_id = $request->add_id;
+        return response()->json(['client_id' => $client_id]);
     }
 
-    public function addExistingContactSubmit(Request $request){
+    public function addExistingContactSubmit(Request $request)
+    {
         $client_id = $request->client_id;
         $validator = Validator::make($request->all(), [
             'full_contact_name' => 'required',
             'contact_email' => 'required|unique:client_other_contact_details,client_contact_email',
-            'contact_designation' => 'required', 
+            'contact_designation' => 'required',
             'contact_department' => 'required',
             'contact_cell_number' => 'required',
             'other_contact' => 'required',
@@ -967,18 +973,15 @@ class MainController extends Controller
 
         if (!$validator->passes()) {
             return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
-        }else{
+        } else {
             // $query = DB::select('insert into client_other_contact_details (client_id, client_full_name, client_designation, client_dep, client_cell, client_other_contact, client_add_1, client_add_2, client_city, other_info_about_client) values (?,?,?,?,?,?,?,?,?,?,?)', [$client_id, $request->full_contact_name, $request->contact_email, $request->contact_designation, $request->contact_department, $request->contact_cell_number, $request->other_contact, $request->contact_add_1, $request->contact_add_2, $request->contact_city, $request->contact_other_info]);
-            $query = DB::table('client_other_contact_details')->insert(['client_id' =>$client_id, 'client_full_name' => $request->full_contact_name, 'client_contact_email' => $request->contact_email, 'client_designation' => $request->contact_designation, 'client_dep' => $request->contact_department, 'client_cell' => $request->contact_cell_number, 'client_other_contact' => $request->other_contact, 'client_add_1' => $request->contact_add_1, 'client_add_2' => $request->contact_add_2, 'client_city' => $request->contact_city, 'other_info_about_client' => $request->contact_other_info]);
-               if($query){
+            $query = DB::table('client_other_contact_details')->insert(['client_id' => $client_id, 'client_full_name' => $request->full_contact_name, 'client_contact_email' => $request->contact_email, 'client_designation' => $request->contact_designation, 'client_dep' => $request->contact_department, 'client_cell' => $request->contact_cell_number, 'client_other_contact' => $request->other_contact, 'client_add_1' => $request->contact_add_1, 'client_add_2' => $request->contact_add_2, 'client_city' => $request->contact_city, 'other_info_about_client' => $request->contact_other_info]);
+            if ($query) {
                 return response()->json(['code' => 1, 'msg' => 'Successfully updated client contact info']);
-               }else{
+            } else {
                 return response()->json(['code' => 0, 'msg' => 'Something went wrong']);
-               }
-            
+            }
         }
-
-
     }
 
     public function clientDetails($sch_id, $schname)
@@ -987,13 +990,15 @@ class MainController extends Controller
         return view('clients.client-details', ['id' => $sch_id, 'sch_name' => $schname, 'users' => $users]);
     }
 
-    public function updateClientCreds(Request $request){
+    public function updateClientCreds(Request $request)
+    {
         $client_id = $request->edit_id;
         $client = clients::where('sch_id', $client_id)->first();
         return response()->json(['details' => $client]);
     }
 
-    public function updateClientsSubmit(Request $request){
+    public function updateClientsSubmit(Request $request)
+    {
         $client_id = $request->client_id;
         $validator = Validator::make($request->all(), [
             'client_email' => 'required',
@@ -1004,9 +1009,8 @@ class MainController extends Controller
             return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
         } else {
             DB::select("UPDATE clients SET client_email = '$request->client_email', `password` = '$request->client_password' where sch_id = '$client_id'");
-           
-                return response()->json(['code' => 1, 'msg' => 'Successfully updated client credentials']);
-          
+
+            return response()->json(['code' => 1, 'msg' => 'Successfully updated client credentials']);
         }
     }
 
@@ -1182,7 +1186,8 @@ class MainController extends Controller
         return redirect()->back();
     }
 
-    public function clientProfile($client_id){
+    public function clientProfile($client_id)
+    {
         $client = DB::table('clients')->select('*')->where('sch_id', '=', $client_id)->get();
         return view('clients.profile', ['client_id' => $client_id, 'client' => $client]);
     }
@@ -1195,12 +1200,13 @@ class MainController extends Controller
         return view('clients.item-add', ['sch_id' => $client_id, 'categories' => $categories, 'units' => $units]);
     }
 
-    public function selectSubCat(Request $request){
+    public function selectSubCat(Request $request)
+    {
         $parent_id = $request->cat_id;
 
-        $subcategories = categories::where('parent_id',$parent_id)
-                              ->with('subcategories')
-                              ->get();
+        $subcategories = categories::where('parent_id', $parent_id)
+            ->with('subcategories')
+            ->get();
 
         return response()->json([
             'subcategories' => $subcategories,
@@ -1281,7 +1287,7 @@ class MainController extends Controller
 
         $client_items = DB::select('select * from item');
         $users = DB::select("SELECT sum(grn_details.quantity)as qty,grn.session_id,academic_session.session_number,grn.grn_id,grn.do,grn.po,grn.date_time,grn.todate,vend_name,grn.grn_status FROM `grn`,vendor,grn_details,academic_session WHERE grn.session_id=academic_session.id and grn_flag=1 
-           and grn.vend_id=vendor.vend_id and grn.grn_id=grn_details.grn_id and grn.client_id='$sch_id' group by grn_details.grn_id");
+           and grn.vend_id=vendor.id and grn.grn_id=grn_details.grn_id and grn.client_id='$sch_id' group by grn_details.grn_id");
 
         return view("grn.grn-table", ['users' => $users], compact(['sch_id', 'client_items']));
     }
@@ -1300,7 +1306,7 @@ class MainController extends Controller
             $users2 = DB::select("SELECT clients.sch_id,clients.sch_name from clients where clients.sch_status='1' and clients.sch_flag='1'");
         }
         $users = DB::select("SELECT grn_id from grn order by grn_id desc limit 1");
-        $users1 = DB::select("SELECT vendor.vend_id,vendor.vend_name from vendor");
+        $users1 = DB::select("SELECT vendor.id,vendor.vend_name from vendor");
         $session = DB::select("SELECT academic_session.id,academic_session.session_number from academic_session");
 
         if (!$users) {
@@ -1329,11 +1335,15 @@ class MainController extends Controller
                 `total_qty`,rem_stack_fit) VALUES ('$last_id2','$code','$qty','$qty','$qty')");
             }
         }
+
+        return \redirect()->to('grn-details/'.$request->sch_id);
+
+
     }
 
     public function grn_details($sch_id, $grn_id)
     {
-        $users = DB::select("SELECT * from grn,vendor ,clients WHERE  grn.vend_id=vendor.vend_id and grn.client_id=clients.sch_id and grn.grn_id='$grn_id'");
+        $users = DB::select("SELECT * from grn,vendor ,clients WHERE  grn.vend_id=vendor.id and grn.client_id=clients.sch_id and grn.grn_id='$grn_id'");
 
         $users1 = DB::select("SELECT * from grn,grn_details,product_item WHERE grn.grn_id='$grn_id' and 
          grn.grn_id=grn_details.grn_id and grn_details.grnd_code=product_item.pitem_code and product_item.pitem_flag=1 order by grnd_id desc ");
@@ -1353,10 +1363,79 @@ class MainController extends Controller
     {
         $users = DB::select("SELECT * from grn WHERE grn.grn_id='$grn_id'");
         $users2 = DB::select("SELECT * from grn_details WHERE grn_details.grn_id='$grn_id' ");
-        $users1 = DB::select("SELECT vendor.vend_id,vendor.vend_name from vendor");
+        $users1 = DB::select("SELECT vendor.id,vendor.vend_name from vendor");
         $users3 = DB::select("SELECT clients.sch_id,clients.sch_name from clients");
         $session = DB::select("SELECT academic_session.id,academic_session.session_number from academic_session");
         return view('stock.grn-edit', ['users' => $users, 'users2' => $users2, 'users1' => $users1, 'users3' => $users3, 'session' => $session]);
+    }
+
+    public function updateGrn(Request $request)
+    {
+        if ($request->grnd_id == null) {
+
+            $users1 = DB::select("UPDATE `grn` SET `client_id`='$request->sch_id',`vend_id`='$request->v_id',`do`='$request->do',`po`='$request->po',`date_time`=CURRENT_TIMESTAMP,`todate`='$request->todate',`session_id`='$request->session_id' WHERE grn_id='$request->grn_id'");
+            if (empty($users1)) {
+                if ($request->code[0] != null) {
+                    foreach (array_combine($request->code, $request->quantity) as $code => $qty) {
+                        $users1 = DB::select("INSERT INTO `grn_details`(grn_id, `grnd_code`, `quantity`,
+                                    `total_qty`,rem_stack_fit) VALUES ('$request->grn_id','$code','$qty','$qty','$qty')");
+                    }
+                    if (empty($users2)) {
+                        echo "1";
+                    } else {
+                        echo "unsuccessful";
+                    }
+                } else {
+                    echo "1";
+                }
+            } else {
+                echo "something wrong";
+            }
+        } else {
+
+            for ($i = 0; $i < count($request->grnd_id); $i++) {
+                $id = $request->grnd_id[$i];
+                $qty = $request->quantity1[$i];
+                $code = $request->code1[$i];
+                $rem_stack_fit = $request->rem_stack_fit1[$i];
+
+                if ($rem_stack_fit == '0') {
+                    $rem_stack_fit_a = '0';
+                } else {
+                    $rem_stack_fit_a = $qty;
+                }
+                $users = DB::select("UPDATE `grn_details` SET
+                        `grnd_code`='$code',`quantity`='$qty',`total_qty`='$qty',`rem_stack_fit`='$rem_stack_fit_a' WHERE grnd_id='$id'");
+                $usersup = DB::select("UPDATE `item_stock` SET
+                        `quantity`='$qty' WHERE grnd_id='$id'");
+            }
+            if (empty($users)) {
+
+                $users1 = DB::select("UPDATE `grn` SET `client_id`='$request->sch_id', `vend_id`='$request->v_id',`do`='$request->do',`po`='$request->po',`date_time`=CURRENT_TIMESTAMP,`todate`='$request->todate',`session_id`='$request->session_id'  WHERE grn_id='$request->grn_id'");
+                // echo "UPDATE `grn` SET `sch_id`='$request->sch_id', `vend_id`='$request->v_id',`do`='$request->do',`po`='$request->po',`date_time`=CURRENT_TIMESTAMP,`todate`='$request->todate'  WHERE grn_id='$request->grn_id'";
+                // exit();
+
+                if (empty($users1)) {
+                    if ($request->code[0] != null) {
+                        foreach (array_combine($request->code, $request->quantity) as $code => $qty) {
+                            $users1 = DB::select("INSERT INTO `grn_details`(grn_id, `grnd_code`, `quantity`,
+                            `total_qty`,rem_stack_fit) VALUES ('$request->grn_id','$code','$qty','$qty','$qty')");
+                        }
+                        if (empty($users2)) {
+                            echo "1";
+                        } else {
+                            echo "unsuccessful";
+                        }
+                    } else {
+                        echo "1";
+                    }
+                } else {
+                    echo "something wrong";
+                }
+            } else {
+                echo "something wrong";
+            }
+        }
     }
 
     public function logout(Request $request)
@@ -1550,21 +1629,70 @@ FROM `item_stock`,grn_details,grn WHERE item_stock.flag='in' and item_stock.its_
             foreach ($check_plan as $plan) {
                 if ($plan->storage_plan == 1) {
                     if ($plan->per_item_charge_flat == 111) {
-                        $storage_charge = $plan->fl_rate;
-                        $product_in_charge = $plan->product_in_charge;
-                        $minimum_charge = $plan->minimum_per_month;
-                        $sub_total = ($storage_charge + $product_in_charge) * $p_qty;
-                        if ($sub_total <= $minimum_charge) {
-                            $total_bill = $minimum_charge;
-                            $s_b =  DB::select("INSERT INTO `client_stock_in_billing` (`product_code`,`client_id`, `product_barcode`,`product_name`, `rack_code`, `space_occupied`, `quantity`, `product_in_charge`, `storage_charge`, `total_bill`, `status`, `created_at`, `updated_at`) VALUES ('$valuebarcode', '$lgn_sch', '$valuebarcode','$request->product_name', '$bincodearry', '$space_occupied', '$p_qty', '$product_in_charge', '$storage_charge', '$total_bill', 'Placed in holding area', current_timestamp, current_timestamp)");
-                        } else if ($sub_total > 50000) {
-                            $s_b = DB::select("INSERT INTO `client_stock_in_billing` (`product_code`, `product_name`,`client_id`, `product_barcode`, `rack_code`, `space_occupied`, `quantity`, `product_in_charge`, `storage_charge`, `total_bill`, `status`, `created_at`, `updated_at`) VALUES ('$valuebarcode', '$request->product_name', '$lgn_sch', '$valuebarcode', '$bincodearry', '$space_occupied', '$p_qty', '$product_in_charge', '$storage_charge', '$sub_total', 'Placed in holding area', current_timestamp, current_timestamp)");
+                        if ($plan->flat_per_day == 1111) {
+                            $length = 8;
+                            $str = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrstuvwxyz';
+                            $xx = substr(str_shuffle($str), 0, $length);
+                            $per_item_charge_day = $plan->per_item_charge_day;
+                            $product_in_charge = $plan->product_in_charge;
+                            $minimum_charge = $plan->minimum_per_month;
+                            $sub_total = ($per_item_charge_day + $product_in_charge) * $p_qty;
+                            if ($sub_total <= $minimum_charge) {
+                                $total_bill = $minimum_charge;
+                                $s_b =  DB::select("INSERT INTO `client_stock_in_billing` (`invoice_number`,`product_code`,`client_id`, `product_barcode`,`product_name`, `rack_code`, `space_occupied`, `quantity`, `product_in_charge`, `storage_charge`, `subtotal`,`total_bill`, `status`, `created_at`, `updated_at`) VALUES ('$xx','$valuebarcode', '$lgn_sch', '$valuebarcode','$request->product_name', '$bincodearry', '$space_occupied', '$p_qty', '$product_in_charge', '$per_item_charge_day', '$sub_total' ,'$total_bill', 'Placed in holding area', current_timestamp, current_timestamp)");
+                            } else if ($sub_total > 50000) {
+                                $total_bill = $sub_total;
+                                $s_b = DB::select("INSERT INTO `client_stock_in_billing` (`invoice_number`,`product_code`, `product_name`,`client_id`, `product_barcode`, `rack_code`, `space_occupied`, `quantity`, `product_in_charge`, `storage_charge`, `subtotal` ,`total_bill`, `status`, `created_at`, `updated_at`) VALUES ('$xx','$valuebarcode', '$request->product_name', '$lgn_sch', '$valuebarcode', '$bincodearry', '$space_occupied', '$p_qty', '$product_in_charge', '$per_item_charge_day', '$sub_total', '$total_bill' ,'Placed in holding area', current_timestamp, current_timestamp)");
+                            }
+                        } else if ($plan->flat_per_month == 2222) {
+                            $length = 8;
+                            $str = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrstuvwxyz';
+                            $xx = substr(str_shuffle($str), 0, $length);
+                            $per_item_charge_month = $plan->per_item_charge_month;
+                            $product_in_charge = $plan->product_in_charge;
+                            $minimum_charge = $plan->minimum_per_month;
+                            $sub_total = ($per_item_charge_month + $product_in_charge) * $p_qty;
+                            if ($sub_total <= $minimum_charge) {
+                                $total_bill = $minimum_charge;
+                                $s_b =  DB::select("INSERT INTO `client_stock_in_billing` (`invoice_number`,`product_code`,`client_id`, `product_barcode`,`product_name`, `rack_code`, `space_occupied`, `quantity`, `product_in_charge`, `storage_charge`, `total_bill`, `status`, `created_at`, `updated_at`) VALUES ('$xx','$valuebarcode', '$lgn_sch', '$valuebarcode','$request->product_name', '$bincodearry', '$space_occupied', '$p_qty', '$product_in_charge', '$per_item_charge_month', '$total_bill', 'Placed in holding area', current_timestamp, current_timestamp)");
+                            } else if ($sub_total > 50000) {
+                                $s_b = DB::select("INSERT INTO `client_stock_in_billing` (`invoice_number`,`product_code`, `product_name`,`client_id`, `product_barcode`, `rack_code`, `space_occupied`, `quantity`, `product_in_charge`, `storage_charge`, `total_bill`, `status`, `created_at`, `updated_at`) VALUES ('$xx','$valuebarcode', '$request->product_name', '$lgn_sch', '$valuebarcode', '$bincodearry', '$space_occupied', '$p_qty', '$product_in_charge', '$per_item_charge_month', '$sub_total', 'Placed in holding area', current_timestamp, current_timestamp)");
+                            }
                         }
+                        // $storage_charge = $plan->fl_rate;
+                        // $product_in_charge = $plan->product_in_charge;
+                        // $minimum_charge = $plan->minimum_per_month;
+                        // $sub_total = ($storage_charge + $product_in_charge) * $p_qty;
+                        // if ($sub_total <= $minimum_charge) {
+                        //     $total_bill = $minimum_charge;
+                        //     $s_b =  DB::select("INSERT INTO `client_stock_in_billing` (`product_code`,`client_id`, `product_barcode`,`product_name`, `rack_code`, `space_occupied`, `quantity`, `product_in_charge`, `storage_charge`, `total_bill`, `status`, `created_at`, `updated_at`) VALUES ('$valuebarcode', '$lgn_sch', '$valuebarcode','$request->product_name', '$bincodearry', '$space_occupied', '$p_qty', '$product_in_charge', '$storage_charge', '$total_bill', 'Placed in holding area', current_timestamp, current_timestamp)");
+                        // } else if ($sub_total > 50000) {
+                        //     $s_b = DB::select("INSERT INTO `client_stock_in_billing` (`product_code`, `product_name`,`client_id`, `product_barcode`, `rack_code`, `space_occupied`, `quantity`, `product_in_charge`, `storage_charge`, `total_bill`, `status`, `created_at`, `updated_at`) VALUES ('$valuebarcode', '$request->product_name', '$lgn_sch', '$valuebarcode', '$bincodearry', '$space_occupied', '$p_qty', '$product_in_charge', '$storage_charge', '$sub_total', 'Placed in holding area', current_timestamp, current_timestamp)");
+                        // }
                     } else if ($plan->per_item_charge_flat == 222) {
-                        $vol_fl_rate = $plan->volume_flat_rate;
-                        $product_in_charge = $plan->product_in_charge;
-                        $minimum_charge = $plan->minimum_per_month;
-                        $sub_total = ($vol_fl_rate + $product_in_charge) * $p_qty;
+                        if ($plan->flat_per_day == 3333) {
+                            $vol_fl_rate = $plan->per_item_charge_day_vol;
+                            $product_in_charge = $plan->product_in_charge;
+                            $minimum_charge = $plan->minimum_per_month;
+                            $sub_total = ($vol_fl_rate + $product_in_charge) * $p_qty;
+                            if ($sub_total <= $minimum_charge) {
+                                $total_bill = $minimum_charge;
+                                $s_b =  DB::select("INSERT INTO `client_stock_in_billing` (`product_code`,`client_id`, `product_barcode`,`product_name`, `rack_code`, `space_occupied`, `quantity`, `product_in_charge`, `storage_charge`, `total_bill`, `status`, `created_at`, `updated_at`) VALUES ('$valuebarcode', '$lgn_sch', '$valuebarcode','$request->product_name', '$bincodearry', '$space_occupied', '$p_qty', '$product_in_charge', '$vol_fl_rate', '$total_bill', 'Placed in holding area', current_timestamp, current_timestamp)");
+                            } else if ($sub_total > 50000) {
+                                $s_b = DB::select("INSERT INTO `client_stock_in_billing` (`product_code`, `product_name`,`client_id`, `product_barcode`, `rack_code`, `space_occupied`, `quantity`, `product_in_charge`, `storage_charge`, `total_bill`, `status`, `created_at`, `updated_at`) VALUES ('$valuebarcode', '$request->product_name', '$lgn_sch', '$valuebarcode', '$bincodearry', '$space_occupied', '$p_qty', '$product_in_charge', '$vol_fl_rate', '$sub_total', 'Placed in holding area', current_timestamp, current_timestamp)");
+                            }
+                        } else if ($plan->flat_per_month == 4444) {
+                            $vol_fl_rate = $plan->per_item_charge_month_vol;
+                            $product_in_charge = $plan->product_in_charge;
+                            $minimum_charge = $plan->minimum_per_month;
+                            $sub_total = ($vol_fl_rate + $product_in_charge) * $p_qty;
+                            if ($sub_total <= $minimum_charge) {
+                                $total_bill = $minimum_charge;
+                                $s_b =  DB::select("INSERT INTO `client_stock_in_billing` (`product_code`,`client_id`, `product_barcode`,`product_name`, `rack_code`, `space_occupied`, `quantity`, `product_in_charge`, `storage_charge`, `total_bill`, `status`, `created_at`, `updated_at`) VALUES ('$valuebarcode', '$lgn_sch', '$valuebarcode','$request->product_name', '$bincodearry', '$space_occupied', '$p_qty', '$product_in_charge', '$vol_fl_rate', '$total_bill', 'Placed in holding area', current_timestamp, current_timestamp)");
+                            } else if ($sub_total > 50000) {
+                                $s_b = DB::select("INSERT INTO `client_stock_in_billing` (`product_code`, `product_name`,`client_id`, `product_barcode`, `rack_code`, `space_occupied`, `quantity`, `product_in_charge`, `storage_charge`, `total_bill`, `status`, `created_at`, `updated_at`) VALUES ('$valuebarcode', '$request->product_name', '$lgn_sch', '$valuebarcode', '$bincodearry', '$space_occupied', '$p_qty', '$product_in_charge', '$vol_fl_rate', '$sub_total', 'Placed in holding area', current_timestamp, current_timestamp)");
+                            }
+                        }
                     }
                 } else {
                     $storage_space = $plan->bulk_space;
@@ -1602,7 +1730,13 @@ FROM `item_stock`,grn_details,grn WHERE item_stock.flag='in' and item_stock.its_
     public function generateBill($client_id)
     {
         $stock_in_bill = DB::select('select * from client_stock_in_billing where client_id = ?', [$client_id]);
-        return view('clients.stock-in-bill', ['stock_in_bill' => $stock_in_bill]);
+        return view('clients.stock-in-bill', ['stock_in_bill' => $stock_in_bill, 'client_id' => $client_id]);
+    }
+
+    public function getClientInvoice($client_id, $created_at)
+    {
+        $stock_in_invoice = DB::select('select * from client_stock_in_billing where client_id = ? and created_at =?', [$client_id, $created_at]);
+        return view('clients.invoice', ['stock_in_invoice' =>$stock_in_invoice, 'client_id' => $client_id]);
     }
 
     public function getClientProductRequests($client_id)
@@ -1620,6 +1754,18 @@ FROM `item_stock`,grn_details,grn WHERE item_stock.flag='in' and item_stock.its_
             $p_requested->status = 1;
             $new_status = $p_requested->status;
             $query = DB::select("UPDATE client_stock_requests SET status = '$p_requested->status' where id = '$product_id'");
+        }
+    }
+
+    public function check_code(Request $request)
+    {
+        $users = DB::select("SELECT pitem_code,pitem_title from product_item WHERE pitem_code='$request->pitem_code' and client_id='$request->client_id' and pitem_status=1 and pitem_flag=1");
+        if ($users) {
+            foreach ($users as $user) {
+                return response()->json(['details' => $user->pitem_title]);
+            }
+        } else {
+            return response()->json(['code' => 0, 'msg' => 'No such products exists']);
         }
     }
 }

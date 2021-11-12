@@ -269,7 +269,7 @@
             <div class="well">
                 <div class="row">
                     <div class=" col-lg-12 col-md-12 col-sm-12"> <a href="#">GRN number : <span
-                                class="badge">{{ $user->grn_id }}</span></a><br><br> <br> </div>
+                                class="badge badge-info">{{ $user->grn_id }}</span></a><br><br> <br> </div>
                 </div>
                 <div class="row">
                     <div class=" col-lg-12 col-md-12 col-sm-12">
@@ -287,7 +287,7 @@
                                             <label class="control-label" for="v_id">Clients</label>
                                             <select type="text" class="form-control" name="sch_id" id="sch_id"
                                                 tabindex="1" required>
-                                                <option value="">Select school</option>
+                                                <option value="">Select Client</option>
                                                 <?php
                                                 foreach ($users3 as $user3) {
                                                     if ($user3->sch_id == $user->client_id) {
@@ -322,13 +322,13 @@
                                                 <option value="">Select vendor</option>';
                                                 <?php
                                                 foreach ($users1 as $user1) {
-                                                    if ($user1->vend_id == $user->vend_id) {
+                                                    if ($user1->id == $user->vend_id) {
                                                         $selected = 'selected = "selected"';
                                                     } else {
                                                         $selected = '';
                                                     }
                                                 
-                                                    echo '<option value=' . $user1->vend_id . " $selected>" . $user1->vend_name . '</option>';
+                                                    echo '<option value=' . $user1->id . " $selected>" . $user1->vend_name . '</option>';
                                                 }
                                                 ?>
                                             </select>
@@ -406,7 +406,7 @@
     <table>
         <tr>
             <td colspan="3" style=" height: 50px">
-                <input type="button" name="update" id="update" class="btn btn-info btn-lg" value="Update" />
+                <input type="button" name="update" id="update" class="btn btn-info btn-lg" value="Update" onclick="myFunction_update()"/>
             </td>
         </tr>
     </table>
@@ -431,6 +431,87 @@
             });
     
         });
+        </script>
+
+        <script>
+            function add_new_grn() {
+  
+  var val= document.getElementsByClassName("name_list code");
+   var count=val.length;
+    
+    alert(va, count)
+
+       
+    if( document.add_name.v_id.value == "" ) {
+        alert( "Please select any vendor!" );
+        document.add_name.v_id.focus() ;
+        return false;
+
+    }
+    if( document.add_name.do.value == "" ) {
+        alert( "Please insert D/O!" );
+        document.add_name.do.focus() ;
+        return false;
+
+    }
+    if( document.add_name.po.value == "" ) {
+        alert( "Please insert P/O!" );
+        document.add_name.po.focus() ;
+        return false;
+    }
+
+    for (i=1;i<=count;i++){
+
+      if( document.forms["add_name"]['code'+i+''].value.length==0) {
+            document.forms["add_name"]['code'+i+''].focus() ;
+
+        }
+        else
+       if( document.forms["add_name"]['quantity'+i+''].value.length==0) {
+            document.forms["add_name"]['quantity'+i+''].focus() ;
+        }
+    else{
+
+if(i==count){
+
+                $.ajax({
+        url:"{{ route('grn.update') }}",
+        method:"POST",
+        data:$('#add_name').serialize(),
+        success:function(data)
+        {
+            if(data==1){
+                alert("Data Submitted");
+                window.location=window.location;
+            }else{
+                alert(data);
+                // $('#add_name')[0].reset();
+            }}
+    });
+           }
+        }
+       }
+
+
+}
+
+function myFunction_update(){
+
+$.ajax({
+    url:"{{ route('grn.update') }}",
+    method:"POST",
+    data:$('#add_name').serialize(),
+    success:function(data)
+    {
+        if(data==1){
+            alert("Data Submitted");
+            window.location=document.referrer;
+        }else{
+            alert(data);
+            // $('#add_name')[0].reset();
+        }}
+});
+}
         </script>
 
     @endsection

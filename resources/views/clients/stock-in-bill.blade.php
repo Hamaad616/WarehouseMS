@@ -265,6 +265,7 @@
                 <thead>
                     <tr>
                         <th>Sr#</th>
+                        <th>Invoice#</th>
                         <th>Product Code</th>
                         <th>Product name</th>
                         <th>Rack code</th>
@@ -272,9 +273,11 @@
                         <th>Quantity</th>
                         <th>Product in Charge</th>
                         <th>Storage Charge</th>
+                        <th>Sub-total</th>
                         <th>Total Bill</th>
                         <th>Status</th>
                         <th>Created at</th>
+                        <th>Generate Invoice</th>
                     </tr>
                 </thead>
                 <?php $count = 1; ?>
@@ -282,6 +285,7 @@
                     @foreach ($stock_in_bill as $bill)
                         <tr>
                             <td><?php echo $count; ?></td>
+                            <td>{{ $bill->invoice_number }}</td>
                             <td>{{ $bill->product_code }}</td>
                             <td>{{ $bill->product_name }}</td>
                             <td>{{ $bill->rack_code }}</td>
@@ -289,10 +293,12 @@
                             <td>{{ $bill->quantity }}</td>
                             <td>{{ $bill->product_in_charge }}</td>
                             <td>{{ $bill->storage_charge }}</td>
+                            <td>{{ $bill->subtotal }}</td>
                             <td>{{ $bill->total_bill }}</td>
                             <td><span class="badge badge-info">{{ $bill->status }}</span></td>
                             <?php $timestamp = strtotime($bill->created_at); ?>
                             <td>{{ date("m/d/Y m:h:s", $timestamp) }}</td>
+                            <td><a href="{{ route('invoice.generate', ['client_id' => $client_id, 'created_at' => $bill->created_at]) }}" class="btn btn-primary"> <i class="bi bi-receipt"></i> </a></td>
                         </tr>
                         <?php $count++; ?>
                     @endforeach

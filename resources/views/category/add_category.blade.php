@@ -353,6 +353,7 @@
 
 @include('category.add_category_model')
 @include('category.add_subcategory_modal')
+@include('category.subcategories')
 <script>
     document.addEventListener("DOMContentLoaded", function(event) {
 
@@ -742,7 +743,7 @@
             }
 
         })
-        var det;
+
         function format(d, tr) {
 
             // console.log(d)
@@ -760,7 +761,7 @@
             });
 
             var category_id = d.id
-
+            var det = '';
             $.ajax({
                 method: 'POST',
                 url: '{{ route('subcategories.get') }}',
@@ -771,23 +772,22 @@
                     for (let i = 0; i < data.details.length; i++) {
                     det += 
                             '<tr>' +
-                            '<td>Subcategory Name:'+data.details[i]['category_name'] +'</td>' +
+                            '<td>'+data.details[i]['category_name'] +'</td>' +
                             '</tr>';
                     }
-
-                    $(tr).toggle( function(){
-
-                        $("tr:last").after(" <tr class=tr-"+d.id+"><td>Subcategory Name:"+data.details[i]['category_name']+"</td></tr>")
-                    }, function () { 
-                        $("tr"+d.id).remove()
-                     })
-
+                    $('.subCategory').find('table tbody').html(det)
+                    $('.subCategory').modal('show')
                 }
 
-            })
+            }, 'json')
 
 
         }
+
+        $('#modalCloseSubCat').on('click', function(e){
+            e.preventDefault()
+            $('.subCategory').modal('hide')
+        })
 
 
 

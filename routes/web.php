@@ -107,10 +107,12 @@ Route::get('product-item-table/{item_id}/{sch_id}/{item_name}', [App\Http\Contro
 Auth::routes();
 Route::get('grn-details/{sch_id}', [App\Http\Controllers\MainController::class, 'getGrnDetailsByClient'])->name('grn.view');
 Route::get('client-add-grn/{sch_id}', [App\Http\Controllers\MainController::class, 'addGrnView'])->name('grn.create-view');
+Route::any('/check_code', [MainController::class, 'check_code']);
 Route::post('client-create-grn', [App\Http\Controllers\MainController::class, 'createGrn'])->name('grn.create');
 Route::get('created-grn_details/{sch_id}/{grn_id}', [App\Http\Controllers\MainController::class, 'grn_details'])->name('grn.details-created');
 Route::any('grn-delete/{grn_id}', [App\Http\Controllers\MainController::class, 'deleteGrn'])->name('grn.delete');
 Route::any('grn-edit/{grn_id}', [App\Http\Controllers\MainController::class, 'editGrn'])->name('grn.edit');
+Route::post('grn-update', [MainController::class, 'updateGrn'])->name('grn.update');
 Route::get('stock-in/{client_id}', [App\Http\Controllers\MainController::class, 'stockInView'])->name('stock-in');
 Route::get('push_stock/{grnd_id}/{product_name}/{grnd_code}/{qty}/{rem}/{length}/{width}/{height}/{product_id}/{client_id}', [App\Http\Controllers\MainController::class, 'push_stock']);
 Route::get('check_rack',[App\Http\Controllers\MainController::class, 'check_rack_qty'])->name('check_rack');
@@ -120,6 +122,8 @@ Route::get('billing/{client_id}', [App\Http\Controllers\MainController::class, '
 Route::get('user-registration', function () {
     return view('user-registration');
 });
+
+Route::get('client-invoice/{client_id}/{created_at}', [MainController::class, 'getClientInvoice'])->name('invoice.generate');
 
 Route::get('client/{client_id}/client-product-requests', [App\Http\Controllers\MainController::class, 'getClientProductRequests'])->name('client.product-requests');
 Route::any('client/update/stock-request/{product_id}', [App\Http\Controllers\MainController::class, 'updateClientRequestedProductStatus'])->name('client.udpate-stock-request');

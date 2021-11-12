@@ -333,8 +333,9 @@
                                                 <thead>
                                                     <tr>
                                                         <th class="border-0  font-weight-bold">
-                                                            <img src="{{ asset('img/date-technology.png') }}"
-                                                                class=" img-responsive">
+                                                            {{-- <img src="{{ asset('img/date-technology.png') }}"
+                                                                class=" img-responsive"> --}}
+                                                                <h5 style="font-size: 3rem"> <b> WarehouseMS </b></h5>
                                                             <?php
                                                 if($sch_id=='11'){
                                                     ?>
