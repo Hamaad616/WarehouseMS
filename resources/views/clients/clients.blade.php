@@ -228,7 +228,7 @@
                         </a>
 
 
-                      
+
                         <a style="text-decoration: none" href="{{ url('add-categories') }}" class="nav_link">
                             <i class="bi bi-card-list nav_icon"></i>
                             <span class="nav_name">Categories</span>
@@ -259,7 +259,7 @@
                 @else
                     <a style="text-decoration: none" class="nav_link" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
-                                                                                                                                             document.getElementById('logout-form').submit();">
+                                                                                                                                                     document.getElementById('logout-form').submit();">
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
@@ -303,7 +303,7 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            
+
                                             <a
                                                 href="{{ route('client.profile', ['client_id' => $item->sch_id]) }}">{{ $item->sch_name }}</a>
                                         </td>
@@ -318,7 +318,10 @@
                                                 <a class="btn btn-secondary" id="editUserCreds" data-bs-toggle="tooltip"
                                                     data-bs-placement="top" title="Edit Client Credentials"
                                                     data-id={{ $item->sch_id }}><i class="bi bi-people"></i></a>
-                                                    <a class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="top" title="View Client Products"href="{{ route('client-details', $item->sch_id) }}"> <i class="bi bi-diagram-3"></i> </a>
+                                                <a class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                    title="View Client Products"
+                                                    href="{{ route('client-details', $item->sch_id) }}"> <i
+                                                        class="bi bi-diagram-3"></i> </a>
                                                 <a class="btn btn-primary" data-bs-toggle="tooltip"
                                                     data-bs-placement="bottom" title="Edit Client Details"
                                                     href="{{ route('client.edit', ['sch_id' => $item->sch_id, 'sch_name' => $item->sch_name]) }}"><i
@@ -389,6 +392,8 @@
         });
     </script>
     <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('sweetalert/sweetalert2.min.js') }}"></script>
     <script src="{{ asset('toastr/toastr.min.js') }}"></script>
 
@@ -410,21 +415,21 @@
                 $('.editClient').find('input[name="client_id"]').val(data.details.sch_id)
                 $('.editClient').find('input[name="client_email"]').val(data.details
                     .client_email)
-                    
+
                 $('.editClient').modal('show')
             }, 'json')
         })
-        
 
-        $('#client-update-creds-form').on('submit', function (e){ 
-             
+
+        $('#client-update-creds-form').on('submit', function(e) {
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
 
-            e.preventDefault() 
+            e.preventDefault()
 
             var form = this;
             $.ajax({
@@ -453,8 +458,7 @@
                 }
             })
 
-         })
-
+        })
     </script>
 
 @endsection
