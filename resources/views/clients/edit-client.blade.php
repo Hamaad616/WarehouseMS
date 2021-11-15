@@ -1220,8 +1220,8 @@
 
 
     @include('clients.addContactsModal')
-{{-- 
-    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script> --}}
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     {{-- <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script> --}}
     {{-- <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script> --}}
@@ -1246,11 +1246,11 @@
     <!-- SCRIPTS -->
     <!-- JQuery -->
 
-    <script src="{{ asset('mdb/js/jquery-3.4.1.min.js') }}"></script>
+    {{-- <script src="{{ asset('mdb/js/jquery-3.4.1.min.js') }}"></script> --}}
     <!-- Bootstrap tooltips -->
     <script type="text/javascript" src="{{ asset('mdb/js/popper.min.js') }}"></script>
-    {{-- <!-- Bootstrap core JavaScript -->
-    <script type="text/javascript" src="{{ asset('mdb/js/bootstrap.js') }}"></script> --}}
+    <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- MDB core JavaScript -->
     <script type="text/javascript" src="{{ asset('mdb/js/mdb.min.js') }}"></script>
 
