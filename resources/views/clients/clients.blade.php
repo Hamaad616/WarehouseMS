@@ -414,6 +414,7 @@
                 $('.editClient').modal('show')
             }, 'json')
         })
+        
 
         $('#client-update-creds-form').on('submit', function (e){ 
              
