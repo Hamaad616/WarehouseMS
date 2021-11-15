@@ -1066,7 +1066,7 @@ class MainController extends Controller
         $minimum_charge = $request->minimum_charge;
 
         $to = $client_email;
-        $subject = $client_name . " your new account has been created";
+        $subject = $client_name . " your account has been updated";
         $message = $client_password;
         // Always set content-type when sending HTML email
         $headers = "MIME-Version: 1.0" . "\r\n";
