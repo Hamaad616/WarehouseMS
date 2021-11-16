@@ -108,7 +108,7 @@
             background: #4bb8a9
         }
 
-        .card-header{
+        .card-header {
             background-color: #fff !important;
         }
 
@@ -175,17 +175,31 @@
                         </li>
 
 
+                        <li>
+                            <a style="text-decoration: none" href="{{ url('add-categories') }}"
+                                class="waves-effect arrow-r">
+                                <i class="bi bi-card-list nav_icon"></i>
+                                <span class="ml-3">Categories</span>
+                            </a>
+                        </li>
 
-                        <a style="text-decoration: none" href="{{ url('add-categories') }}" class="nav_link">
-                            <i class="bi bi-card-list nav_icon"></i>
-                            <span class="nav_name">Categories</span>
-                        </a>
-
-                        <a style="text-decoration: none" href="{{ route('units') }}" class="nav_link">
-                            <i class="bi bi-card-list nav_icon"></i>
-                            <span class="nav_name">Units</span>
-                        </a>
-
+                        <li>
+                            <a style="text-decoration: none" href="{{ route('units') }}" class="waves-effect arrow-r">
+                                <i class="bi bi-card-list nav_icon"></i>
+                                <span class="ml-3">Units</span>
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a class="waves-effect arrow-r" href="{{ route('logout') }}" onclick="event.preventDefault();
+                            document.getElementById('logout-form').submit();"><i class="fas fa-sign-out-alt"></i>
+    
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                    class="d-none">
+                                    @csrf
+                                </form>{{ __('Logout') }}
+                            </a>
+                        </li>
                         {{-- <li><a class="collapsible-header waves-effect arrow-r"><i class="fas fa-image"></i> Pages<i
                                     class="fas fa-angle-down rotate-icon"></i></a>
                             <div class="collapsible-body">
@@ -394,25 +408,17 @@
                     <a class="nav-link waves-effect"><i class="far fa-comments"></i> <span
                             class="clearfix d-none d-sm-inline-block">Support</span></a>
                 </li> --}}
-                <li class="nav-item dropdown">
+                {{-- <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle waves-effect" href="#" id="userDropdown" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-user"></i> <span
                             class="clearfix d-none d-sm-inline-block">Profile</span></a>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                        <a class="dropdown-item" href="{{ route('logout') }}"
-                            onclick="event.preventDefault();
-                     document.getElementById('logout-form').submit();"><i class="fas fa-sign-out-alt"></i>
 
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                class="d-none">
-                                @csrf
-                            </form>{{ __('Logout') }}</span>
-                        </a>
-                        {{-- <a class="dropdown-item" href="#">My account</a> --}}
+                        
                     </div>
-                </li>
+                </li> --}}
 
             </ul>
             <!-- /Navbar links -->
@@ -707,7 +713,6 @@
                                                 Space
                                             </label>
                                         </div>
-
 
                                         <div class="row mt-2">
 
@@ -1221,7 +1226,6 @@
 
     @include('clients.addContactsModal')
 
-    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     {{-- <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script> --}}
     {{-- <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script> --}}
@@ -1246,7 +1250,7 @@
     <!-- SCRIPTS -->
     <!-- JQuery -->
 
-    {{-- <script src="{{ asset('mdb/js/jquery-3.4.1.min.js') }}"></script> --}}
+    <script src="{{ asset('mdb/js/jquery-3.4.1.min.js') }}"></script>
     <!-- Bootstrap tooltips -->
     <script type="text/javascript" src="{{ asset('mdb/js/popper.min.js') }}"></script>
     <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
@@ -1256,8 +1260,17 @@
 
     <script src="{{ asset('toastr/toastr.min.js') }}"></script>
     <!-- Custom scripts -->
-   
-
+    <script>
+        // SideNav Initialization
+        $(".button-collapse").sideNav();
+        var container = document.querySelector('.custom-scrollbar');
+        var ps = new PerfectScrollbar(container, {
+            wheelSpeed: 2,
+            wheelPropagation: true,
+            minScrollbarLength: 20
+        });
+    </script>
+    <!-- Custom scripts -->
     <script>
         // jQuery functions to show and hide divisions
         $(document).ready(function() {
@@ -1642,17 +1655,7 @@
     </script>
 
 
-<script>
-    // SideNav Initialization
-    $(".button-collapse").sideNav();
 
-    var container = document.querySelector('.custom-scrollbar');
-    var ps = new PerfectScrollbar(container, {
-        wheelSpeed: 2,
-        wheelPropagation: true,
-        minScrollbarLength: 20
-    });
-</script>
 
 </body>
 
