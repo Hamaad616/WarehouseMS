@@ -144,4 +144,11 @@ Route::get('subcategories/{category_id}', function($category_id){
 
 Route::post('get-subcategories', [MainController::class, 'getSubCats'])->name('subcategories.get');
 
+Route::get('/client-fulfillment/{client_id}', [MainController::class, 'clientFulfillment'])->name('client.fulfillment');
+// Route::post('client-all-products', [MainController::class, 'clientAllProducts'])->name('client.all-products');
+
+Route::post('create-client-fulfillment', [MainController::class, 'createClientFulfillment'])->name('client.create-fulfillment');
+
+Route::get('searchProduct', [MainController::class, 'searchProduct'])->name('searchProduct');
+
 

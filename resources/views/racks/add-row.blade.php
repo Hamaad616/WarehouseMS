@@ -509,7 +509,7 @@
 
 
                 var j = +totalRowCount + +1 - 1;
-                alert(j)
+
                 for (let index = totalRowCount; index >= totalRowCount; index--) {
                     $('#dynamic_field2').append('<tr  id="row' + index +
                         '"><td><input class="form-control" name="row_name[]" placeholder="Enter Row Name" required value="R'+index+'" readonly=""></td> <td><input class="form-control"  name="width[]" placeholder="Enter Width" value="' +

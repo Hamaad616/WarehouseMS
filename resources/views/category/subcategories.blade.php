@@ -8,7 +8,7 @@
                 <h5 id="subCategoryModalLabel" class="modal-title">
                     Subcategories
                 </h5>
-                <button id="modalClose" type="button" class="close btn" data-dismiss="modal" aria-label="Close">
+                <button id="modalCloseSubCat" type="button" class="close btn" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>

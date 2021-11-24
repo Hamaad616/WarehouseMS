@@ -10,6 +10,7 @@ use App\Models\Vendor;
 use App\Models\clients;
 use App\Models\categories;
 use Illuminate\Http\Request;
+use App\Models\clientProducts;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -949,6 +950,40 @@ class MainController extends Controller
         return view('mdb.index', ['id' => $sch_id, 'shname' => $schname, 'users' => $users, 'user_other_details' => $user_other_details, 'legal_types' => $legal_types, 'sch_id' => $sch_id]);
     }
 
+    public function clientFulfillment($client_id)
+    {
+        $client_products = clientProducts::all();
+        $client_name = clients::where('sch_id', $client_id)->get();
+        $sessions = DB::table('academic_session')->select('*')->get();
+        $couriers = DB::table('couriers')->select('*')->get();
+        return view('fulfillment.client-fulfillment', ['client_id' => $client_id, 'client_products' => $client_products, 'client_name' => $client_name, 'sessions' => $sessions, 'couriers' => $couriers]);
+    }
+
+    public function createClientFulfillment(Request $request)
+    {
+        $users2 = DB::select("INSERT INTO `requisition`( `sch_id`, `wh_id`, `po`,`mode`, `deleivery_date_time`, `courier`, `remarks` ,`session_id`) VALUES ('$request->client_id','$request->wh_id','$request->po','$request->mode','$request->date', '$request->couriers', '$request->remarks', '$request->session_id')");
+        $last_req_id = DB::getPDO()->lastInsertId();
+        $arrayLength = count($request->product_name);
+        for ($col = 0; $col < $arrayLength; $col++) {
+
+            $product_code = $request->product_code[$col];
+            $product_quantity = $request->product_quantity[$col];
+            $users2 = DB::select("INSERT INTO `requisition_details` (`req_id` ,`product_code`, `quantity`) VALUES ('$last_req_id','$product_code','$product_quantity')");
+        }
+
+        return response()->json(['code' => 1, 'msg' => 'Successfully created requisition']);
+    }
+
+    public function searchProduct(Request $request){
+        $code = $request->search_code;
+        $client_id = $request->client_id;
+
+        $client_product = DB::table('product_item')->where('client_id', $client_id)->where('pitem_code', $code)->get();
+        return response()->json(['details' => $client_product]);
+    }
+
+
+
     public function addExistingContact(Request $request)
     {
         $client_id = $request->add_id;
@@ -1336,9 +1371,7 @@ class MainController extends Controller
             }
         }
 
-        return \redirect()->to('grn-details/'.$request->sch_id);
-
-
+        return \redirect()->to('grn-details/' . $request->sch_id);
     }
 
     public function grn_details($sch_id, $grn_id)
@@ -1736,7 +1769,7 @@ FROM `item_stock`,grn_details,grn WHERE item_stock.flag='in' and item_stock.its_
     public function getClientInvoice($client_id, $created_at)
     {
         $stock_in_invoice = DB::select('select * from client_stock_in_billing where client_id = ? and created_at =?', [$client_id, $created_at]);
-        return view('clients.invoice', ['stock_in_invoice' =>$stock_in_invoice, 'client_id' => $client_id]);
+        return view('clients.invoice', ['stock_in_invoice' => $stock_in_invoice, 'client_id' => $client_id]);
     }
 
     public function getClientProductRequests($client_id)

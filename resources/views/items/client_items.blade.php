@@ -261,6 +261,12 @@
                             <i class="bi bi-bar-chart-steps nav_icon"></i>
                             <span class="nav_name"><strong>Stock</strong></span>
                         </a>
+
+                        <a style="text-decoration: none" href="{{ route('client.fulfillment', ['client_id' => $sch_id]) }}" class="nav_link">
+                            <i class="bi bi-card-list nav_icon"></i>
+                            <span class="nav_name">Client Fulfillment</span>
+                        </a>
+
                         <li id="StockDropdown" class="collapse">
 
                             <a title="GRN" class="dropdown-item nav_link" href="{{ route('grn.view', $sch_id) }}">
