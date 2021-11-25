@@ -212,9 +212,6 @@
                             <i class="bi bi-house nav_icon"></i>
                             <span class="nav_name">Warehouses</span>
                         </a>
-                        <a style="text-decoration: none" href="{{ url('clients-home') }}" class="nav_link">
-                            <i class='bx bx-user nav_icon'></i>
-                            <span class="nav_name">Clients</span> </a>
 
                         <a style="text-decoration: none" href="{{ route('vendors') }}" class="nav_link">
                             <i class="bi bi-people nav_icon"></i>

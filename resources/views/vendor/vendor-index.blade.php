@@ -242,9 +242,7 @@
                         <i class="bi bi-house nav_icon"></i>
                         <span class="nav_name">Warehouses</span>
                     </a>
-                    <a style="text-decoration: none" href="{{ url('clients-home') }}" class="nav_link">
-                        <i class='bx bx-user nav_icon'></i>
-                        <span class="nav_name">Clients</span> </a>
+
                     <a style="text-decoration: none" href="{{ route('vendors') }}" class="nav_link">
                         <i class="bi bi-people nav_icon"></i>
                         <span class="nav_name">Vendors</span>
@@ -306,8 +304,8 @@
                                 <th><input type="checkbox" name="main_checkbox"><label></label></th>
                                 <th>#</th>
                                 <th>Vendor Name</th>
-                                <th>Vendor Email</th>
                                 <th>Vendor Contact Person</th>
+                                <th>Vendor Email</th>
                                 <th>Vendor Number</th>
                                 <th>Vendor Address</th>
                                 <th>Actions <button id="deleteAllBtn" class="btn btn-sm btn-danger d-none">Delete
@@ -336,17 +334,17 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="Vendor Email">Vendor Email</label>
-                            <input type="text" name="vendor_email" class="form-control"
-                                placeholder="Enter vendor email">
-                            <span class="text-danger error-text vendor_email_error"></span>
-                        </div>
-
-                        <div class="form-group">
                             <label for="Vendor Contact">Vendor Contact Person</label>
                             <input type="text" name="vendor_contact_person" class="form-control"
                                 placeholder="Enter vendor contact person">
                             <span class="text-danger error-text vendor_contact_person_error"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="Vendor Email">Vendor Email</label>
+                            <input type="text" name="vendor_email" class="form-control"
+                                placeholder="Enter vendor email">
+                            <span class="text-danger error-text vendor_email_error"></span>
                         </div>
 
                         <div class="form-group">

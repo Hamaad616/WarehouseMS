@@ -370,11 +370,27 @@ class MainController extends Controller
         return DataTables::of($categories)
             ->addIndexColumn()
             ->addColumn('actions', function ($row) {
-                return '<div class="btn-group">
-                    <button class ="btn btn-sm btn-success btn-sm" data-id="' . $row['id'] . '" id="addSubCategory">Add subcategory</button>
-                    <button class ="btn btn-sm btn-primary btn-sm" data-id="' . $row['id'] . '" id="editCategory">Update</button>
-                    <button class = "btn btn-sm btn-danger btn-sm" data-id="' . $row['id'] . '" id="deleteCategory">Delete</button>
-            </div>';
+                $div = '';
+                 $div = '<div class="btn-group">
+                    <button class ="btn btn-sm btn-success" data-id="' . $row['id'] . '" id="addSubCategory">Add subcategory</button>
+                    <button class ="btn btn-sm btn-primary" data-id="' . $row['id'] . '" id="editCategory">Update</button>
+                    <button class = "btn btn-sm btn-danger" data-id="' . $row['id'] . '" id="deleteCategory">Delete</button>';
+
+           
+                $checked = "";
+                if($row['category_flag'] == 1){
+                    $checked = "checked";
+                    $div.='<label class="switch"><input id="disableCategory" type="checkbox" data-id="'.$row['id'].'" '.$checked.'><span class="slider round"></span></label></div>';
+                }
+                else{
+                    $checked = "";
+                    $div.='<label class="switch"><input id="disableCategory" type="checkbox" data-id="'.$row['id'].'" '.$checked.'><span class="slider round"></span></label></div>';
+                }
+
+            return $div;
+
+            
+
             })
 
             ->addColumn('checkbox', function ($row) {
@@ -385,6 +401,23 @@ class MainController extends Controller
             })
             ->rawColumns(['actions', 'checkbox', 'subcategories'])
             ->make(true);
+    }
+
+    public function changeCatStatus(Request $request){
+
+        $category_id = $request->category_id;
+        $status = $request->status;
+
+        $categories = categories::find($category_id);
+        $categories->category_flag = $status;
+        $query = $categories->update();
+
+        if($query){
+            return response()->json(['code' => 1]);
+        }else{
+            return response()->json(['code' => 0]);
+        }
+
     }
 
     public function getSubCats(Request $request)
@@ -693,10 +726,10 @@ class MainController extends Controller
         return redirect()->route('home');
     }
 
-    public function getClientsHome()
+    public function getClientsHome($wh_id)
     {
-        $clients = DB::select('select * from clients');
-        return view('clients.clients', ['clients' => $clients]);
+        $clients = DB::select('select * from clients where warehouse_id = ?', [$wh_id]);
+        return view('clients.clients', ['clients' => $clients, 'warehouse_id' => $wh_id]);
     }
 
     public function getClientItems($sch_id)
@@ -798,7 +831,7 @@ class MainController extends Controller
     {
 
         $requestData = $request->all();
-
+        $warehouse_id = $request->warehouse_id;
         $client_name = $request->client_name;
         $client_email = $request->client_email;
         $client_password_c = $request->client_password;
@@ -855,7 +888,7 @@ class MainController extends Controller
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
         // $query =  DB::insert('insert into clients (sch_name, client_email, password, ntn_number,sales_tax_number,legal_type,designated_add_1,designated_add_2,designated_city, product_in_charge, product_out_charge_flat,product_out_flat_rate,product_out_vol,product_out_vol_fl_rate ,storage_plan,per_item_charge, per_item_charge_flat,volume_based,volume_flat_rate,bulk_charge, bulk_space, fulfil_plan, fl_rate, payment_plan, sch_status, sch_flag) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)', [$client_name, $client_email, $client_password, $ntn_number, $sales_tax_number, $entity_type, $contact_designated_add_1, $contact_designated_add_2, $client_designated_city, $product_in_charge,$storage_plan, $per_item_charge, $bulk_charge, $bulk_space, $fulfillment_plan, $fl_rate, $payment_plan, 1, 1]);
-        $query = DB::table('clients')->insert(['sch_name' => $client_name, 'ntn_number' => $ntn_number, 'sales_tax_number' => $sales_tax_number, 'legal_type' => $entity_type, 'designated_add_1' => $contact_designated_add_1, 'designated_add_2' => $contact_designated_add_2, 'designated_city' => $client_designated_city, 'client_email' => $client_email, 'password' => $client_password, 'product_in_charge' => $product_in_charge, 'product_out_charge_flat' => $out_return_plan_flat, 'product_out_flat_rate' => $out_return_plan_flat_input, 'storage_plan' => $storage_plan, 'minimum_per_month' => $minimum_charge, 'per_item_charge_day' => $per_item_charge_day, 'per_item_charge_month' => $per_item_charge_month, 'per_item_charge_day_vol' => $per_item_charge_day_vol, 'per_item_charge_month_vol' => $per_item_charge_month_vol, 'per_item_charge_flat' => $flat_per_item_charge, 'flat_per_day' => $flat_per_day, 'flat_per_month' => $flat_per_month, 'volume_flat_rate' => $vol_flat_per_item, 'bulk_space' => $bulk_space, 'bulk_charge' => $bulk_charge, 'fulfil_plan' => $fulfillment_plan, 'fl_rate' => $fl_rate, 'payment_plan' => $payment_plan, 'sch_status' => 1, 'sch_flag' => 1]);
+        $query = DB::table('clients')->insert(['sch_name' => $client_name, 'warehouse_id'=>$warehouse_id, 'ntn_number' => $ntn_number, 'sales_tax_number' => $sales_tax_number, 'legal_type' => $entity_type, 'designated_add_1' => $contact_designated_add_1, 'designated_add_2' => $contact_designated_add_2, 'designated_city' => $client_designated_city, 'client_email' => $client_email, 'password' => $client_password, 'product_in_charge' => $product_in_charge, 'product_out_charge_flat' => $out_return_plan_flat, 'product_out_flat_rate' => $out_return_plan_flat_input, 'storage_plan' => $storage_plan, 'minimum_per_month' => $minimum_charge, 'per_item_charge_day' => $per_item_charge_day, 'per_item_charge_month' => $per_item_charge_month, 'per_item_charge_day_vol' => $per_item_charge_day_vol, 'per_item_charge_month_vol' => $per_item_charge_month_vol, 'per_item_charge_flat' => $flat_per_item_charge, 'flat_per_day' => $flat_per_day, 'flat_per_month' => $flat_per_month, 'volume_flat_rate' => $vol_flat_per_item, 'bulk_space' => $bulk_space, 'bulk_charge' => $bulk_charge, 'fulfil_plan' => $fulfillment_plan, 'fl_rate' => $fl_rate, 'payment_plan' => $payment_plan, 'sch_status' => 1, 'sch_flag' => 1]);
 
         Mail::to($to)->send(new SendMail($client_email, $client_password_c));
         $last_client_id = DB::getPDO()->lastInsertId();
@@ -918,9 +951,9 @@ class MainController extends Controller
         }
 
         if ($query) {
-            return redirect()->back()->with('success', 'Successfully created Client Record');
+            return redirect()->to(url('clients-home/warehouse', [$warehouse_id]))->with('success', 'Successfully created Client Record');
         } else {
-            return redirect()->back()->with('danger', 'Failed to create a client');
+            return redirect()->to(url('clients-home/warehouse', [$warehouse_id]))->with('danger', 'Failed to create a client');
         }
     }
 
@@ -1867,9 +1900,15 @@ FROM `item_stock`,grn_details,grn WHERE item_stock.flag='in' and item_stock.its_
     public function getClientProductRequests($client_id)
     {
         $p_requests = DB::select('select * from client_stock_requests where client_id = ?', [$client_id]);
-        $product = DB::table('client_stock_requests')->select('*')->where('client_id', '=', $client_id)->first();
-        $category = DB::table('categories')->select('*')->where('id', '=', $product->category_id)->get();
-        return view('clients.client-product-requests', ['p_requests' => $p_requests, 'category' => $category, 'client_id' => $client_id]);
+        if(count($p_requests)>0){
+            $product = DB::table('client_stock_requests')->select('*')->where('client_id', '=', $client_id)->first();
+            $category = DB::table('categories')->select('*')->where('id', '=', $product->category_id)->get();
+            return view('clients.client-product-requests', ['p_requests' => $p_requests, 'category' => $category, 'client_id' => $client_id]);
+        }
+        else{
+            return view('clients.client-product-requests', ['p_requests' => $p_requests, 'client_id' => $client_id]);
+        }
+        
     }
 
     public function updateClientRequestedProductStatus($product_id)

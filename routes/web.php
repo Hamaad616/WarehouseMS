@@ -81,7 +81,7 @@ Route::get('client-profile/{client_id}', [MainController::class, 'clientProfile'
 Route::get('client-audit-history/{client_id}', [MainController::class, 'auditClient'])->name('client.audit');
 Route::post('client-update-creds', [MainController::class, 'updateClientCreds'])->name('client.edit-creds');
 Route::post('client-creds-update', [MainController::class, 'updateClientsSubmit'])->name('client.update-creds');
-Route::get('clients-home', [MainController::class, 'getClientsHome']);
+Route::get('clients-home/warehouse/{wh_id}', [MainController::class, 'getClientsHome']);
 Route::get('create-new-client', [MainController::class, 'viewClientCreate'])->name('client.view');
 Route::post('create-new-client', [MainController::class, 'createClient'])->name('client.create');
 Route::get('clients-edit/{sch_id}/{sch_name}', [MainController::class, 'editClientById'])->name('client.edit');
@@ -129,12 +129,14 @@ Route::get('client-invoice/{client_id}/{created_at}', [MainController::class, 'g
 Route::get('client/{client_id}/client-product-requests', [App\Http\Controllers\MainController::class, 'getClientProductRequests'])->name('client.product-requests');
 Route::any('client/update/stock-request/{product_id}', [App\Http\Controllers\MainController::class, 'updateClientRequestedProductStatus'])->name('client.udpate-stock-request');
 
+Route::post('change-category-status', [MainController::class, 'changeCatStatus'])->name('changeCategoryStatus');
+
 Route::get('index', function(){
     return view('index.index');
 });
-Route::get('c-reg', function(){
+Route::get('c-reg/warehouse/{wh_id}', function($warehouse_id){
     $legal_types = DB::select('select * from legal_types');
-    return view('index.registration', ['legal_types' => $legal_types]);
+    return view('index.registration', ['legal_types' => $legal_types, 'warehouse_id' => $warehouse_id]);
 });
 
 Route::get('clr/{sch_id}/{sch_name}', [MainController::class, 'clr']);

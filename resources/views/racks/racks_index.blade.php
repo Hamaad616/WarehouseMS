@@ -208,12 +208,30 @@
                         <a style="text-decoration: none" href="{{ route('home') }}" class="nav_link active">
                             <i class='bx bx-grid-alt nav_icon'></i>
                             <span class="nav_name">Dashboard</span> </a>
-                        <a style="text-decoration: none" href="{{ url('clients-home') }}" class="nav_link">
-                            <i class='bx bx-user nav_icon'></i>
-                            <span class="nav_name">Clients</span> </a>
+
                         <a style="text-decoration: none" href="{{ route('home') }}" class="nav_link">
                             <i class="bi bi-house nav_icon"></i>
                             <span class="nav_name">Warehouses</span>
+                        </a>
+
+                        <a style="text-decoration: none" href="{{ url('clients-home/warehouse', [$wh_id]) }}"
+                            class="nav_link">
+                            <i class='bx bx-user nav_icon'></i>
+                            <span class="nav_name">Clients</span> </a>
+
+                        <a style="text-decoration: none" href="{{ route('vendors') }}" class="nav_link">
+                            <i class="bi bi-people nav_icon"></i>
+                            <span class="nav_name">Vendors</span>
+                        </a>
+
+                        <a style="text-decoration: none" href="{{ url('add-categories') }}" class="nav_link">
+                            <i class="bi bi-card-list nav_icon"></i>
+                            <span class="nav_name">Categories</span>
+                        </a>
+
+                        <a style="text-decoration: none" href="{{ route('units') }}" class="nav_link">
+                            <i class="bi bi-card-list nav_icon"></i>
+                            <span class="nav_name">Units</span>
                         </a>
                     </div>
                 </div>
@@ -233,7 +251,7 @@
                 @else
                     <a style="text-decoration: none" class="nav_link" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
-                                                                                                             document.getElementById('logout-form').submit();">
+                                                                                                                             document.getElementById('logout-form').submit();">
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
@@ -255,12 +273,14 @@
 
         <div class="card">
             <h3 class="card-header">
-                <a style="float: right;" class="btn btn-lg" href="{{ route('racks.add', ['wh_id' => $wh_id,'wh_name' => $wh_name,'wh_code'=> $wh_code]) }}" ><i class="bi bi-plus-square"></i></a>
+                <a style="float: right;" class="btn btn-lg"
+                    href="{{ route('racks.add', ['wh_id' => $wh_id, 'wh_name' => $wh_name, 'wh_code' => $wh_code]) }}"><i
+                        class="bi bi-plus-square"></i></a>
                 @foreach ($warehouse_name as $item)
                     {{ $item }} <small>racks</small>
                 @endforeach
 
-               
+
 
             </h3>
 
@@ -306,8 +326,12 @@
                                     <td>
                                         <div class="btn-group">
                                             <a class="btn btn-primary" href=""><i class="bi bi-pen"></i></a>
-                                            <a class="btn btn-info" href="{{ route('rows.index', ['wh_id' => $wh_id, 'rk_id' => $rack->rk_id]) }}"><i class="bi bi-eye"></i></a>
-                                            <a class="btn btn-secondary" href="{{ route('racks.add-row', ['wh_id' => $wh_id, 'rk_id'=>$rack->rk_id]) }}"><i class="bi bi-plus"></i></a>
+                                            <a class="btn btn-info"
+                                                href="{{ route('rows.index', ['wh_id' => $wh_id, 'rk_id' => $rack->rk_id]) }}"><i
+                                                    class="bi bi-eye"></i></a>
+                                            <a class="btn btn-secondary"
+                                                href="{{ route('racks.add-row', ['wh_id' => $wh_id, 'rk_id' => $rack->rk_id]) }}"><i
+                                                    class="bi bi-plus"></i></a>
                                         </div>
 
                                     </td>
@@ -334,10 +358,16 @@
                                             <a title="Delete warehouse details" href="{{ route('warehouse.delete', $warehouse->wh_id) }}"
                                                 class="btn btn-danger"><i class="bi bi-trash"></i></a> --}}
 
-                                                <a class="btn btn-primary" href="{{ url('check-rack-barcode/'.$rack->wh_id.'/'.$rack->rk_id) }}"><i class="bi bi-upc"></i></a>
-                                                <a class="btn btn-success" href="{{ route('warehouse.rack.edit', ['rk_id' => $rack->rk_id, 'wh_id' =>$wh_id ,'wh_code' => $wh_code, 'wh_name' => $wh_name]) }}"><i class="bi bi-pen"></i></a>
-                                                <a class="btn btn-danger" href="{{ route('warehouse.rack.delete', $rack->rk_id) }}"><i class="bi bi-trash"></i></a>
-                                            
+                                            <a class="btn btn-primary"
+                                                href="{{ url('check-rack-barcode/' . $rack->wh_id . '/' . $rack->rk_id) }}"><i
+                                                    class="bi bi-upc"></i></a>
+                                            <a class="btn btn-success"
+                                                href="{{ route('warehouse.rack.edit', ['rk_id' => $rack->rk_id, 'wh_id' => $wh_id, 'wh_code' => $wh_code, 'wh_name' => $wh_name]) }}"><i
+                                                    class="bi bi-pen"></i></a>
+                                            <a class="btn btn-danger"
+                                                href="{{ route('warehouse.rack.delete', $rack->rk_id) }}"><i
+                                                    class="bi bi-trash"></i></a>
+
 
                                         </div>
                                     </td>

@@ -219,6 +219,7 @@
                             <i class="bi bi-house nav_icon"></i>
                             <span class="nav_name">Warehouses</span>
                         </a>
+                        
 
                         <a class="nav_link dropdown-toggle" style="text-decoration: none" href="#ClientDropdown"
                             aria-expanded="false" data-toggle="collapse">
@@ -227,12 +228,7 @@
                         </a>
 
                         <li id="ClientDropdown" class="collapse">
-                            <a title="Clients" style="text-decoration: none" href="{{ url('clients-home') }}"
-                            class="nav_link">
-                            <i class='bx bx-user nav_icon'></i>
-                            <span class="nav_name">Clients</span> </a>
-
-                            <a title="Clients Product Requests" style="text-decoration: none" href="{{ route('client.product-requests', $sch_id) }}"
+                            <a title="Client Product Requests" style="text-decoration: none" href="{{ route('client.product-requests', $sch_id) }}"
                                 class="nav_link">
                                 <i class='bx bx-user nav_icon'></i>
                                 <span class="nav_name text-nowrap">Client Requests</span> </a>

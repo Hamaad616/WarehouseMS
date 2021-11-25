@@ -2,6 +2,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <title>Categories</title>
 <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}">
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 <link rel="stylesheet" href="{{ asset('datatables/css/dataTables.bootstrap.min.css') }}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 <link rel="stylesheet" href="{{ asset('datatables/css/dataTables.bootstrap4.min.css') }}">
@@ -10,6 +11,7 @@
 
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -222,6 +224,71 @@
         margin-top: 3px;
     }
 
+    .slow .toggle-group {
+        transition: left 0.7s;
+        -webkit-transition: left 0.7s;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked+.slider {
+        background-color: #2196F3;
+    }
+
+    input:focus+.slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked+.slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 10px;
+    }
+
+    .slider.round:before {
+        border-radius: 30%;
+    }
+
 </style>
 
 
@@ -280,7 +347,7 @@
             @else
                 <a style="text-decoration: none" class="nav_link" href="{{ route('logout') }}"
                     onclick="event.preventDefault();
-                                                                                                                                                                                                                                                                                                                                 document.getElementById('logout-form').submit();">
+                                                                                                                                                                                                                                                                                                                                                 document.getElementById('logout-form').submit();">
 
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf
@@ -311,7 +378,8 @@
                                 <th>Category Name</th>
                                 <th>Subcategories</th>
                                 <th>Actions <button id="deleteAllBtn" class="btn btn-sm btn-danger d-none">Delete
-                                        All</button></th>
+                                        All</button>
+                                </th>
 
                             </thead>
 
@@ -399,11 +467,13 @@
 
 <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
 <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('datatables/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('datatables/js/dataTables.bootstrap4.min.js') }}"></script>
 <script src="{{ asset('sweetalert/sweetalert2.min.js') }}"></script>
 <script src="{{ asset('toastr/toastr.min.js') }}"></script>
+
 
 <script>
     toastr.options.preventDuplicates = true;
@@ -512,6 +582,7 @@
                 $('.editCategory').modal('show')
             }, 'json')
         })
+
 
         $('#categories-update-form').on('submit', function(e) {
             $.ajaxSetup({
@@ -726,7 +797,6 @@
                 },
 
                 success: function(data) {
-                    console.log(data)
                     if (data.code == 0) {
                         $.each(data.error, function(prefix, val) {
                             $(form).find('span.' + prefix + '_error').text(val[0])
@@ -747,7 +817,6 @@
         });
 
         var table = $('#categories-table').DataTable();
-        console.log(table.rows().data())
         $(document).on('click', '#subcategories', function(e) {
             e.preventDefault()
             var tr = $(this).closest("tr");
@@ -835,7 +904,6 @@
             for (let i = 0; i < data.details.length; i++) {
                 $('.editsubcategoryModal').find('input[name="editsubcategory_id"]').val(data.details[i]
                     .id)
-                console.log($('.editsubcategoryModal').find('input[name="editsubcategory_id"]'))
                 $('.editsubcategoryModal').find('input[name="editsubcategory_name"]').val(data.details[
                         i]
                     .category_name)
@@ -873,7 +941,7 @@
             },
 
             success: function(data) {
-                console.log(data)
+
                 if (data.code == 0) {
                     $.each(data.error, function(prefix, val) {
                         $(form).find('span.' + prefix + '_error').text(val[0])
@@ -898,7 +966,7 @@
         });
 
         var subcategory_id = $(this).data('id')
-        console.log(subcategory_id)
+
         var url = '<?= route('subcategories.delete') ?>';
 
         swal.fire({
@@ -917,7 +985,7 @@
                 $.post(url, {
                     subcategory_id: subcategory_id
                 }, function(data) {
-                    console.log(data.code)
+
                     if (data.code === 10) {
                         Swal.fire({
                             icon: 'error',
@@ -940,4 +1008,55 @@
 
 
     })
+</script>
+
+<script>
+    $(function() {
+        $('#toggle-two').bootstrapToggle({
+            on: 'Enabled',
+            off: 'Disabled'
+        });
+    })
+</script>
+
+<script>
+    $(document).on('change', '#disableCategory', function(e) {
+        e.preventDefault()
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        var status = $(this).prop('checked') == true ? 1 : 0;
+        var category_id = $(this).data('id');
+        $.ajax({
+            type: 'POST',
+            dataType: 'JSON',
+            url: '{{ route('changeCategoryStatus') }}',
+            data: {
+                'status': status,
+                'category_id': category_id
+            },
+            success: function(data) {
+                if (data.code == 1) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Successfully updated category status',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    $('#categories-table').DataTable().ajax.reload(null, false)
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong!',
+                        footer: '<a href="">Why do I have this issue?</a>'
+                    })
+                }
+            }
+        });
+    });
 </script>

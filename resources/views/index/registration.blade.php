@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="mdb/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('mdb/css/bootstrap.min.css') }}">
     <!-- Material Design Bootstrap -->
-    <link rel="stylesheet" href="mdb/css/mdb.min.css">
+    <link rel="stylesheet" href="{{ asset('mdb/css/mdb.min.css') }}">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
@@ -159,6 +159,8 @@
                                 {{ session()->get('danger') }}
                             </div>
                         @endif
+
+                        <input type="hidden" name="warehouse_id" id="warehouse_id" value="{{ $warehouse_id }}">
 
                         <div id="step_1_validation" style="display: none" class="alert alert-danger" role="alert">
                             Please fill out the form

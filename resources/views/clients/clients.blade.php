@@ -258,7 +258,7 @@
                 @else
                     <a style="text-decoration: none" class="nav_link" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
-                                                                                                                                                     document.getElementById('logout-form').submit();">
+                                                                                                                                                             document.getElementById('logout-form').submit();">
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
@@ -274,6 +274,19 @@
 
     <div class="container">
 
+        @if (session()->has('success'))
+            <div class="alert alert-success">
+                {{ session()->get('success') }}
+            </div>
+        @endif
+
+        @if (session()->has('danger'))
+            <div class="alert alert-success">
+                {{ session()->get('danger') }}
+            </div>
+        @endif
+
+
         <div class="card">
             <h3 class="card-header">
                 Clients
@@ -281,7 +294,7 @@
                 {{-- <a style="float: right" href="{{ route('client.view') }}" title="Add new client"><i
                         class="bi bi-plus-square"></i></a> --}}
 
-                <a style="float: right" href="{{ url('c-reg') }}" title="Add new client"><i
+                <a style="float: right" href="{{ url('c-reg/warehouse', [$warehouse_id]) }}" title="Add new client"><i
                         class="bi bi-plus-square"></i></a>
             </h3>
 
