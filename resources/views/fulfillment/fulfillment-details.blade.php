@@ -284,13 +284,13 @@ integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amn
                         <h2 class="mb-0 font-weight-bold">TOTAL PAID</h2>
                     </div>
                     <div class="col-auto my-auto ml-auto">
-                        <h1 class="display-3 ">&#8377; 5,528</h1>
+                        <h1 class="display-3 ">&#8360; 5,528</h1>
                     </div>
                 </div>
                 <div class="row mb-3 mt-3 mt-md-0">
-                    <div class="col-auto border-line"> <small class="text-white">PAN:AA02hDW7E</small></div>
+                    {{-- <div class="col-auto border-line"> <small class="text-white">PAN:AA02hDW7E</small></div>
                     <div class="col-auto border-line"> <small class="text-white">CIN:UMMC20PTC </small></div>
-                    <div class="col-auto "><small class="text-white">GSTN:268FD07EXX </small> </div>
+                    <div class="col-auto "><small class="text-white">GSTN:268FD07EXX </small> </div> --}}
                 </div>
             </div>
         </div>
