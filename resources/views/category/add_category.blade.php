@@ -250,14 +250,14 @@
                         <span class="nav_name">Vendors</span>
                     </a>
 
-                    <a title="categories" style="text-decoration: none" href="{{ route('units') }}"
+                    <a title="Units" style="text-decoration: none" href="{{ route('units') }}"
                         class="nav_link">
                         <i class="bi bi-card-list nav_icon"></i>
                         <span class="nav_name">Units</span>
                     </a>
 
 
-                    <a title="categories" style="text-decoration: none" href="{{ url('add-categories') }}"
+                    <a title="Categories" style="text-decoration: none" href="{{ url('add-categories') }}"
                         class="nav_link">
                         <i class="bi bi-card-list nav_icon"></i>
                         <span class="nav_name">Categories</span>
@@ -280,7 +280,7 @@
             @else
                 <a style="text-decoration: none" class="nav_link" href="{{ route('logout') }}"
                     onclick="event.preventDefault();
-                                                                                                                                                                                                                                                                                             document.getElementById('logout-form').submit();">
+                                                                                                                                                                                                                                                                                                                                 document.getElementById('logout-form').submit();">
 
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf
@@ -354,6 +354,7 @@
 @include('category.add_category_model')
 @include('category.add_subcategory_modal')
 @include('category.subcategories')
+@include('category.editSubCategories')
 <script>
     document.addEventListener("DOMContentLoaded", function(event) {
 
@@ -559,7 +560,7 @@
 
             swal.fire({
                 title: 'Are you sure?',
-                html: 'You want to <b>delete<b/> this vendor',
+                html: 'You want to <b>delete<b/> this category',
                 showCancelButton: true,
                 showCloseButton: true,
                 cancelButtonText: 'Cancel',
@@ -573,6 +574,15 @@
                     $.post(url, {
                         delete_id: delete_id
                     }, function(data) {
+                        if (data.code == 10) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Sorry you cannot delete this category, some product may associate with this category!',
+                                footer: '<a href="">Why do I have this issue?</a>'
+                            })
+                        }
+
                         if (data.code == 1) {
                             $('#categories-table').DataTable().ajax.reload(null, false)
                             toastr.success(data.msg)
@@ -638,7 +648,7 @@
                 swal.fire({
                     title: 'Are you sure?',
                     html: 'You want to delete <b>(' + checkedCategories.length +
-                        ')<b/> vendors',
+                        ')<b/> categories',
                     showCancelButton: true,
                     showCloseButton: true,
                     cancelButtonText: 'Cancel',
@@ -652,12 +662,22 @@
                         $.post(url, {
                             category_ids: checkedCategories
                         }, function(data) {
-                            if (data.code == 1) {
-                                $('#categories-table').DataTable().ajax.reload(null,
-                                    false)
-                                toastr.success(data.msg)
+
+                            if (data.code == 10) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'Sorry you cannot delete these categories, some product may associate with these categories!',
+                                    footer: '<a href="">Why do I have this issue?</a>'
+                                })
                             } else {
-                                toastr.error(data.msg)
+                                if (data.code == 1) {
+                                    $('#categories-table').DataTable().ajax.reload(null,
+                                        false)
+                                    toastr.success(data.msg)
+                                } else {
+                                    toastr.error(data.msg)
+                                }
                             }
                         }, 'json')
                     }
@@ -768,11 +788,15 @@
                 data: {
                     category_id: category_id
                 },
-                success: function(data){
+                success: function(data) {
                     for (let i = 0; i < data.details.length; i++) {
-                    det += 
-                            '<tr>' +
-                            '<td>'+data.details[i]['category_name'] +'</td>' +
+                        det +=
+                            '<tr>' + '<td>' + data.details[i]['category_name'] + '</td>' + '<td>' +
+                            '<div class="btn-group"> <a id="subcategory_edit" data-id="' + data
+                            .details[i]['id'] +
+                            '" class="btn btn-success btn-sm">Edit</a> <a id="deleteSubCategory" data-id="' +
+                            data.details[i]['id'] +
+                            '" class="btn btn-danger btn-sm">Delete</a>  </div>' + '</td>' +
                             '</tr>';
                     }
                     $('.subCategory').find('table tbody').html(det)
@@ -784,12 +808,136 @@
 
         }
 
-        $('#modalCloseSubCat').on('click', function(e){
+        $('#modalCloseSubCat').on('click', function(e) {
             e.preventDefault()
             $('.subCategory').modal('hide')
         })
 
 
-
     });
+</script>
+
+<script>
+    $(document).on('click', '#subcategory_edit', function(e) {
+        e.preventDefault()
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        var subcategory_id = $(this).data('id')
+        $('.editsubcategoryModal').find('form')[0].reset()
+        $('.editsubcategoryModal').find('span.error-text').text('')
+        $.post('<?= route('subcategories.edit') ?>', {
+            subcategory_id: subcategory_id
+        }, function(data) {
+            // alert(data.details.vend_name)
+            for (let i = 0; i < data.details.length; i++) {
+                $('.editsubcategoryModal').find('input[name="editsubcategory_id"]').val(data.details[i]
+                    .id)
+                console.log($('.editsubcategoryModal').find('input[name="editsubcategory_id"]'))
+                $('.editsubcategoryModal').find('input[name="editsubcategory_name"]').val(data.details[
+                        i]
+                    .category_name)
+                $('.editsubcategoryModal').find('input[name="parent_id"]').val(data.details[i]
+                    .parent_id)
+                $('.editsubcategoryModal').modal('show')
+            }
+        }, 'json')
+
+    })
+
+    $('#modalCloseSubCatEdit').on('click', function(e) {
+        e.preventDefault()
+        $('.editsubcategoryModal').modal('hide')
+    })
+
+
+    $('#editsubcategories-update-form').on('submit', function(e) {
+        e.preventDefault()
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        var form = this;
+        $.ajax({
+            url: $(form).attr('action'),
+            method: $(form).attr('method'),
+            data: new FormData(form),
+            processData: false,
+            dataType: 'json',
+            contentType: false,
+            beforeSend: function() {
+                $(form).find('span.error-text').text('');
+            },
+
+            success: function(data) {
+                console.log(data)
+                if (data.code == 0) {
+                    $.each(data.error, function(prefix, val) {
+                        $(form).find('span.' + prefix + '_error').text(val[0])
+                    });
+                } else {
+                    $('.editsubcategoryModal').modal('hide')
+                    $('.editsubcategoryModal').find('form')[0].reset()
+                    toastr.success(data.msg)
+                    window.location.href = window.location.href
+                }
+            }
+        })
+
+    })
+
+    $(document).on('click', '#deleteSubCategory', function() {
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        var subcategory_id = $(this).data('id')
+        console.log(subcategory_id)
+        var url = '<?= route('subcategories.delete') ?>';
+
+        swal.fire({
+            title: 'Are you sure?',
+            html: 'You want to <b>delete<b/> this subcategory',
+            showCancelButton: true,
+            showCloseButton: true,
+            cancelButtonText: 'Cancel',
+            confirmButtonText: 'Yes, Delete',
+            cancelButtonColor: '#d33',
+            confirmButtonColor: '#556ee6',
+            width: 300,
+            allowOutsideClick: false
+        }).then(function(result) {
+            if (result.value) {
+                $.post(url, {
+                    subcategory_id: subcategory_id
+                }, function(data) {
+                    console.log(data.code)
+                    if (data.code === 10) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Sorry you cannot delete the subcategory, some product may associate with this subcategory!',
+                            footer: '<a href="">Why do I have this issue?</a>'
+                        })
+                    } else {
+                        if (data.code == 1) {
+                            toastr.success(data.msg)
+                            window.location.href = window.location.href
+                        } else {
+                            toastr.error(data.msg)
+                        }
+                    }
+                }, 'json')
+            }
+        })
+
+
+
+    })
 </script>

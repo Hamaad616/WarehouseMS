@@ -9,9 +9,13 @@ use App\Mail\SendMail;
 use App\Models\Vendor;
 use App\Models\clients;
 use App\Models\categories;
+use App\Models\Warehouses;
+use App\Models\product_item;
+use App\Models\requisitions;
 use Illuminate\Http\Request;
 use App\Models\clientProducts;
 use Illuminate\Support\Facades\DB;
+use App\Models\stocked_in_products;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -390,6 +394,52 @@ class MainController extends Controller
         return response()->json(['details' => $categories]);
     }
 
+    public function editSubCats(Request $request)
+    {
+        $subcategory = $request->subcategory_id;
+        $subcategories = categories::where('id', '=', $subcategory)->get();
+        return response()->json(['details' => $subcategories]);
+    }
+
+    public function updateSubCats(Request $request)
+    {
+
+        $subcategory_id = $request->editsubcategory_id;
+        $validator = Validator::make($request->all(), [
+            'editsubcategory_name' => 'required',
+        ]);
+
+        if (!$validator->passes()) {
+            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+        } else {
+            $category = categories::find($subcategory_id);
+            $category->category_name = $request->editsubcategory_name;
+            $query = $category->update();
+
+            if ($query) {
+                return response()->json(['code' => 1, 'msg' => 'Successfully updated subcategory details']);
+            } else {
+                return response()->json(['code' => 0, 'msg' => 'Something went wrong try again']);
+            }
+        }
+    }
+
+    public function deleteSubcategory(Request $request)
+    {
+        $subcategory_id = $request->subcategory_id;
+        $count = DB::table('product_item')->where('subcategory_id', $subcategory_id)->get();
+        if (count($count) > 0) {
+            return response()->json(['code' => 10]);
+        } else {
+            $query = categories::where('id', $subcategory_id)->delete();
+            if ($query) {
+                return response()->json(['code' => 1, 'msg' => 'Successfully deleted subcategory record']);
+            } else {
+                return response()->json(['code' => 0, 'msg' => 'Something went wrong try again after some time']);
+            }
+        }
+    }
+
     public function addCategoriesForm(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -403,7 +453,7 @@ class MainController extends Controller
             $query = DB::insert('insert into categories (category_name) values (?)', [$request->category_name]);
 
             if ($query) {
-                return response()->json(['code' => 1, 'msg' => 'Successfully update category']);
+                return response()->json(['code' => 1, 'msg' => 'Successfully created category']);
             } else {
                 return response()->json(['code' => 0, 'msg' => 'Something went wrong try again']);
             }
@@ -464,19 +514,29 @@ class MainController extends Controller
     public function deleteCategories(Request $request)
     {
         $category_id = $request->delete_id;
-        $query = categories::find($category_id)->delete();
-        if ($query) {
-            return response()->json(['code' => 1, 'msg' => 'Successfully deleted vendor record']);
+        $count = DB::table('product_item')->where('category_id', $category_id)->get();
+        if (count($count) > 0) {
+            return response()->json(['code' => 10, 'msg' => 'Something went wrong try again after some time']);
         } else {
-            return response()->json(['code' => 0, 'msg' => 'Something went wrong try again after some time']);
+            $query = categories::find($category_id)->delete();
+            if ($query) {
+                return response()->json(['code' => 1, 'msg' => 'Successfully deleted category record']);
+            } else {
+                return response()->json(['code' => 0, 'msg' => 'Something went wrong try again after some time']);
+            }
         }
     }
 
     public function deleteCategorySelected(Request $request)
     {
         $category_id = $request->category_ids;
-        categories::whereIn('id', $category_id)->delete();
-        return response()->json(['code' => 1, 'msg' => 'Successfully deleted vendor records']);
+        $count = categories::whereIn('category_id', $category_id)->get();
+        if (count($count) > 0) {
+            return response()->json(['code' => 10, 'msg' => 'Something went wrong try again after some time']);
+        } else {
+            categories::whereIn('id', $category_id)->delete();
+            return response()->json(['code' => 1, 'msg' => 'Successfully deleted categories']);
+        }
     }
 
 
@@ -548,7 +608,7 @@ class MainController extends Controller
             $unit = units::find($unit_id);
             $unit->unit_name = $request->unit_name;
             $unit->update();
-            return response()->json(['code' => 1, 'msg' => 'Successfully updated category']);
+            return response()->json(['code' => 1, 'msg' => 'Successfully updated unit']);
         }
     }
 
@@ -556,11 +616,16 @@ class MainController extends Controller
     public function deleteUnit(Request $request)
     {
         $unit_id = $request->delete_id;
-        $query = units::find($unit_id)->delete();
-        if ($query) {
-            return response()->json(['code' => 1, 'msg' => 'Successfully deleted unit']);
-        } else {
-            return response()->json(['code' => 0, 'msg' => 'Something went wrong try again after some time']);
+        $count = DB::table('product_item')->where('unit_id', $unit_id)->get();
+        if (count($count) > 0) {
+            return response()->json(['code' => 10, 'msg' => 'Something went wrong try again after some time']);
+        }else{
+            $query = units::find($unit_id)->delete();
+            if ($query) {
+                return response()->json(['code' => 1, 'msg' => 'Successfully deleted unit']);
+            } else {
+                return response()->json(['code' => 0, 'msg' => 'Something went wrong try again after some time']);
+            }
         }
     }
 
@@ -568,8 +633,13 @@ class MainController extends Controller
     public function deleteSelectedUnits(Request $request)
     {
         $selectedUnits = $request->unit_ids;
-        units::whereIn('id', $selectedUnits)->delete();
-        return response()->json(['code' => 1, 'msg' => "Successfully deleted selected units"]);
+        $count = product_item::whereIn('unit_id', $selectedUnits)->get();
+        if (count($count) > 0) {
+            return response()->json(['code' => 10, 'msg' => 'Something went wrong try again after some time']);
+        } else {
+            units::whereIn('id', $selectedUnits)->delete();
+            return response()->json(['code' => 1, 'msg' => "Successfully deleted selected units"]);
+        }
     }
 
 
@@ -950,6 +1020,21 @@ class MainController extends Controller
         return view('mdb.index', ['id' => $sch_id, 'shname' => $schname, 'users' => $users, 'user_other_details' => $user_other_details, 'legal_types' => $legal_types, 'sch_id' => $sch_id]);
     }
 
+    public function fulfillmentsIndex($client_id)
+    {
+        $fulfillments = DB::table('requisition')->where('sch_id', $client_id)->get();
+        $clients = clients::where('sch_id', $client_id)->first();
+        $client_warehouse = Warehouses::where('wh_id', $clients->warehouse_id)->first();
+        return view('fulfillment.fulfillments', ['fulfillments' => $fulfillments, 'client_id' => $client_id, 'client_warehouse' => $client_warehouse]);
+    }
+
+    public function getPoDetails($req_id)
+    {
+        $requisitions = requisitions::where('req_id', $req_id)->get();
+        $requisition_details = DB::table('requisition_details')->where('req_id', $req_id)->get();
+        return view('fulfillment.fulfillment-details', ['req_id' => $req_id, 'requisitions' => $requisitions, 'requisition_details' => $requisition_details]);
+    }
+
     public function clientFulfillment($client_id)
     {
         $client_products = clientProducts::all();
@@ -965,20 +1050,27 @@ class MainController extends Controller
         $last_req_id = DB::getPDO()->lastInsertId();
         $arrayLength = count($request->product_name);
         for ($col = 0; $col < $arrayLength; $col++) {
-
             $product_code = $request->product_code[$col];
             $product_quantity = $request->product_quantity[$col];
+
+            $data = stocked_in_products::where('product_id', '=' ,$product_code)->first();
+            $its = stocked_in_products::find($data->its_id);
+            $x = $its->quantity;
+            $y = $request->product_quantity[$col];
+            $sub = $x-$y;
+            $its->quantity = $sub;
+            $its->update();
             $users2 = DB::select("INSERT INTO `requisition_details` (`req_id` ,`product_code`, `quantity`) VALUES ('$last_req_id','$product_code','$product_quantity')");
         }
-
         return response()->json(['code' => 1, 'msg' => 'Successfully created requisition']);
     }
 
-    public function searchProduct(Request $request){
+    public function searchProduct(Request $request)
+    {
         $code = $request->search_code;
         $client_id = $request->client_id;
 
-        $client_product = DB::table('product_item')->where('client_id', $client_id)->where('pitem_code', $code)->get();
+        $client_product = DB::table('product_item')->where('client_id', $client_id)->where('pitem_code', 'like', '%' . $code . '%')->get();
         return response()->json(['details' => $client_product]);
     }
 
@@ -1230,7 +1322,7 @@ class MainController extends Controller
     public function clientItemAddView($client_id)
     {
 
-        $categories = DB::select('select * from categories');
+        $categories = DB::table('categories')->where('parent_id', 0)->get();
         $units = DB::select('select * from units');
         return view('clients.item-add', ['sch_id' => $client_id, 'categories' => $categories, 'units' => $units]);
     }
@@ -1272,7 +1364,7 @@ class MainController extends Controller
 
 
 
-        return redirect()->back();
+        return redirect()->to(route('client-details', $client_id));
     }
 
     public function getItemEditView($pitem_id)
@@ -1640,7 +1732,7 @@ FROM `item_stock`,grn_details,grn WHERE item_stock.flag='in' and item_stock.its_
         $lgn_id = Auth::user()->id;
         $lgn_flag = 1;
         $lgn_sch = $request->client_id;
-        $valuebarcode = $request->code;
+        $valuebarcode = $request->product_code;
         $p_qty       = $request->quantity;
         $space_occupied = $request->item_space;
 

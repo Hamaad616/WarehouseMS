@@ -296,7 +296,7 @@
     <div class="card shadow-lg p-3 mb-5 bg-body rounded border-0">
         <div class="card-body">
 
-            <form id="fulfillment-form" method="post" enctype="multipart/form-data">
+            <form id="fulfillment-form" method="POST" enctype="multipart/form-data" >
                 @csrf
                 <input id="client_id" type="hidden" value="{{ $client_id }}">
 

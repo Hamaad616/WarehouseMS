@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\categories;
+use App\Models\product_item;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -143,11 +144,31 @@ Route::get('subcategories/{category_id}', function($category_id){
 });
 
 Route::post('get-subcategories', [MainController::class, 'getSubCats'])->name('subcategories.get');
+Route::post('edit-subcategories', [MainController::class, 'editSubCats'])->name('subcategories.edit');
+Route::post('update-subcategories', [MainController::class, 'updateSubCats'])->name('categories.edit-subcategory');
+Route::post('delete-subcategory', [MainController::class, 'deleteSubcategory'])->name('subcategories.delete');
+
+Route::get('checkCategoryExistsOrNot', function(){
+
+    $selectedUnits = [6,7,9,8];
+    $count = product_item::whereIn('unit_id', $selectedUnits)->get();
+    dump(count($count));
+    if(count($count)>0){
+        dump($count);
+        echo "Product has this category";
+    }
+    else{
+        echo "Product does not has this category";
+    }
+
+});
 
 Route::get('/client-fulfillment/{client_id}', [MainController::class, 'clientFulfillment'])->name('client.fulfillment');
 // Route::post('client-all-products', [MainController::class, 'clientAllProducts'])->name('client.all-products');
 
 Route::post('create-client-fulfillment', [MainController::class, 'createClientFulfillment'])->name('client.create-fulfillment');
+Route::get('fulfillments/{client_id}', [MainController::class, 'fulfillmentsIndex'])->name('fulfillments');
+Route::get('get-po-details/{req_id}', [MainController::class, 'getPoDetails'])->name('po.details');
 
 Route::get('searchProduct', [MainController::class, 'searchProduct'])->name('searchProduct');
 

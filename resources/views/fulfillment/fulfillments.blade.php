@@ -2,11 +2,24 @@
 
 @section('content')
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ asset('datatables/css/dataTables.bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('datatables/css/dataTables.bootstrap5.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('sweetalert/sweetalert2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('toastr/toastr.min.css') }}">
+
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
     <script src="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('datatables/js/dataTables.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('sweetalert/sweetalert2.min.js') }}"></script>
+    <script src="{{ asset('toastr/toastr.min.js') }}"></script>
 
     <style>
         @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
@@ -134,7 +147,7 @@
             font-size: 1.25rem
         }
 
-        .show {
+        .show1 {
             left: 0
         }
 
@@ -184,13 +197,30 @@
                 padding: 1rem 1rem 0 0
             }
 
-            .show {
+            .show1 {
                 width: calc(var(--nav-width) + 156px)
             }
 
             .body-pd {
                 padding-left: calc(var(--nav-width) + 188px)
             }
+        }
+
+        #style-1::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            background-color: #F5F5F5;
+        }
+
+        #style-1::-webkit-scrollbar {
+            width: 12px;
+            background-color: #F5F5F5;
+        }
+
+        #style-1::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+            background-color: rgb(179, 174, 174);
         }
 
     </style>
@@ -215,14 +245,26 @@
                             <span class="nav_name">Warehouses</span>
                         </a>
 
-                        <a style="text-decoration: none" href="{{ url('client-details') }}" class="nav_link">
+                        <a style="text-decoration: none" href="{{ url('clients-home') }}" class="nav_link">
                             <i class='bx bx-user nav_icon'></i>
                             <span class="nav_name">Clients</span> </a>
 
 
-                        <a style="text-decoration: none" href="{{ route('categories') }}" class="nav_link">
+                        <a style="text-decoration: none" href="{{ route('vendors') }}" class="nav_link">
+                            <i class="bi bi-people nav_icon"></i>
+                            <span class="nav_name">Vendors</span>
+                        </a>
+
+
+
+                        <a style="text-decoration: none" href="{{ url('add-categories') }}" class="nav_link">
                             <i class="bi bi-card-list nav_icon"></i>
                             <span class="nav_name">Categories</span>
+                        </a>
+
+                        <a style="text-decoration: none" href="{{ route('units') }}" class="nav_link">
+                            <i class="bi bi-card-list nav_icon"></i>
+                            <span class="nav_name">Units</span>
                         </a>
 
 
@@ -245,7 +287,7 @@
                 @else
                     <a style="text-decoration: none" class="nav_link" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
-                                                                                                                                             document.getElementById('logout-form').submit();">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             document.getElementById('logout-form').submit();">
 
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
@@ -258,196 +300,51 @@
 
     </body>
 
-    <div class="modal-header">
-        <!--<span class=" label label-warning">Remaining = <?php //echo $rem;
-?>&nbsp;&nbsp;&nbsp;</span>-->
-        <h4 class="modal-title"><span class=" badge badge-info">GRN # <?php echo $grnd_id; ?></span>&nbsp;&nbsp;&nbsp;<span
-                class="badge badge-warning">Product barcode = <?php echo $grnd_code; ?></span>&nbsp;&nbsp;&nbsp;<span
-                class="badge badge-success">Total Qty = <?php echo $qty; ?></span>&nbsp;&nbsp;&nbsp;<span
-                class=" badge badge-secondary"> Length = <?php echo $length; ?></span>&nbsp;&nbsp;&nbsp;</span><span
-                class=" badge badge-danger"> Width = <?php echo $pwidth = $width; ?>&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;&nbsp;<span
-                class="badge badge-primary"> Height = <?php echo $height; ?></span>&nbsp;&nbsp;&nbsp;<span
-                class=" badge badge-info"> Cuft = <?php echo $length * $height * $width; ?></span></h4>
+    <div class="card shadow-lg p-3 mb-5 bg-body rounded border-0">
+        <div class="card-body">
+            <h5 class="card-title">Requisitions made by <?php $client_names = DB::table('clients')
+    ->where('sch_id', $client_id)
+    ->select('*')
+    ->get(); ?>@foreach ($client_names as $client_name)
+                    <b>{{ strtoupper($client_name->sch_name) }}</b>
+                @endforeach</h5>
 
-    </div>
-
-
-    <div class="modal-body">
-
-        <div class="container">
-            <div class="row">
-
-
-
-                <div class="col-md-4" style="margin-top:20px;">
-                    <form id="add_name" method="post">
-
-                        {{ csrf_field() }}
-
-                        <div class="form-group">
-                            <label class="control-label " for="">Product Code</label>
-                            <input class="form-control" name="product_code" id="code" required="required"
-                                value="{{ $grnd_code }}" readonly="readonly">
-                            <input class="form-control" type="hidden" name="grnd_id" id="grn_id"
-                                value="{{ $grnd_id }}">
-                            <input class="form-control" type="hidden" name="code" value="{{ $grnd_code }}">
-                            <input class="form-control" type="hidden" name="client_id" value="{{ $sch_id }}">
-                            <input type="hidden" class="form-control" name="product_name" value="{{ $product_name }}">
-                        </div>
-
-
-                        <div class="form-group">
-                            <label class="control-label " for="">Quantity</label>
-                            <input class="form-control" name="quantity" required id="quantity"
-                                onblur="grnqty_function({{ $rem }});" value="<?php echo $qty; ?>">
-                            <span></span>
-                        </div>
-
-
-
-
-
-
-
-                        <div class="form-group">
-
-                            <input type="hidden" name="grnd_id" class="form-control" required
-                                value="{{ $grnd_id }}">
-                            <input type="hidden" name="rem" class="form-control" required value="{{ $rem }}">
-                            <label class="control-label" for="">Item size in CUFT</label>
-                            <input class="form-control" type="text" name="item_space" id="item_size"
-                                onblur="check_rack_size()" value="{{ $length * $height * $width }}">
-                            <label class="control-label" for="">Rack Code</label>
-                            <input type="text" name="rk_code" id="rk_code" class="form-control" required
-                                onblur="check_rack();" value="">
-                            <span></span>
-                        </div>
-                        <div class="modal-footer">
-                            <input type="button" name="submit" id="submit" class="btn btn-info btn-md" value="Submit"
-                                onclick="Submit_stock();" />
-                            <button type="button" class="btn btn-danger"
-                                onclick="javascript:window.history.back()">Cancel</button>
-                        </div>
-                    </form>
-
-                </div>
-
+            <div class="table-responsive">
+                <table id="example" class="table table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Sr#</th>
+                            <th>Warehouse</th>
+                            <th>PO</th>
+                            <th>Mode</th>
+                            <th>Requisition Made At</th>
+                            <th>Delivery Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $count = 1; ?>
+                        @foreach ($fulfillments as $fulfillment)
+                            <tr>
+                                <td><?php echo $count; ?></td>
+                                <td>{{ $client_warehouse->wh_name }}</td>
+                                <td> <a
+                                        href="{{ route('po.details',[$fulfillment->req_id]) }}">{{ $fulfillment->po }}</a>
+                                </td>
+                                <td>
+                                    @if ($fulfillment->mode == 2) <span>courier @if ($fulfillment->courier == 1) <span>(TCS)</span> @endif @if ($fulfillment->courier == 2) <span>(M&P)</span> @endif @if ($fulfillment->courier == 3) <span>(Leopard)</span> @endif</span> @else By hand @endif
+                                </td>
+                                <td>{{ $fulfillment->req_created_date_time }}</td>
+                                <td>{{ $fulfillment->deleivery_date_time }}</td>
+                            </tr>
+                            <?php $count++; ?>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
+
         </div>
+
     </div>
-    </div>
-
-
-    <script>
-        function grnqty_function(rem) {
-            //        var quantity   = $('#qty').val();
-            var quantity = document.getElementById('quantity').value;
-
-
-            if (quantity <= rem) {
-                username_state = true;
-                $('#quantity').parent().removeClass();
-                $('#quantity').parent().addClass("form_success");
-                $('#quantity').siblings("span").text('Yes Product Qty Available');
-                document.getElementById("xxx").disabled = false;
-
-
-            } else {
-                username_state = false;
-                $('#quantity').parent().removeClass();
-                $('#quantity').parent().addClass("form_error");
-                $('#quantity').siblings("span").text('Sorry... Product Qty Greater then Remaining Qty ');
-                document.getElementById("xxx").disabled = true;
-            }
-
-        }
-
-        function check_rack() {
-            var code1 = $('#rk_code').val();
-            var item_size = $('#item_size').val();
-            alert(code1)
-            //document.write(code1);
-            $.ajax({
-                url: '{{ route('check_rack') }}',
-                type: "GET",
-                data: {
-                    'rk_code': code1,
-                    'item_size': item_size
-                },
-                success: function(data) {
-
-
-                    $('#rk_code').parent().removeClass();
-                    $('#rk_code').parent().addClass("form_error");
-                    $('#rk_code').siblings("span").text(data);
-
-                    // if(data != null){
-                    //     $('#check_rack').show();
-                    //     $('#check_rack').html('Found');
-                    // }
-                    // else{
-                    //     $('#check_rack').hide();
-                    //     $('#check_rack_false').show();
-                    //     $('#check_rack').html('Not found'); 
-                    // }
-
-                }
-            });
-
-        }
-
-        function check_rack_size() {
-            var code1 = $('#rk_code').val();
-            var item_size = $('#item_size').val();
-            //document.write(code1);
-            $.ajax({
-                url: '{{ route('check_rack_size') }}',
-                type: "GET",
-                data: {
-                    'rk_code': code1,
-                    'item_size': item_size
-                },
-                success: function(data) {
-
-                    if (data == 0) {
-                        $('#submit').prop('disabled', true)
-                        $('#rk_code').siblings("span").text("Sorry the item size exceeded the rack size");
-                        $("#item_size").css("border-color", "#FF0000 "); //red
-                    } else {
-                        $('#submit').prop('disabled', false)
-                        $('#rk_code').parent().removeClass();
-                        $('#rk_code').parent().addClass("form_error");
-                        $("#item_size").css("border-color", "#00CC00"); //green
-                        $('#rk_code').siblings("span").text("Item can be added to rack");
-                        // if(data != null){
-                        //     $('#check_rack').show();
-                        //     $('#check_rack').html('Found');
-                        // }
-                        // else{
-                        //     $('#check_rack').hide();
-                        //     $('#check_rack_false').show();
-                        //     $('#check_rack').html('Not found'); 
-                        // }
-
-                    }
-                }
-            });
-
-        }
-
-        function Submit_stock() {
-
-            $.ajax({
-                url: '{{ route('confirm-grn') }}',
-                type: "get",
-                data: $('#add_name').serialize(),
-                success: function(data) {
-                    alert(data);
-                }
-            });
-        }
-    </script>
-
 
 
     <script>
@@ -457,17 +354,13 @@
                 const toggle = document.getElementById(toggleId),
                     nav = document.getElementById(navId),
                     bodypd = document.getElementById(bodyId),
-
                     headerpd = document.getElementById(headerId)
 
                 // Validate that all variables exist
-
                 if (toggle && nav && bodypd && headerpd) {
                     toggle.addEventListener('click', () => {
-
-
                         // show navbar
-                        nav.classList.toggle('show')
+                        nav.classList.toggle('show1')
                         // change icon
                         toggle.classList.toggle('bx-x')
                         // add padding to body
@@ -494,4 +387,16 @@
             // Your code to run since DOM is loaded and ready
         });
     </script>
+
+    <script>
+        $('#f1').DataTable()
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#example').DataTable();
+        });
+    </script>
+
+
 @endsection

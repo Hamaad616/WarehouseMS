@@ -15,10 +15,11 @@
 
             <div class="modal-body">
 
-                <table class="table table-reponsive table-condensed">
+                <table class="table table-reponsive table-condensed table-bordered" id="subcategories_table">
 
                     <thead>
                         <th>Subcategory Name</th>
+                        <th>Actions</th>
                     </thead>
 
                     <tbody>

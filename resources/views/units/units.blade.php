@@ -10,10 +10,6 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-
-
 <style>
     @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
 
@@ -244,24 +240,24 @@
                     <a style="text-decoration: none" href="{{ url('clients-home') }}" class="nav_link">
                         <i class='bx bx-user nav_icon'></i>
                         <span class="nav_name">Clients</span> </a>
-                        <a style="text-decoration: none" href="{{ route('vendors') }}" class="nav_link">
-                            <i class="bi bi-people nav_icon"></i>
-                            <span class="nav_name">Vendors</span>
-                        </a>
+                    <a style="text-decoration: none" href="{{ route('vendors') }}" class="nav_link">
+                        <i class="bi bi-people nav_icon"></i>
+                        <span class="nav_name">Vendors</span>
+                    </a>
 
-                        <a title="categories" style="text-decoration: none" href="{{ route('units') }}"
-                            class="nav_link">
-                            <i class="bi bi-card-list nav_icon"></i>
-                            <span class="nav_name">Units</span>
-                        </a>
+                    <a title="Units" style="text-decoration: none" href="{{ route('units') }}"
+                        class="nav_link">
+                        <i class="bi bi-card-list nav_icon"></i>
+                        <span class="nav_name">Units</span>
+                    </a>
 
 
-                        <a title="categories" style="text-decoration: none" href="{{ url('add-categories') }}"
-                            class="nav_link">
-                            <i class="bi bi-card-list nav_icon"></i>
-                            <span class="nav_name">Categories</span>
-                        </a>
-                    
+                    <a title="Categories" style="text-decoration: none" href="{{ url('add-categories') }}"
+                        class="nav_link">
+                        <i class="bi bi-card-list nav_icon"></i>
+                        <span class="nav_name">Categories</span>
+                    </a>
+
                 </div>
             </div>
             @guest
@@ -280,7 +276,7 @@
             @else
                 <a style="text-decoration: none" class="nav_link" href="{{ route('logout') }}"
                     onclick="event.preventDefault();
-                                                                                                                                                                                                                                                                                             document.getElementById('logout-form').submit();">
+                                                                                                                                                                                                                                                                                                             document.getElementById('logout-form').submit();">
 
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf
@@ -495,7 +491,7 @@
 
             swal.fire({
                 title: 'Are you sure?',
-                html: 'You want to <b>delete<b/> this vendor',
+                html: 'You want to <b>delete<b/> this unit',
                 showCancelButton: true,
                 showCloseButton: true,
                 cancelButtonText: 'Cancel',
@@ -509,11 +505,20 @@
                     $.post(url, {
                         delete_id: delete_id
                     }, function(data) {
-                        if (data.code == 1) {
-                            $('#units-table').DataTable().ajax.reload(null, false)
-                            toastr.success(data.msg)
+                        if (data.code === 10) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Sorry you cannot delete the unit, some product may associate with this unit!',
+                                footer: '<a href="">Why do I have this issue?</a>'
+                            })
                         } else {
-                            toastr.error(data.msg)
+                            if (data.code == 1) {
+                                $('#units-table').DataTable().ajax.reload(null, false)
+                                toastr.success(data.msg)
+                            } else {
+                                toastr.error(data.msg)
+                            }
                         }
                     }, 'json')
                 }
@@ -609,12 +614,21 @@
                         $.post(url, {
                             unit_ids: checkedUnits
                         }, function(data) {
-                            if (data.code == 1) {
-                                $('#units-table').DataTable().ajax.reload(null,
-                                    false)
-                                toastr.success(data.msg)
+                            if (data.code === 10) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: 'Sorry you cannot delete these units, some product may associate with these units!',
+                                    footer: '<a href="">Why do I have this issue?</a>'
+                                })
                             } else {
-                                toastr.error(data.msg)
+                                if (data.code == 1) {
+                                    $('#units-table').DataTable().ajax.reload(null,
+                                        false)
+                                    toastr.success(data.msg)
+                                } else {
+                                    toastr.error(data.msg)
+                                }
                             }
                         }, 'json')
                     }
@@ -623,7 +637,7 @@
         })
 
 
-        $('#unit-update-form').on('submit', function (e) { 
+        $('#unit-update-form').on('submit', function(e) {
 
 
             e.preventDefault();
@@ -649,7 +663,8 @@
                     console.log(data)
                     if (data.code == 0) {
                         $.each(data.error, function(prefix, val) {
-                            $(form).find('span.' + prefix + '_error').text(val[0])
+                            $(form).find('span.' + prefix + '_error').text(val[
+                                0])
                         });
                     } else {
                         $('#units-table').DataTable().ajax.reload(null, false)
@@ -661,7 +676,7 @@
             })
 
 
-         })
+        })
 
 
 

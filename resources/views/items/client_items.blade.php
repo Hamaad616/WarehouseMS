@@ -243,7 +243,7 @@
                             <span class="nav_name">Vendors</span>
                         </a>
 
-                        <a title="categories" style="text-decoration: none" href="{{ route('units') }}"
+                        <a title="units" style="text-decoration: none" href="{{ route('units') }}"
                             class="nav_link">
                             <i class="bi bi-card-list nav_icon"></i>
                             <span class="nav_name">Units</span>
@@ -256,16 +256,14 @@
                             <span class="nav_name">Categories</span>
                         </a>
 
+                        
+
                         <a class="nav_link dropdown-toggle" style="text-decoration: none" href="#StockDropdown"
                             aria-expanded="false" data-toggle="collapse">
                             <i class="bi bi-bar-chart-steps nav_icon"></i>
                             <span class="nav_name"><strong>Stock</strong></span>
                         </a>
 
-                        <a style="text-decoration: none" href="{{ route('client.fulfillment', ['client_id' => $sch_id]) }}" class="nav_link">
-                            <i class="bi bi-card-list nav_icon"></i>
-                            <span class="nav_name">Client Fulfillment</span>
-                        </a>
 
                         <li id="StockDropdown" class="collapse">
 
@@ -280,6 +278,16 @@
                             </a>
 
                         </li>
+
+                        <a style="text-decoration: none" href="{{ route('client.fulfillment', ['client_id' => $sch_id]) }}" class="nav_link">
+                            <i class="bi bi-card-list nav_icon"></i>
+                            <span class="nav_name">Create Fulfillment</span>
+                        </a>
+
+                        <a style="text-decoration: none" href="{{ route('fulfillments', ['client_id' => $sch_id]) }}" class="nav_link">
+                            <i class="bi bi-card-list nav_icon"></i>
+                            <span class="nav_name">Client Fulfillments</span>
+                        </a>
 
                         <a style="text-decoration: none" href="{{ url('billing', $sch_id) }}" class="nav_link">
                             <i class="bi bi-cash-stack nav_icon"></i>
@@ -367,7 +375,7 @@
                                 <td>{{ $client_item->in_code }}</td>
 
                                 <td>
-                                    {{ $client_item->length * $client_item->width * $client_item->height }}ft.
+                                    {{ ($client_item->length * $client_item->width * $client_item->height)/1728 }} cuft
                                 </td>
 
                                 <td>
