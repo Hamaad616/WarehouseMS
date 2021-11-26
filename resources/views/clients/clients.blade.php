@@ -217,7 +217,7 @@
                             <span class="nav_name">Warehouses</span>
                         </a>
 
-                        <a style="text-decoration: none" href="{{ url('clients-home') }}" class="nav_link">
+                        <a style="text-decoration: none" href="{{ url('clients-home/warehouse', [$warehouse_id]) }}" class="nav_link">
                             <i class='bx bx-user nav_icon'></i>
                             <span class="nav_name">Clients</span> </a>
 

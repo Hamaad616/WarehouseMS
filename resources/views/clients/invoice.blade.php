@@ -45,7 +45,7 @@
     @foreach ($stock_in_invoice as $sinvoice)
         <div class="card">
             <div class="card-header p-4">
-                <a class="pt-2 d-inline-block" href="{{ url('clients-home') }}" data-abc="true">Clients</a>
+                <a class="pt-2 d-inline-block btn btn-secondary text-white" data-abc="true" onclick="javascript:window.history.back()">Go back</a>
                 <div class="float-right">
                     <h3 class="mb-0">Invoice #{{ $sinvoice->invoice_number }}</h3>
                     Date: {{ date('d-m-Y', strtotime($sinvoice->created_at)) }}

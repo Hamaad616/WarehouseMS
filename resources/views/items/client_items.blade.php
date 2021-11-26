@@ -499,38 +499,10 @@
                                                                                         class="table table-bordered table-dark">
                                                                                         <tbody>
                                                                                             <tr>
-                                                                                                <td colspan="2"
-                                                                                                    >
-                                                                                                    <strong>Fee handling
-                                                                                                        Plan</strong>
+                                                                                                  
 
-                                                                                                    <?php $fee_plan = App\Http\Controllers\MainController::getFeePlan($sch_id); ?>
-                                                                                            <tr>
-                                                                                                <td>
-                                                                                                    @foreach ($fee_plan as $item)
-                                                                                                        @if ($item->fulfil_plan == 11)
-                                                                                                            <span
-                                                                                                                class="badge badge-primary"
-                                                                                                                style="width: 100%">Flat
-                                                                                                                {{ $item->fl_rate }}</span>
-                                                                                                        @elseif($item->fulfil_plan
-                                                                                                            == 22)
-                                                                                                            <?php $fee_plan = App\Http\Controllers\MainController::productFulfillmentRate($sch_id); ?>
-                                                                                                            Start Order-End Order<br>
-                                                                                                            @foreach ($fee_plan as $item)
-                                                                                                                {{ $item->start_order }}-{{ $item->end_order }} --- {{ $item->fee_order }}Rs<br>
-                                                                                                            @endforeach
-                                                                                                            
-                                                                                                        @elseif($item->fulfil_plan==
-                                                                                                            33)
-                                                                                                            <?php $fee_plan = App\Http\Controllers\MainController::productFulfillmentRate2($sch_id); ?>
-                                                                                                            @foreach ($fee_plan as $item)
-                                                                                                            {{ $item->start_item }}-{{ $item->end_item }} --- {{ $item->fee_item }}Rs<br>
-                                                                                                            @endforeach
-                                                                                                        @endif
-                                                                                                    @endforeach
-                                                                                                </td>
-                                                                                            </tr>
+                                                                                                    
+                                                                                          
                                                                                 </td>
                                                                             </tr>
 
