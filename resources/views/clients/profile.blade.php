@@ -162,6 +162,49 @@
             vertical-align: middle;
         }
 
+        .jEvccp {
+            display: flex;
+            height: 144px;
+            -webkit-box-align: center;
+            align-items: center;
+            border: none;
+            background: rgb(255, 205, 210);
+        }
+
+        .djLOvF {
+            -webkit-box-flex: 1;
+            flex-grow: 1;
+            padding: var(--spacer-16);
+            color: rgb(0, 0, 0);
+        }
+
+        @media (min-width: 992px) {
+            .ftiIMf {
+                font-size: var(--heading-2-font-size);
+                letter-spacing: var(--heading-2-letter-spacing);
+                line-height: var(--heading-2-line-height);
+                font-weight: var(--heading-2-font-weight);
+            }
+        }
+
+        .ftiIMf {
+            margin: 0px;
+            padding: 0px;
+            font-size: var(--heading-3-font-size);
+            letter-spacing: var(--heading-3-letter-spacing);
+            line-height: var(--heading-3-line-height);
+            font-weight: var(--heading-3-font-weight);
+        }
+
+        .enRnrT {
+            display: flex;
+            height: 144px;
+            -webkit-box-align: center;
+            align-items: center;
+            border: none;
+            background: rgb(30, 50, 100);
+        }
+
     </style>
 </head>
 
@@ -198,10 +241,11 @@
             <!-- /Breadcrumb -->
 
             <div class="row gutters-md" id="home-body" style="display: none">
+                <h5 class="d-flex align-items-center mb-3 mt-3" style="font-size: 2rem"><i
+                        class="material-icons text-info mr-2"></i>Account Overview</h5>
                 <div class="col-md-4 mb-3">
                     <div class="card">
                         <div class="card-body">
-
                             @foreach ($client as $cl)
                                 <div class="d-flex flex-column align-items-center text-center">
                                     <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin"
@@ -317,56 +361,8 @@
                         </div>
                     </div>
 
-                    <div class="row gutters-sm">
-                        <div class="col-sm-6 mb-3">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    @foreach ($client as $cl)
-                                        <h5 class="d-flex align-items-center mb-3"><i
-                                                class="material-icons text-info mr-2"></i>Billing Plan</h5>
-                                        <center><i class="bi bi-cash-stack" style="font-size: 8rem;"></i></center>
-                                        <div class="d-flex flex-column align-items-center text-center">
-                                            <div class="mt-3">
-                                                @if ($cl->per_item_charge_flat == 111)
-                                                    @if ($cl->flat_per_day == 1111)
-                                                        <b>Flat per item charge (Per Day)</b>
-                                                        <p class="text-secondary mb-1">
-                                                            {{ $cl->per_item_charge_day }}
-                                                        </p>
-                                                    @endif
-
-                                                    @if ($cl->flat_per_day == 2222)
-                                                        <b>Flat Charge (Per Mpnth)</b>
-                                                        <p class="text-secondary mb-1">
-                                                            {{ $cl->per_item_charge_day }}
-                                                        </p>
-                                                    @endif
-
-                                                @endif
-
-                                                @if ($cl->per_item_charge_flat == 222)
-                                                    @if ($cl->flat_per_day == 3333)
-                                                        <b>Volume Based Charge (Per Day)</b>
-                                                        <p class="text-secondary mb-1">
-                                                            {{ $cl->per_item_charge_day_vol }}</p>
-                                                    @endif
-
-                                                    @if ($cl->flat_per_day == 4444)
-                                                        <b>Volume Based Charge (Per Month)</b>
-                                                        <p class="text-secondary mb-1">
-                                                            {{ $cl->per_item_charge_month_vol }}</p>
-                                                    @endif
-                                                @endif
-
-                                                <a href="#" class="btn btn-primary">Change Plan</a>
-
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 mb-3">
+                    {{-- <div class="row gutters-sm">
+                        <div class="col-sm-12 mb-3">
                             <div class="card h-100">
                                 <div class="card-body">
                                     <h5 class="d-flex align-items-center mb-3"><i
@@ -381,12 +377,11 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-
+                    </div> --}}
 
                 </div>
             </div>
+
 
             <div class="row gutters-md" id="products-body" style="display: none">
                 <div class="col-md-4 mb-3">
@@ -408,41 +403,165 @@
                 </div>
             </div>
 
-        </div>
-    </div>
 
-    <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
-    <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('datatables/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('datatables/js/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('sweetalert/sweetalert2.min.js') }}"></script>
-    <script src="{{ asset('toastr/toastr.min.js') }}"></script>
+            <div class="row gutters-md mt-2" style="display: none" id="plan-body">
+                <div class="col-sm-12 mb-3">
+                    <h5 class="d-flex align-items-center mb-3" style="font-size: 2rem"><i
+                            class="material-icons text-info mr-2"></i>{{ session('username') }}'s Plans</h5>
+                    <div class="card">
+                        <div class="jEvccp">
+                            <div class="djLOvF">
+                                <span class="ftiIMf ml-3" style="font-size: 2rem"> <b>Product Storage
+                                        Plan</b> </span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            @foreach ($client as $cl)
+                                <div class="d-flex flex-column align-items-center text-center">
+                                    <div class="mt-3">
+                                        @if ($cl->per_item_charge_flat == 111)
+                                            @if ($cl->flat_per_day == 1111)
+                                                <b>Flat charge per item</b>
+                                                <p class="text-secondary mb-1">
+                                                    {{ $cl->per_item_charge_day }} Rs/day
+                                                </p>
+                                            @endif
 
-    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+                                            @if ($cl->flat_per_day == 2222)
+                                                <b>Flat Charge (Per Month)</b>
+                                                <p class="text-secondary mb-1">
+                                                    {{ $cl->per_item_charge_day }}
+                                                </p>
+                                            @endif
 
-    <script>
-        $('.sidebar a').click(function() {
-            $('.sidebar a').removeClass('active')
-            $(this).closest('.sidebar a').addClass('active')
-        })
+                                        @endif
 
-        mdc.ripple.MDCRipple.attachTo(document.querySelector('.foo-button'));
-    </script>
+                                        @if ($cl->per_item_charge_flat == 222)
+                                            @if ($cl->flat_per_day == 3333)
+                                                <b>Volume Based Charge (Per Day)</b>
+                                                <p class="text-secondary mb-1">
+                                                    {{ $cl->per_item_charge_day_vol }}</p>
+                                            @endif
 
-    <script>
-        $('#home').on('click', function(e) {
-            e.preventDefault()
-            $('#home-body').show()
-            $('#products-body').hide()
-        })
+                                            @if ($cl->flat_per_day == 4444)
+                                                <b>Volume Based Charge (Per Month)</b>
+                                                <p class="text-secondary mb-1">
+                                                    {{ $cl->per_item_charge_month_vol }}</p>
+                                            @endif
+                                        @endif
 
-        $('#products').on('click', function(e) {
-            e.preventDefault()
-            $('#home-body').hide()
-            $('#products-body').show()
-        })
-    </script>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 mb-3">
+                    <div class="card">
+                        <div class="jEvccp">
+                            <div class="djLOvF">
+                                <span class="ftiIMf ml-3" style="font-size: 2rem"> <b>Product Fulfillment
+                                        Plan</b> </span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            @foreach ($client as $cl)
+                                <div class="d-flex flex-column align-items-left text-center">
+                                    <div class="mt-3">
+                                        @if ($cl->fulfil_plan == 11)
+                                            <b>Flat per order charge</b>
+                                            <p class="text-secondary mb-1">
+                                                {{ $cl->fl_rate }} Rs/Order
+                                            </p>
+                                        @endif
+
+                                        @if ($cl->fulfil_plan == 22)
+                                            <b style="font-size: 1.5rem">Tiered Charge</b>
+                                            <p class="text-secondary mb-1 mt-2">
+                                                <?php $client_fulfillment_rates = DB::table('product_fulfillment_rate')
+                                                    ->where('client_id', $cl->sch_id)
+                                                    ->get(); ?>
+                                                @foreach ($client_fulfillment_rates as $client_fulfillment_rate)
+                                                    <table class="table">
+                                                        <thead>
+                                                            <th>From</th>
+                                                            <th>To</th>
+                                                            <th>Fee</th>
+                                                        </thead>
+                                                        <tbody>
+                                                            <td>{{ $client_fulfillment_rate->start_order }}-Orders
+                                                            </td>
+                                                            <td>{{ $client_fulfillment_rate->end_order }}-Orders
+                                                            </td>
+                                                            <td>{{ $client_fulfillment_rate->fee_order }}
+                                                                Rs
+                                                            </td>
+                                                        </tbody>
+                                                    </table>
+                                                @endforeach
+                                            </p>
+                                        @endif
+
+
+
+                                        @if ($cl->per_item_charge_flat == 222)
+                                            @if ($cl->flat_per_day == 3333)
+                                                <b>Volume Based Charge (Per Day)</b>
+                                                <p class="text-secondary mb-1">
+                                                    {{ $cl->per_item_charge_day_vol }}</p>
+                                            @endif
+
+                                            @if ($cl->flat_per_day == 4444)
+                                                <b>Volume Based Charge (Per Month)</b>
+                                                <p class="text-secondary mb-1">
+                                                    {{ $cl->per_item_charge_month_vol }}</p>
+                                            @endif
+                                        @endif
+
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="{{ asset('jquery/jquery-3.6.0.min.js') }}"></script>
+            <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+            <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+            <script src="{{ asset('datatables/js/jquery.dataTables.min.js') }}"></script>
+            <script src="{{ asset('datatables/js/dataTables.bootstrap4.min.js') }}"></script>
+            <script src="{{ asset('sweetalert/sweetalert2.min.js') }}"></script>
+            <script src="{{ asset('toastr/toastr.min.js') }}"></script>
+
+            <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+
+            <script>
+                $('.sidebar a').click(function() {
+                    $('.sidebar a').removeClass('active')
+                    $(this).closest('.sidebar a').addClass('active')
+                })
+
+                mdc.ripple.MDCRipple.attachTo(document.querySelector('.foo-button'));
+            </script>
+
+            <script>
+                $('#home').on('click', function(e) {
+                    e.preventDefault()
+                    $('#home-body').show()
+                    $('#plan-body').show()
+                    $('#products-body').hide()
+                })
+
+                $('#products').on('click', function(e) {
+                    e.preventDefault()
+                    $('#home-body').hide()
+                    $('#plan-body').hide()
+                    $('#products-body').show()
+                })
+            </script>
+
 
 </body>
 
