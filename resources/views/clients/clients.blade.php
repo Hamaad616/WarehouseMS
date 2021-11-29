@@ -328,7 +328,7 @@
 
 
                                                 <a class="btn btn-secondary" id="editUserCreds" data-bs-toggle="tooltip"
-                                                    data-bs-placement="top" title="Edit Client Credentials"
+                                                    data-bs-placement="top" title="Edit Client Password"
                                                     data-id={{ $item->sch_id }}><i class="bi bi-people"></i></a>
                                                 <a class="btn btn-success" data-bs-toggle="tooltip" data-bs-placement="top"
                                                     title="View Client Products"

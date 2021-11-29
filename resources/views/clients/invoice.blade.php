@@ -94,11 +94,11 @@
 
                                             @if ($isFl->per_item_charge_flat == 111)
                                                 @if ($isFl->flat_per_day == 1111)
-                                                    Flat Per Item Charge (Per Day)
+                                                    Flat Per Item Charge
                                                 @endif
 
                                             @elseif ($isFl->flat_per_month == 2222)
-                                                Flat Per Item Charge (Per Month)
+                                                Flat Per Item Charge
                                             @endif
 
                                         @endif

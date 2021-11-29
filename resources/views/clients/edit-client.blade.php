@@ -437,6 +437,7 @@
 
 
                 <input type="hidden" value="{{ $sch_id }}" name="client_id">
+             
 
 
                 <div id="container" class="row d-flex justify-content-center">
@@ -462,6 +463,8 @@
                                             {{ session()->get('danger') }}
                                         </div>
                                     @endif
+
+                                    <input type="hidden" name="warehouse_id" value="{{ $user->warehouse_id }}">
 
                                     <div id="step_1_validation" style="display: none" class="alert alert-danger"
                                         role="alert">
