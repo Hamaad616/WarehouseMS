@@ -1350,7 +1350,9 @@ class MainController extends Controller
     public function clientProfile($client_id)
     {
         $client = DB::table('clients')->select('*')->where('sch_id', '=', $client_id)->get();
-        return view('clients.profile', ['client_id' => $client_id, 'client' => $client]);
+        $categories = DB::select('select * from categories');
+        $c_items = DB::select('select * from product_item where client_id = ?', [$client_id]);
+        return view('clients.profile', ['client_id' => $client_id, 'client' => $client, 'categories' => $categories, 'c_items' => $c_items]);
     }
 
     public function clientItemAddView($client_id)
@@ -1894,7 +1896,15 @@ FROM `item_stock`,grn_details,grn WHERE item_stock.flag='in' and item_stock.its_
 
     public function getClientInvoice($client_id, $created_at)
     {
-        $stock_in_invoice = DB::select('select * from client_stock_in_billing where client_id = ? and created_at =?', [$client_id, $created_at]);
+
+        $day = DB::select("SELECT EXTRACT(DAY FROM '$created_at') as day");
+        
+        $new_d = 0;
+        foreach($day as $d){
+            $new_d = $d->day;
+        }
+        $stock_in_invoice = DB::table('client_stock_in_billing')->where('client_id', $client_id)->whereDay('created_at', $new_d)->get();
+        // $stock_in_invoice = DB::select('select * from client_stock_in_billing where client_id = ? and created_at =?', [$client_id, $created_at]);
         return view('clients.invoice', ['stock_in_invoice' => $stock_in_invoice, 'client_id' => $client_id]);
     }
 

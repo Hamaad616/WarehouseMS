@@ -297,8 +297,8 @@
                             <td>{{ $bill->total_bill }}</td>
                             <td><span class="badge badge-info">{{ $bill->status }}</span></td>
                             <?php $timestamp = strtotime($bill->created_at); ?>
-                            <td>{{ date("m/d/Y m:h:s", $timestamp) }}</td>
-                            <td><a href="{{ route('invoice.generate', ['client_id' => $client_id, 'created_at' => $bill->created_at]) }}" class="btn btn-primary"> <i class="bi bi-receipt"></i> </a></td>
+                            <td>{{ date("Y-m-d", strtotime($bill->created_at)) }}</td>
+                            <td><a href="{{ route('invoice.generate', ['client_id' => $client_id, 'created_at' => date("Y-m-d", strtotime($bill->created_at)) ]) }}" class="btn btn-primary"> <i class="bi bi-receipt"></i> </a></td>
                         </tr>
                         <?php $count++; ?>
                     @endforeach

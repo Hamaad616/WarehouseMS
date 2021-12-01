@@ -174,4 +174,8 @@ Route::get('get-po-details/{req_id}', [MainController::class, 'getPoDetails'])->
 
 Route::get('searchProduct', [MainController::class, 'searchProduct'])->name('searchProduct');
 
+Route::get('table', function(){
+    return view('clients.table');
+});
+
 
